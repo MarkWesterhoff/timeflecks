@@ -7,26 +7,39 @@ import java.util.Date;
  */
 public abstract class TimeObject
 {
+	/* Static variable and method to deal with giving each TimeObject a unique
+	 * id.
+	 */
+	private static long taskCount = 0;
+	public static long getNextId() {
+		if (taskCount == Long.MAX_VALUE) {
+			// can we recover from this?
+			throw new RuntimeException("Exceeded maximum number of tasks/events");
+		}
+		
+		long id = taskCount;
+		taskCount++;
+		return id;
+	}
+	
+	/* Member Variables */
 	protected String name;
 	protected Date startTime;
 	protected String description;
 	protected final long id;
-	private static long taskCount = 0;
+	
 
 	/*
 	 * Basic constructor, can support other input later (the rest are optional)
 	 */
 	public TimeObject(String name)
 	{
-		id = taskCount;
-		taskCount++;
-		if (taskCount == Long.MAX_VALUE)
-		{
-			// What should we do here?
-		}
+		id = TimeObject.getNextId();
 		this.name = name;
 	}
-
+	
+	
+	
 	/*
 	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
 	 * takes a <code>long</code>, so math can be done. In milliseconds.
