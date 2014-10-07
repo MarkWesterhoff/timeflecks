@@ -5,14 +5,17 @@ public abstract class TimeObject {
 	protected String name;
 	protected Date startTime;
 	protected String description;
-	protected int id;
-	private static int taskCount = 0;
+	protected final long id;
+	private static long taskCount = 0;
 	/*
 	 * Basic constructor, can support other input later (the rest are optional)
 	 */
 	public TimeObject(String name) {
 		id = taskCount;
 		taskCount++;
+		if(taskCount == Long.MAX_VALUE) {
+			//What should we do here?
+		}
 		this.name = name;
 	}
 	/**
@@ -36,6 +39,9 @@ public abstract class TimeObject {
 	}
 	public Date getEndTime() {
 		return new Date(startTime.getTime() + duration);
+	}
+	public boolean isScheduled() {
+		return !(startTime == null);
 	}
 	public String getDescription() {
 		return description;

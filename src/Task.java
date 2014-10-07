@@ -10,14 +10,13 @@ public class Task extends TimeObject {
 	
 	public Task(String name) {
 		super(name);
+		completed = false;
 	}
 	/*
 	 * A bunch of getters and setters, as well as a couple of additional functions.
 	 * 
 	 */
-	public boolean isScheduled() {
-		return !(startTime == null);
-	}
+
 	public boolean isCompleted() {
 		return completed;
 	}
