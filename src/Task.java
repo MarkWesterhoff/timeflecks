@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -5,7 +6,15 @@ public class Task extends TimeObject {
 	private boolean completed;
 	private Date dueDate;
 	private int priority;
+	private ArrayList<String> tags;
 	
+	public Task(String name) {
+		super(name);
+	}
+	/*
+	 * A bunch of getters and setters, as well as a couple of additional functions.
+	 * 
+	 */
 	public boolean isScheduled() {
 		return !(startTime == null);
 	}
@@ -29,6 +38,15 @@ public class Task extends TimeObject {
 	}
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+	public ArrayList<String> getTags() {
+		return tags;
+	}
+	public void setTags(ArrayList<String> tags) {
+		this.tags = tags;
+	}
+	public void addTag(String tagname) {
+		tags.add(tagname);
 	}
 	
 }
