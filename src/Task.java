@@ -80,5 +80,4 @@ public class Task extends TimeObject
 	{
 		tags.add(tagname);
 	}
-
 }
