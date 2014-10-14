@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class Task extends TimeObject
 {
+	private static final long serialVersionUID = 1L;
+	
 	private boolean completed;
 	private Date dueDate;
 	private int priority;

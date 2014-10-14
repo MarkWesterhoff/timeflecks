@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 //I'm not sure if this should / shouldn't be a singleton...
@@ -6,7 +8,7 @@ public class TaskList
 
 	private TaskList()
 	{
-
+		taskEvents = new ArrayList<TimeObject>();
 	}
 
 	static TaskList instance;
@@ -34,6 +36,17 @@ public class TaskList
 			instance = new TaskList();
 		}
 		return instance;
+	}
+	
+	/**
+	 * Saves all tasks to the database.
+	 * @throws IOException 
+	 * @throws SQLException 
+	 */
+	public void saveAllTasks() throws SQLException, IOException {
+		for (TimeObject to : taskEvents) {
+			to.saveToDatabase();
+		}
 	}
 
 }

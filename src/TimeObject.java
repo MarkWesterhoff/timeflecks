@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -5,13 +8,15 @@ import java.util.Date;
  * Represents either an Event or a Task
  * 
  */
-public abstract class TimeObject
+public abstract class TimeObject implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	/* Static variable and method to deal with giving each TimeObject a unique
 	 * id.
 	 */
 	private static long taskCount = 0;
-	public static long getNextId() {
+	private static long getNextId() {
 		if (taskCount == Long.MAX_VALUE) {
 			// can we recover from this?
 			throw new RuntimeException("Exceeded maximum number of tasks/events.");
@@ -102,5 +107,16 @@ public abstract class TimeObject
 	public void setDuration(long duration)
 	{
 		this.duration = duration;
+	}
+	
+	/**
+	 * Saves this TimeObject to the database.
+	 * 
+	 * @throws SQLException when there is a problem writing to the database
+	 * @throws IOException when there is a problem with serialization
+	 */
+	public void saveToDatabase() throws SQLException, IOException {
+		SQLiteConnector conn = SQLiteConnector.getInstance();
+		conn.saveSerializedTimeObject(this);
 	}
 }
