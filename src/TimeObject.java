@@ -14,7 +14,7 @@ public abstract class TimeObject
 	public static long getNextId() {
 		if (taskCount == Long.MAX_VALUE) {
 			// can we recover from this?
-			throw new RuntimeException("Exceeded maximum number of tasks/events");
+			throw new RuntimeException("Exceeded maximum number of tasks/events.");
 		}
 		
 		long id = taskCount;
