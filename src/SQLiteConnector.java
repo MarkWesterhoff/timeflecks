@@ -98,7 +98,7 @@ public final class SQLiteConnector {
 	 * @throws SQLException when there is a problem saving to the database
 	 * @throws IOException when there is a problem serializing the TimeObject to bytes
 	 */
-	synchronized public void saveSerializedTimeObject(TimeObject obj) throws SQLException, IOException {
+	public void saveSerializedTimeObject(TimeObject obj) throws SQLException, IOException {
 		logger.logp(Level.INFO, "SQLiteConnector", "saveSerializedTimeObject", 
 				"Serializing and saving TimeObject " + obj.getName());
 		
@@ -125,7 +125,7 @@ public final class SQLiteConnector {
 	 * @throws IOException if there is a problem with the stream of bytes representing
 	 * 						the serialized object
 	 */
-	synchronized public TimeObject getSerializedTimeObject(long id) throws SQLException, ClassNotFoundException, IOException {
+	public TimeObject getSerializedTimeObject(long id) throws SQLException, ClassNotFoundException, IOException {
 		logger.logp(Level.INFO, "SQLiteConnector", "getSerializedTimeObject", 
 				"Getting and deserializing TimeObject with id " + Long.toString(id));
 		
