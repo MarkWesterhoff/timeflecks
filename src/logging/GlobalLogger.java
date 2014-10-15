@@ -1,3 +1,5 @@
+package logging;
+
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -7,9 +9,9 @@ import java.util.logging.Level;
  */
 public class GlobalLogger {
 	private static Logger logger;
-	
+
 	private GlobalLogger() { }
-	
+
 	public static Logger getLogger() {
 		if (logger == null) {
 			logger = Logger.getLogger(GlobalLogger.class.getName());
