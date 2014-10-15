@@ -7,7 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
+import logging.GlobalLogger;
 import utility.ByteUtility;
 
 public final class SQLiteConnector {
@@ -50,6 +53,8 @@ public final class SQLiteConnector {
 		return instance;
 	}
 	
+	private transient Logger logger;
+	
 	/**
 	 * Constructor for SQLiteConnector. Connects to the database and creates
 	 * the table for storing TimeObjects. Deletes all rows from the table.
@@ -57,6 +62,10 @@ public final class SQLiteConnector {
 	 * @throws SQLException
 	 */
 	private SQLiteConnector() throws SQLException { 
+		instance.logger = GlobalLogger.getLogger();
+		
+		logger.logp(Level.INFO, "SQLiteConnector", "SQLiteConnector", 
+				"Constructing SQLiteConnector");
 		Connection c = this.getConnection();
 		try {
 			Statement stmt = c.createStatement();
@@ -76,6 +85,8 @@ public final class SQLiteConnector {
 	 * @throws SQLException when there is a problem connecting to the SQLite database
 	 */
 	private Connection getConnection() throws SQLException {
+		logger.logp(Level.INFO, "SQLiteConnector", "getConnection", 
+				"Establishing conenction with database test.db");
 		String connectionString = "jdbc:sqlite:test.db";
 		return DriverManager.getConnection(connectionString);
 	}
@@ -88,6 +99,9 @@ public final class SQLiteConnector {
 	 * @throws IOException when there is a problem serializing the TimeObject to bytes
 	 */
 	synchronized public void saveSerializedTimeObject(TimeObject obj) throws SQLException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "saveSerializedTimeObject", 
+				"Serializing and saving TimeObject " + obj.getName());
+		
 		Connection c = this.getConnection();
 		try {
 			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_SERIALIZED_TIMEOBJECT);
@@ -112,6 +126,9 @@ public final class SQLiteConnector {
 	 * 						the serialized object
 	 */
 	synchronized public TimeObject getSerializedTimeObject(long id) throws SQLException, ClassNotFoundException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "getSerializedTimeObject", 
+				"Getting and deserializing TimeObject with id " + Long.toString(id));
+		
 		Connection c = this.getConnection();
 		try {
 			PreparedStatement stmt = c.prepareStatement(SQL_SELECT_SERIALIZED_TIMEOBJECT);

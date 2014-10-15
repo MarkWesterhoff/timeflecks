@@ -2,6 +2,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import logging.GlobalLogger;
 
 /**
  * 
@@ -33,6 +37,9 @@ public abstract class TimeObject implements Serializable
 	protected String description;
 	protected final long id;
 	
+	// transient logger will be ignored during serialization
+	protected transient Logger logger;
+	
 
 	/*
 	 * Basic constructor, can support other input later (the rest are optional)
@@ -41,6 +48,7 @@ public abstract class TimeObject implements Serializable
 	{
 		id = TimeObject.getNextId();
 		this.name = name;
+		logger = GlobalLogger.getLogger();
 	}
 	
 	
@@ -116,6 +124,9 @@ public abstract class TimeObject implements Serializable
 	 * @throws IOException when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
+		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
+				+ this.name + " to database.");
+		
 		SQLiteConnector conn = SQLiteConnector.getInstance();
 		conn.saveSerializedTimeObject(this);
 	}
