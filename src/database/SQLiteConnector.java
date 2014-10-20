@@ -1,3 +1,5 @@
+package database;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -10,6 +12,7 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import core.TimeObject;
 import logging.GlobalLogger;
 import utility.ByteUtility;
 
@@ -79,7 +82,7 @@ public final class SQLiteConnector {
 	}
 	
 	/**
-	 * Gets the conenction to the SQLite database.
+	 * Gets the connection to the SQLite database.
 	 * 
 	 * @return a Connection object to the SQLite database
 	 * @throws SQLException when there is a problem connecting to the SQLite database
@@ -105,7 +108,7 @@ public final class SQLiteConnector {
 		Connection c = this.getConnection();
 		try {
 			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_SERIALIZED_TIMEOBJECT);
-			stmt.setLong(1, obj.id);
+			stmt.setLong(1, obj.getId());
 			stmt.setBytes(2, ByteUtility.getBytes(obj));
 			
 			stmt.executeUpdate();

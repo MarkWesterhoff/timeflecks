@@ -1,3 +1,5 @@
+package core;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -5,6 +7,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import database.SQLiteConnector;
 import logging.GlobalLogger;
 
 /**
@@ -36,6 +39,12 @@ public abstract class TimeObject implements Serializable
 	protected Date startTime;
 	protected String description;
 	protected final long id;
+
+	/*
+	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
+	 * takes a <code>long</code>, so math can be done. In milliseconds.
+	 */
+	protected long duration;
 	
 	// transient logger will be ignored during serialization
 	protected transient Logger logger;
@@ -51,13 +60,9 @@ public abstract class TimeObject implements Serializable
 		logger = GlobalLogger.getLogger();
 	}
 	
-	
-	
-	/*
-	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
-	 * takes a <code>long</code>, so math can be done. In milliseconds.
-	 */
-	protected long duration;
+	public long getId() {
+		return id;
+	}
 
 	public String getName()
 	{

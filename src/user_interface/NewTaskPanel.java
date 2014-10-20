@@ -1,10 +1,15 @@
+package user_interface;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.*;
 import javax.swing.UIManager.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DateFormatter;
 
 public class NewTaskPanel extends JPanel
 {
@@ -37,6 +42,11 @@ public class NewTaskPanel extends JPanel
 													// this layout
 		GridBagConstraints gc = new GridBagConstraints();
 		gc.anchor = GridBagConstraints.LAST_LINE_START;
+		
+		Insets labelInsets = new Insets(4, 12, 0, 8);
+		Insets fieldInsets = new Insets(0, 8, 0, 8);
+		
+		// TODO Put ++ instead of manual stuff
 
 		JLabel taskNameLabel = new JLabel("Name");
 		taskNameLabel.setHorizontalAlignment(JLabel.LEFT);
@@ -44,7 +54,7 @@ public class NewTaskPanel extends JPanel
 		gc.gridx = 0;
 		gc.gridy = 0;
 		gc.anchor = GridBagConstraints.LAST_LINE_START;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskNameLabel, gc);
 
@@ -54,26 +64,23 @@ public class NewTaskPanel extends JPanel
 		JTextField taskNameField = new JTextField(30);
 		taskNameLabel.setLabelFor(taskNameField); // Accessibility
 
-		gc.gridx = 0;
-		gc.gridy = 1;
-		gc.insets = new Insets(0, 8, 0, 8);
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
 		centerPanel.add(taskNameField, gc);
 
 		JLabel taskDescriptionLabel = new JLabel("Description");
 
-		gc.gridx = 0;
-		gc.gridy = 2;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.gridy++;
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskDescriptionLabel, gc);
 
 		JTextField taskDescriptionField = new JTextField(30);
 		taskDescriptionLabel.setLabelFor(taskDescriptionField); // Accessibility
 
-		gc.gridx = 0;
-		gc.gridy = 3;
-		gc.insets = new Insets(0, 8, 0, 8);
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
 		centerPanel.add(taskDescriptionField, gc);
 
@@ -83,76 +90,77 @@ public class NewTaskPanel extends JPanel
 
 		JLabel taskStartDateLabel = new JLabel("Start Date");
 
-		gc.gridx = 0;
-		gc.gridy = 4;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.gridy++;
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskStartDateLabel, gc);
 
 		JTextField taskStartDateField = new JTextField(30);
 		taskStartDateLabel.setLabelFor(taskStartDateField); // Accessibility
 
-		gc.gridx = 0;
-		gc.gridy = 5;
-		gc.insets = new Insets(0, 8, 0, 8);
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
 		centerPanel.add(taskStartDateField, gc);
 
 		// Due Date Support
 		JLabel taskDueDateLabel = new JLabel("Due Date");
 
-		gc.gridx = 0;
-		gc.gridy = 6;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.gridy++;
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskDueDateLabel, gc);
 
 		JTextField taskDueDateField = new JTextField(30);
 		taskDueDateLabel.setLabelFor(taskDueDateField); // Accessibility
 
-		gc.gridx = 0;
-		gc.gridy = 7;
-		gc.insets = new Insets(0, 8, 0, 8);
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
 		centerPanel.add(taskDueDateField, gc);
 
 		JLabel taskDurationLabel = new JLabel("Duration");
 
-		gc.gridx = 0;
-		gc.gridy = 8;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.gridy++;
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskDurationLabel, gc);
+		
+		// The duration picker - CURRENTLY SHOWS A TIME FOR A DATE - Do we want to use a JSpinner for our date/time picker? 
+		
+		// Initialize to 12pm
+		Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 24); // 24 == 12 PM == 00:00:00
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
 
-		JComboBox<String> taskDurationComboBox = new JComboBox<String>();
-		taskDurationComboBox.addItem("Not Set");
-		for (int i = 1; i <= 300; i++)
-		{
-			if (i == 1)
-			{
-				taskDurationComboBox.addItem(new String(i + " Minute"));
-			}
-			else
-			{
-				taskDurationComboBox.addItem(new String(i + " Minutes"));
-			}
-		}
+        // Create a date model for the spinner
+        SpinnerDateModel model = new SpinnerDateModel();
+        model.setValue(calendar.getTime());
+        
+        // Create the spinner and the date editor
+        JSpinner durationSpinner = new JSpinner(model);
+        JSpinner.DateEditor durationPicker = new JSpinner.DateEditor(durationSpinner, "hh:mm:ss a");
+        durationSpinner.setEditor(durationPicker);
+		
+        // Don't allow invalid typing in the field
+		DateFormatter formatter = (DateFormatter)durationPicker.getTextField().getFormatter();
+		formatter.setAllowsInvalid(false); // this makes what you want
+		formatter.setOverwriteMode(true);
+	
+		taskDurationLabel.setLabelFor(durationPicker); // Accessibility
 
-		taskDurationLabel.setLabelFor(taskDurationComboBox); // Accessibility
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
-		gc.gridx = 0;
-		gc.gridy = 9;
-		gc.insets = new Insets(0, 8, 0, 8);
-
-		centerPanel.add(taskDurationComboBox, gc);
+		centerPanel.add(durationPicker, gc);
 
 		// Priority Support?
 
 		JLabel taskPriorityLabel = new JLabel("Priority");
 
-		gc.gridx = 0;
-		gc.gridy = 10;
-		gc.insets = new Insets(4, 12, 0, 8);
+		gc.gridy++;
+		gc.insets = labelInsets;
 
 		centerPanel.add(taskPriorityLabel, gc);
 
@@ -164,9 +172,8 @@ public class NewTaskPanel extends JPanel
 
 		taskPriorityLabel.setLabelFor(taskPriorityComboBox); // Accessibility
 
-		gc.gridx = 0;
-		gc.gridy = 11;
-		gc.insets = new Insets(0, 8, 0, 8);
+		gc.gridy++;
+		gc.insets = fieldInsets;
 
 		centerPanel.add(taskPriorityComboBox, gc);
 
