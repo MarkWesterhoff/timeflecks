@@ -1,3 +1,5 @@
+package core;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -10,6 +12,8 @@ import java.util.Date;
 
 public class Task extends TimeObject
 {
+	private static final long serialVersionUID = 1L;
+	
 	private boolean completed;
 	private Date dueDate;
 	private int priority;
@@ -25,20 +29,18 @@ public class Task extends TimeObject
 	 * A bunch of getters and setters, as well as a couple of additional
 	 * functions.
 	 */
-
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public boolean isCompleted()
 	{
 		return completed;
 	}
 
-	public void complete()
-	{
-		this.completed = true;
-	}
-
-	public void uncomplete()
-	{
-		this.completed = false;
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
 
 	public int getPriority()

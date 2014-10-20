@@ -1,3 +1,5 @@
+package core;
+
 import java.util.Date;
 
 /**
@@ -7,6 +9,8 @@ import java.util.Date;
  */
 public class Event extends TimeObject
 {
+	private static final long serialVersionUID = 1L;
+
 	public Event(String name, Date startTime, long duration)
 	{
 		super(name);

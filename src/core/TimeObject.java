@@ -1,17 +1,29 @@
+package core;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
+import database.SQLiteConnector;
+import logging.GlobalLogger;
 
 /**
  * 
  * Represents either an Event or a Task
  * 
  */
-public abstract class TimeObject
+public abstract class TimeObject implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	/* Static variable and method to deal with giving each TimeObject a unique
 	 * id.
 	 */
 	private static long taskCount = 0;
-	public static long getNextId() {
+	private static long getNextId() {
 		if (taskCount == Long.MAX_VALUE) {
 			// can we recover from this?
 			throw new RuntimeException("Exceeded maximum number of tasks/events.");
@@ -27,6 +39,15 @@ public abstract class TimeObject
 	protected Date startTime;
 	protected String description;
 	protected final long id;
+
+	/*
+	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
+	 * takes a <code>long</code>, so math can be done. In milliseconds.
+	 */
+	protected long duration;
+	
+	// transient logger will be ignored during serialization
+	protected transient Logger logger;
 	
 
 	/*
@@ -36,15 +57,12 @@ public abstract class TimeObject
 	{
 		id = TimeObject.getNextId();
 		this.name = name;
+		logger = GlobalLogger.getLogger();
 	}
 	
-	
-	
-	/*
-	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
-	 * takes a <code>long</code>, so math can be done. In milliseconds.
-	 */
-	protected long duration;
+	public long getId() {
+		return id;
+	}
 
 	public String getName()
 	{
@@ -102,5 +120,19 @@ public abstract class TimeObject
 	public void setDuration(long duration)
 	{
 		this.duration = duration;
+	}
+	
+	/**
+	 * Saves this TimeObject to the database.
+	 * 
+	 * @throws SQLException when there is a problem writing to the database
+	 * @throws IOException when there is a problem with serialization
+	 */
+	public void saveToDatabase() throws SQLException, IOException {
+		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
+				+ this.name + " to database.");
+		
+		SQLiteConnector conn = SQLiteConnector.getInstance();
+		conn.saveSerializedTimeObject(this);
 	}
 }
