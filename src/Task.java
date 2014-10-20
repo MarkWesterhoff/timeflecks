@@ -12,15 +12,22 @@ public class Task extends TimeObject
 {
 	private static final long serialVersionUID = 1L;
 	
+	public final static int HIGH_PRIORITY = 2;
+	public final static int MEDIUM_PRIORITY = 1;
+	public final static int LOW_PRIORITY = 0;
+	public final static int NO_PRIORITY_SELECTED = -1;
+	
 	private boolean completed;
 	private Date dueDate;
 	private int priority;
 	private ArrayList<String> tags;
+	private long ordering;
 
 	public Task(String name)
 	{
 		super(name);
 		completed = false;
+		setOrdering(id);
 	}
 
 	/*
@@ -81,5 +88,15 @@ public class Task extends TimeObject
 	public void addTag(String tagname)
 	{
 		tags.add(tagname);
+	}
+
+	public long getOrdering()
+	{
+		return ordering;
+	}
+
+	public void setOrdering(long ordering)
+	{
+		this.ordering = ordering;
 	}
 }
