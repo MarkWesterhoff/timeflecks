@@ -79,7 +79,7 @@ public final class SQLiteConnector {
 	}
 	
 	/**
-	 * Gets the conenction to the SQLite database.
+	 * Gets the connection to the SQLite database.
 	 * 
 	 * @return a Connection object to the SQLite database
 	 * @throws SQLException when there is a problem connecting to the SQLite database
