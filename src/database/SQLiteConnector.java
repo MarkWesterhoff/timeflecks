@@ -12,6 +12,7 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+import core.TimeObject;
 import logging.GlobalLogger;
 import utility.ByteUtility;
 
@@ -107,7 +108,7 @@ public final class SQLiteConnector {
 		Connection c = this.getConnection();
 		try {
 			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_SERIALIZED_TIMEOBJECT);
-			stmt.setLong(1, obj.id);
+			stmt.setLong(1, obj.getId());
 			stmt.setBytes(2, ByteUtility.getBytes(obj));
 			
 			stmt.executeUpdate();

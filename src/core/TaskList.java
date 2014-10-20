@@ -7,31 +7,9 @@ import java.util.ArrayList;
 //I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
 {
-
-	private TaskList()
-	{
-		taskEvents = new ArrayList<TimeObject>();
-	}
-
 	static TaskList instance;
-	private ArrayList<TimeObject> taskEvents;
-
-	public ArrayList<TimeObject> getTaskEvents()
-	{
-		return taskEvents;
-	}
-
-	public void setTaskEvents(ArrayList<TimeObject> taskEvents)
-	{
-		this.taskEvents = taskEvents;
-	}
-
-	public void addTimeObject(TimeObject t)
-	{
-		taskEvents.add(t);
-	}
-
-	public static TaskList getTaskInstance()
+	
+	public static TaskList getInstance()
 	{
 		if (instance == null)
 		{
@@ -40,14 +18,50 @@ public class TaskList
 		return instance;
 	}
 	
+	// Class implementation
+	
+	private ArrayList<Task> tasks;
+	private ArrayList<Event> events;
+	
+	private TaskList()
+	{
+		tasks = new ArrayList<Task>();
+		events = new ArrayList<Event>();
+	}
+
+	public ArrayList<Task> getTasks()
+	{
+		return tasks;
+	}
+
+	public ArrayList<Event> getEvents()
+	{
+		return events;
+	}
+	
+	public void setTasks(ArrayList<Task> tasks)
+	{
+		this.tasks = tasks;
+	}
+	
+	public void setEvents(ArrayList<Event> events)
+	{
+		this.events = events;
+	}
+	
+		
 	/**
 	 * Saves all tasks to the database.
 	 * @throws IOException 
 	 * @throws SQLException 
 	 */
-	public void saveAllTasks() throws SQLException, IOException {
-		for (TimeObject to : taskEvents) {
-			to.saveToDatabase();
+	public void saveAllTasksAndEvents() throws SQLException, IOException {
+		for (Task t : tasks) {
+			t.saveToDatabase();
+		}
+		
+		for (Event e : events) {
+			e.saveToDatabase();
 		}
 	}
 

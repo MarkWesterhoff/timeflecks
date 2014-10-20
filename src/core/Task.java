@@ -29,20 +29,18 @@ public class Task extends TimeObject
 	 * A bunch of getters and setters, as well as a couple of additional
 	 * functions.
 	 */
-
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public boolean isCompleted()
 	{
 		return completed;
 	}
 
-	public void complete()
-	{
-		this.completed = true;
-	}
-
-	public void uncomplete()
-	{
-		this.completed = false;
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
 
 	public int getPriority()
