@@ -26,6 +26,9 @@ public final class SQLiteConnector {
 			System.exit(1);
 		}
 	}
+
+	private static final String SQL_DROP_SERIALIZE_TABLE = 
+			"DROP TABLE IF EXISTS 'serialized_time_objects'";
 	
 	private static final String SQL_CREATE_SERIALIZE_TABLE = 
 			"CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
@@ -35,7 +38,7 @@ public final class SQLiteConnector {
 	private static final String SQL_CLEAR_SERIALIZE_TABLE = 
 			"DELETE FROM 'serialized_time_objects'";
 	
-	private static final String SQL_INSERT_SERIALIZED_TIMEOBJECT = 
+	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_TIMEOBJECT = 
 			"INSERT OR REPLACE "
 			+ "INTO 'serialized_time_objects' (id, serialized_time_object) "
 			+ "VALUES (?, ?)";
@@ -72,8 +75,8 @@ public final class SQLiteConnector {
 		Connection c = this.getConnection();
 		try {
 			Statement stmt = c.createStatement();
+			stmt.execute(SQL_DROP_SERIALIZE_TABLE);
 			stmt.execute(SQL_CREATE_SERIALIZE_TABLE);
-			stmt.execute(SQL_CLEAR_SERIALIZE_TABLE);
 			stmt.close();
 		}
 		finally {
@@ -95,6 +98,23 @@ public final class SQLiteConnector {
 	}
 	
 	/**
+	 * Drops the table for serializing objects, if it exists.
+	 * 
+	 * @throws SQLException when there is a problem dropping the table
+	 */
+	private void dropSerializeTable() throws SQLException {
+		Connection c = this.getConnection();
+		try {
+			Statement stmt = c.createStatement();
+			stmt.execute(SQL_DROP_SERIALIZE_TABLE);
+			stmt.close();
+		}
+		finally {
+			c.close();
+		}
+	}
+	
+	/**
 	 * Serializes the TimeObject to a byte array and saves it to the database.
 	 * 
 	 * @param obj the TimeObject to serialize and save
@@ -107,7 +127,7 @@ public final class SQLiteConnector {
 		
 		Connection c = this.getConnection();
 		try {
-			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_SERIALIZED_TIMEOBJECT);
+			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_OR_REPLACE_SERIALIZED_TIMEOBJECT);
 			stmt.setLong(1, obj.getId());
 			stmt.setBytes(2, ByteUtility.getBytes(obj));
 			
