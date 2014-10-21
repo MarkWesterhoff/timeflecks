@@ -65,7 +65,7 @@ public final class SQLiteConnector {
 	 * @throws SQLException
 	 */
 	private SQLiteConnector() throws SQLException { 
-		instance.logger = GlobalLogger.getLogger();
+		this.logger = GlobalLogger.getLogger();
 		
 		logger.logp(Level.INFO, "SQLiteConnector", "SQLiteConnector", 
 				"Constructing SQLiteConnector");
