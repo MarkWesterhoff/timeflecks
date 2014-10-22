@@ -48,6 +48,8 @@ public class Task implements Scheduleable
 		this.name = name;
 		completed = false;
 		setOrdering(id);
+		logger.logp(Level.INFO, "core.Task", "core.Task()", 
+				"Creating task " + this.name + " with id " + id);
 	}
 
 	/*
@@ -76,6 +78,8 @@ public class Task implements Scheduleable
 
 	public void setStartTime(Date startTime)
 	{
+		logger.logp(Level.INFO, "core.Task", "core.Task.setStartTime(startTime)", 
+				"Setting start time to task with id " + id + "as " + startTime.toString());
 		this.startTime = startTime;
 	}
 
@@ -131,6 +135,10 @@ public class Task implements Scheduleable
 	{
 		this.completed = false;
 	}
+	
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
+	}
 
 	public int getPriority()
 	{
@@ -169,6 +177,8 @@ public class Task implements Scheduleable
 
 	public void addTag(String tagname)
 	{
+		logger.logp(Level.INFO, "core.Task", "core.Task.addTag(tagname)", 
+				"Adding new tag " + tagname + " to task with id " + id);
 		tags.add(tagname);
 	}
 
@@ -189,7 +199,7 @@ public class Task implements Scheduleable
 	 * @throws IOException when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
-		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
+		logger.logp(Level.INFO, "core.Task", "core.Task.saveToDatabase()", "Saving " 
 				+ this.name + " to database.");
 		
 		SQLiteConnector conn = SQLiteConnector.getInstance();

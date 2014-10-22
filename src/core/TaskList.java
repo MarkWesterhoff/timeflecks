@@ -3,6 +3,8 @@ package core;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
@@ -22,6 +24,7 @@ public class TaskList
 	
 	private ArrayList<Task> tasks;
 	private ArrayList<Event> events;
+	private transient Logger logger;
 	
 	private TaskList()
 	{
@@ -49,6 +52,18 @@ public class TaskList
 		this.events = events;
 	}
 	
+	public void addEvent(Event e) {
+		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.addEvent(e)",
+				"Adding new event with id " + e.getId() + " to event list");
+		events.add(e);
+	}
+	
+	public void addTask(Task t) {
+		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.addTask(e)",
+				"Adding new task with id " + t.getId() + " to task list");
+		tasks.add(t);
+	}
+	
 		
 	/**
 	 * Saves all tasks to the database.
@@ -56,6 +71,9 @@ public class TaskList
 	 * @throws SQLException 
 	 */
 	public void saveAllTasksAndEvents() throws SQLException, IOException {
+		logger.logp(Level.INFO, "core.TaskList", 
+				"core.TaskList.saveAllTasksAndEvents",
+				"saving all tasks and events to database");
 		for (Task t : tasks) {
 			t.saveToDatabase();
 		}
