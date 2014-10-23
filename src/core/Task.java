@@ -2,6 +2,7 @@ package core;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,8 +79,16 @@ public class Task implements Scheduleable
 
 	public void setStartTime(Date startTime)
 	{
-		logger.logp(Level.INFO, "core.Task", "core.Task.setStartTime(startTime)", 
-				"Setting start time to task with id " + id + "as " + startTime.toString());
+		if(startTime == null) {
+			logger.logp(Level.INFO, "core.Task", 
+					"core.Task.setStartTime(startTime)",
+					"Resetting start time of task with id " + id + ".");
+		} else {
+			logger.logp(Level.INFO, "core.Task", 
+					"core.Task.setStartTime(startTime)",
+					"Setting start time to task with id " + id + "as " + 
+							startTime.toString());
+		}
 		this.startTime = startTime;
 	}
 
@@ -191,6 +200,41 @@ public class Task implements Scheduleable
 	{
 		this.ordering = ordering;
 	}
+	
+	/**
+	 * Create comparator objects
+	 */
+	
+	public final static Comparator<Task> nameComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return t1.name.compareTo(t2.name);
+		}
+	};
+	
+	public final static Comparator<Task> dueDateComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			// put non-scheduled tasks at the end
+			if(t1.dueDate == null) {
+				return (t1.dueDate == t2.dueDate)?0:1;
+			} else if(t2.dueDate == null) {
+				return -1;
+			} else {
+				return t1.dueDate.compareTo(t2.dueDate);
+			}
+		}
+	};
+	
+	public final static Comparator<Task> priorityComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return -Integer.compare(t1.priority, t2.priority);
+		}
+	};
+	
+	public final static Comparator<Task> manualComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return Long.compare(t1.ordering, t2.ordering);
+		}
+	};
 	
 	/**
 	 * Saves this TimeObject to the database.

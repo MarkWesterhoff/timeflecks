@@ -3,6 +3,8 @@ package core;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,6 +64,12 @@ public class TaskList
 		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.addTask(e)",
 				"Adding new task with id " + t.getId() + " to task list");
 		tasks.add(t);
+	}
+	
+	public void sortTasks(Comparator<Task> taskComp) {
+		Collections.sort(tasks,taskComp);
+		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.sortTasks()",
+				"Sorting task list");
 	}
 	
 		
