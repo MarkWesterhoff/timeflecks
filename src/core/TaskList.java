@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import logging.GlobalLogger;
+
 //I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
 {
@@ -32,6 +34,7 @@ public class TaskList
 	{
 		tasks = new ArrayList<Task>();
 		events = new ArrayList<Event>();
+		this.logger = GlobalLogger.getLogger();
 	}
 
 	public ArrayList<Task> getTasks()

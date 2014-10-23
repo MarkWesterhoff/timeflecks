@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import logging.GlobalLogger;
+
 import database.IDGenerator;
 import database.SQLiteConnector;
 
@@ -49,8 +51,11 @@ public class Task implements Scheduleable
 		this.name = name;
 		completed = false;
 		setOrdering(id);
+		this.logger = GlobalLogger.getLogger();
 		logger.logp(Level.INFO, "core.Task", "core.Task()", 
 				"Creating task " + this.name + " with id " + id);
+		priority = NO_PRIORITY_SELECTED;
+		tags = new ArrayList<String>();
 	}
 
 	/*
