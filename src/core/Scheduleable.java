@@ -15,4 +15,5 @@ public interface Scheduleable
 	public Date getStartTime();
 	public Date getEndTime();
 	public long getDuration();
+	public long getId();
 }
