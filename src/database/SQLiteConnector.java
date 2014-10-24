@@ -12,9 +12,21 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
-import core.TimeObject;
+import core.Task;
+import core.Event;
 import logging.GlobalLogger;
 import utility.ByteUtility;
+
+/**
+ * Represents the types of objects that can be saved to this database.
+ */
+enum SerializableTypes {
+	TASK('t'), EVENT('e');
+	
+	private final char type;
+	SerializableTypes(char t) { this.type = t; }
+	public char getValue() { return type; }
+}
 
 public final class SQLiteConnector {
 	// Load JDBC database connector class 
@@ -32,21 +44,23 @@ public final class SQLiteConnector {
 	
 	private static final String SQL_CREATE_SERIALIZE_TABLE = 
 			"CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
-			+ "'id' int(11) PRIMARY KEY NOT NULL,"
-			+ "'serialized_time_object' blob )";
+			+ "'id' INT(11) PRIMARY KEY NOT NULL,"
+			+ "'type' CHAR(1) NOT NULL,"
+			+ "'serialized_time_object' BLOB NOT NULL )";
 	
 	private static final String SQL_CLEAR_SERIALIZE_TABLE = 
 			"DELETE FROM 'serialized_time_objects'";
 	
-	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_TIMEOBJECT = 
+	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = 
 			"INSERT OR REPLACE "
-			+ "INTO 'serialized_time_objects' (id, serialized_time_object) "
-			+ "VALUES (?, ?)";
+			+ "INTO 'serialized_time_objects' (id, type, serialized_time_object) "
+			+ "VALUES (?, ?, ?)";
 	
 	private static final String SQL_SELECT_SERIALIZED_TIMEOBJECT = 
 			"SELECT serialized_time_object "
 			+ "FROM 'serialized_time_objects' "
 			+ "WHERE id = ? "
+			+ "AND type = ? "
 			+ "LIMIT 1";
 
 	/* SQLiteConnector is a singleton */
@@ -115,21 +129,54 @@ public final class SQLiteConnector {
 	}
 	
 	/**
-	 * Serializes the TimeObject to a byte array and saves it to the database.
+	 * Serializes the Task to a byte array and saves it to the database.
 	 * 
-	 * @param obj the TimeObject to serialize and save
+	 * @param task the Task to serialize and save
 	 * @throws SQLException when there is a problem saving to the database
-	 * @throws IOException when there is a problem serializing the TimeObject to bytes
+	 * @throws IOException when there is a problem serializing the Task to bytes
 	 */
-	public void saveSerializedTimeObject(TimeObject obj) throws SQLException, IOException {
-		logger.logp(Level.INFO, "SQLiteConnector", "saveSerializedTimeObject", 
-				"Serializing and saving TimeObject " + obj.getName());
+	public void serializeAndSave(Task task) throws SQLException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Task)", 
+				"Serializing and saving Task \"" + task.getName() + "\"");
+		
+		this.save(task.getId(), SerializableTypes.TASK.getValue(), 
+				ByteUtility.getBytes(task));
+	}
+	
+	/**
+	 * Serializes the Event to a byte array and saves it to the database.
+	 * 
+	 * @param event the Event to serialize and save
+	 * @throws SQLException when there is a problem saving to the database
+	 * @throws IOException when there is a problem serializing the Event to bytes
+	 */
+	public void serializeAndSave(Event event) throws SQLException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Event)", 
+				"Serializing and saving Event \"" + event.getName() + "\"");
+		
+		this.save(event.getId(), SerializableTypes.EVENT.getValue(), 
+				ByteUtility.getBytes(event));
+	}
+	
+	/**
+	 * 
+	 * @param id the id of the object to save
+	 * @param type the type of the object to save
+	 * @param serializedObject the string of bytes representing the serialized object
+	 * @throws SQLException when there is a problem writing to the database
+	 */
+	private void save(long id, char type, byte[] serializedObject) throws SQLException {
+		logger.logp(Level.INFO, "SQLiteConnector", "save", 
+				"Saving object with id = " + Long.toString(id) + " and type = "
+				+ Character.toString(type));
 		
 		Connection c = this.getConnection();
 		try {
-			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_OR_REPLACE_SERIALIZED_TIMEOBJECT);
-			stmt.setLong(1, obj.getId());
-			stmt.setBytes(2, ByteUtility.getBytes(obj));
+			PreparedStatement stmt = c.prepareStatement(SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT);
+			
+			stmt.setLong(1, id);
+			stmt.setString(2, Character.toString(type));
+			stmt.setBytes(3, serializedObject);
 			
 			stmt.executeUpdate();
 			stmt.close();
@@ -140,22 +187,24 @@ public final class SQLiteConnector {
 	}
 	
 	/**
+	 * Reads and deserializes a Task from the database
 	 * 
-	 * @param id the id of the serialized TimeObject to get from the database
-	 * @return the deserialized TimeObject
+	 * @param id the id of the serialized Task to get from the database
+	 * @return the deserialized Task
 	 * @throws SQLException if there is a problem reading from the database
 	 * @throws ClassNotFoundException if there is a problem deserializing the object
 	 * @throws IOException if there is a problem with the stream of bytes representing
 	 * 						the serialized object
 	 */
-	public TimeObject getSerializedTimeObject(long id) throws SQLException, ClassNotFoundException, IOException {
-		logger.logp(Level.INFO, "SQLiteConnector", "getSerializedTimeObject", 
-				"Getting and deserializing TimeObject with id " + Long.toString(id));
+	public Task getSerializedTask(long id) throws SQLException, ClassNotFoundException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "getSerializedTask", 
+				"Getting and deserializing Task with id " + Long.toString(id));
 		
 		Connection c = this.getConnection();
 		try {
 			PreparedStatement stmt = c.prepareStatement(SQL_SELECT_SERIALIZED_TIMEOBJECT);
 			stmt.setLong(1, id);
+			stmt.setString(2, Character.toString(SerializableTypes.TASK.getValue()));
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			
@@ -170,7 +219,43 @@ public final class SQLiteConnector {
 			rs.close();
 			stmt.close();
 			
-			return (TimeObject)deserializedObject; 
+			return (Task)deserializedObject; 
+		}
+		finally {
+			c.close();
+		}
+	}
+	
+	/**
+	 * Reads and deserializes a Task from the database
+	 * 
+	 * @param id the id of the serialized Task to get from the database
+	 * @return the deserialized Task
+	 * @throws SQLException if there is a problem reading from the database
+	 * @throws ClassNotFoundException if there is a problem deserializing the object
+	 * @throws IOException if there is a problem with the stream of bytes representing
+	 * 						the serialized object
+	 */
+	public Event getSerializedEvent(long id) throws SQLException, ClassNotFoundException, IOException {
+		logger.logp(Level.INFO, "SQLiteConnector", "getSerializedEvent", 
+				"Getting and deserializing Event with id " + Long.toString(id));
+		
+		Connection c = this.getConnection();
+		try {
+			PreparedStatement stmt = c.prepareStatement(SQL_SELECT_SERIALIZED_TIMEOBJECT);
+			stmt.setLong(1, id);
+			stmt.setString(2, Character.toString(SerializableTypes.EVENT.getValue()));
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			
+			byte[] buf = rs.getBytes(1);
+			
+			Object deserializedObject = ByteUtility.getObject(buf);
+			
+			rs.close();
+			stmt.close();
+			
+			return (Event)deserializedObject; 
 		}
 		finally {
 			c.close();

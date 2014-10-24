@@ -1,7 +1,9 @@
 package utility;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class ByteUtility {
@@ -21,5 +23,23 @@ public class ByteUtility {
 	    bos.close();
 	    byte[] data = bos.toByteArray();
 	    return data;
+	}
+	
+	/**
+	 * Returns an Object that represents the deserialized byte array.
+	 * 
+	 * @param bytes the serialized byte array
+	 * @return the deserialized Object
+	 * @throws ClassNotFoundException if there is a problem deserializing the object
+	 * @throws IOException if there is a problem with the stream of bytes representing
+	 * 						the serialized object
+	 */
+	public static Object getObject(byte[] bytes) throws ClassNotFoundException, IOException {
+		ObjectInputStream inStream = null;
+		if(bytes != null) {
+			inStream = new ObjectInputStream(new ByteArrayInputStream(bytes));
+		}
+
+		return inStream.readObject();
 	}
 }

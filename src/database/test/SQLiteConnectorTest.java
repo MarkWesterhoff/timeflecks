@@ -7,12 +7,10 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import core.Event;
 import core.Task;
 import database.SQLiteConnector;
-import logging.GlobalLogger;
 
 public class SQLiteConnectorTest {
 	
@@ -27,13 +25,13 @@ public class SQLiteConnectorTest {
 		SQLiteConnector conn = SQLiteConnector.getInstance();
 		
 		Task task = new Task("task1");
-		conn.saveSerializedTimeObject(t);
+		conn.serializeAndSave(task);
 		
 		Event event = new Event("event1", new Date(), 1);
-		conn.saveSerializedTimeObject(e);
+		conn.serializeAndSave(event);
 		
 		// Positive tests for Task
-		Task returnTask = conn.getSerializedTimeObject(t.getId());
+		Task returnTask = conn.getSerializedTask(task.getId());
 		
 		assertEquals("Descriptions should match", task.getDescription(), 
 				returnTask.getDescription());
@@ -52,7 +50,7 @@ public class SQLiteConnectorTest {
 		assertEquals("Tags should match", task.getTags(), returnTask.getTags());
 		
 		// Positive tests for Event
-		Event returnEvent = (Event)conn.getSerializedTimeObject(e.getId());
+		Event returnEvent = (Event)conn.getSerializedEvent(event.getId());
 		assertEquals("Descriptions should match", event.getDescription(), 
 				returnEvent.getDescription());
 		assertEquals("Duration should match", event.getDuration(), 

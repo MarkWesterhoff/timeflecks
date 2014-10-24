@@ -1,6 +1,7 @@
 package core;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -15,17 +16,11 @@ import database.SQLiteConnector;
  * Represents an event on the calendar
  * 
  */
-public class Event implements Scheduleable
+public class Event implements Scheduleable, Serializable
 {
 
-	public Event(String name, Date startTime, long duration)
-	{
-		id = IDGenerator.getNextID();
-		this.name = name;
-		this.startTime = startTime;
-		this.duration = duration;
-	}
-	
+	private static final long serialVersionUID = 1L;
+
 	protected String name;
 	protected Date startTime;
 	protected String description;
@@ -38,6 +33,14 @@ public class Event implements Scheduleable
 	 * takes a <code>long</code>, so math can be done. In milliseconds.
 	 */
 	protected long duration;
+	
+	public Event(String name, Date startTime, long duration)
+	{
+		id = IDGenerator.getNextID();
+		this.name = name;
+		this.startTime = startTime;
+		this.duration = duration;
+	}
 	
 	public long getId() {
 		return id;
@@ -112,6 +115,6 @@ public class Event implements Scheduleable
 				+ this.name + " to database.");
 		
 		SQLiteConnector conn = SQLiteConnector.getInstance();
-		//conn.saveSerializedEvent(this);
+		conn.serializeAndSave(this);
 	}
 }

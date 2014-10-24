@@ -1,5 +1,6 @@
 package core;
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,8 +17,10 @@ import database.SQLiteConnector;
  * 
  */
 
-public class Task implements Scheduleable
+public class Task implements Scheduleable, Serializable
 {	
+	private static final long serialVersionUID = 1L;
+	
 	public final static int HIGH_PRIORITY = 2;
 	public final static int MEDIUM_PRIORITY = 1;
 	public final static int LOW_PRIORITY = 0;
@@ -85,7 +88,12 @@ public class Task implements Scheduleable
 	 */
 	public Date getEndTime()
 	{
-		return new Date(startTime.getTime() + duration);
+		if (startTime == null) {
+			return null;
+		}
+		else {
+			return new Date(startTime.getTime() + duration);
+		}
 	}
 
 	/**
@@ -122,14 +130,9 @@ public class Task implements Scheduleable
 		return completed;
 	}
 
-	public void complete()
+	public void setCompleted(boolean value) 
 	{
-		this.completed = true;
-	}
-
-	public void uncomplete()
-	{
-		this.completed = false;
+		this.completed = value;
 	}
 
 	public int getPriority()
@@ -192,7 +195,7 @@ public class Task implements Scheduleable
 		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
 				+ this.name + " to database.");
 		
-		SQLiteConnector conn = SQLiteConnector.getInstance();
-		//conn.saveSerializedTask(this);
+		SQLiteConnector sqlConn = SQLiteConnector.getInstance();
+		sqlConn.serializeAndSave(this);
 	}
 }
