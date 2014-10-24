@@ -3,9 +3,12 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import logging.GlobalLogger;
 
 import database.IDGenerator;
 import database.SQLiteConnector;
@@ -51,6 +54,11 @@ public class Task implements Scheduleable, Serializable
 		this.name = name;
 		completed = false;
 		setOrdering(id);
+		this.logger = GlobalLogger.getLogger();
+		logger.logp(Level.INFO, "core.Task", "core.Task()", 
+				"Creating task " + this.name + " with id " + id);
+		priority = NO_PRIORITY_SELECTED;
+		tags = new ArrayList<String>();
 	}
 
 	/*
@@ -79,6 +87,16 @@ public class Task implements Scheduleable, Serializable
 
 	public void setStartTime(Date startTime)
 	{
+		if(startTime == null) {
+			logger.logp(Level.INFO, "core.Task", 
+					"core.Task.setStartTime(startTime)",
+					"Resetting start time of task with id " + id + ".");
+		} else {
+			logger.logp(Level.INFO, "core.Task", 
+					"core.Task.setStartTime(startTime)",
+					"Setting start time to task with id " + id + "as " + 
+							startTime.toString());
+		}
 		this.startTime = startTime;
 	}
 
@@ -134,7 +152,7 @@ public class Task implements Scheduleable, Serializable
 	{
 		this.completed = value;
 	}
-
+	
 	public int getPriority()
 	{
 		return priority;
@@ -172,6 +190,8 @@ public class Task implements Scheduleable, Serializable
 
 	public void addTag(String tagname)
 	{
+		logger.logp(Level.INFO, "core.Task", "core.Task.addTag(tagname)", 
+				"Adding new tag " + tagname + " to task with id " + id);
 		tags.add(tagname);
 	}
 
@@ -186,13 +206,48 @@ public class Task implements Scheduleable, Serializable
 	}
 	
 	/**
+	 * Create comparator objects
+	 */
+	
+	public final static Comparator<Task> nameComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return t1.name.compareTo(t2.name);
+		}
+	};
+	
+	public final static Comparator<Task> dueDateComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			// put non-scheduled tasks at the end
+			if(t1.dueDate == null) {
+				return (t1.dueDate == t2.dueDate)?0:1;
+			} else if(t2.dueDate == null) {
+				return -1;
+			} else {
+				return t1.dueDate.compareTo(t2.dueDate);
+			}
+		}
+	};
+	
+	public final static Comparator<Task> priorityComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return -Integer.compare(t1.priority, t2.priority);
+		}
+	};
+	
+	public final static Comparator<Task> manualComparator = new Comparator<Task>() {
+		public int compare(Task t1, Task t2) {
+			return Long.compare(t1.ordering, t2.ordering);
+		}
+	};
+	
+	/**
 	 * Saves this TimeObject to the database.
 	 * 
 	 * @throws SQLException when there is a problem writing to the database
 	 * @throws IOException when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
-		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
+		logger.logp(Level.INFO, "core.Task", "core.Task.saveToDatabase()", "Saving " 
 				+ this.name + " to database.");
 		
 		SQLiteConnector sqlConn = SQLiteConnector.getInstance();

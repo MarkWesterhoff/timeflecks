@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import logging.GlobalLogger;
+
 import database.IDGenerator;
 import database.SQLiteConnector;
 
@@ -18,7 +20,6 @@ import database.SQLiteConnector;
  */
 public class Event implements Scheduleable, Serializable
 {
-
 	private static final long serialVersionUID = 1L;
 
 	protected String name;
@@ -40,6 +41,8 @@ public class Event implements Scheduleable, Serializable
 		this.name = name;
 		this.startTime = startTime;
 		this.duration = duration;
+		this.logger = GlobalLogger.getLogger();
+		logger.logp(Level.INFO, "core.Event","core.Event()","Creating event " + this.name + " with id " + id);
 	}
 	
 	public long getId() {
@@ -75,15 +78,6 @@ public class Event implements Scheduleable, Serializable
 		return new Date(startTime.getTime() + duration);
 	}
 
-	/**
-	 * 
-	 * @return whether the object has assigned a start time
-	 */
-	public boolean isScheduled()
-	{
-		return !(startTime == null);
-	}
-
 	public String getDescription()
 	{
 		return description;
@@ -111,7 +105,7 @@ public class Event implements Scheduleable, Serializable
 	 * @throws IOException when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
-		logger.logp(Level.INFO, "TimeObject", "saveToDatabase", "Saving " 
+		logger.logp(Level.INFO, "core.Event", "core.Event.saveToDatabase()", "Saving " 
 				+ this.name + " to database.");
 		
 		SQLiteConnector conn = SQLiteConnector.getInstance();
