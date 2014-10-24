@@ -152,7 +152,7 @@ public class Task implements Scheduleable, Serializable
 	{
 		this.completed = value;
 	}
-	
+
 	public int getPriority()
 	{
 		return priority;
