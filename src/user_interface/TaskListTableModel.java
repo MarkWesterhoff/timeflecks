@@ -93,13 +93,13 @@ public class TaskListTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
         logger.logp(Level.INFO, "TaskListTableView", "setValueAt", 
         		String.format("Setting value at (%d, %d) to %s", row, col, value)); 
-		Task song = (Task)taskList.getTasks().get(row);
+		Task task = (Task)taskList.getTasks().get(row);
         switch (col) {
         	case 0: 
-        		song.setCompleted((Boolean)value); 
+        		task.setCompleted((Boolean)value); 
         		break;
         	case 1:
-        		song.setName((String)value);
+        		task.setName((String)value);
         		break;
     	}
         fireTableCellUpdated(row, col);
