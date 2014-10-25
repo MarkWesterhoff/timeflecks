@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import logging.GlobalLogger;
@@ -144,9 +145,9 @@ public class NewTaskPanel extends JPanel
 
 		// The duration picker, hours, minutes, and seconds
 		
-		JLabel hours = new JLabel("hrs");
-		JLabel minutes = new JLabel("mins");
-		JLabel seconds = new JLabel("secs");
+		JLabel hours = new JLabel(" hrs  ");
+		JLabel minutes = new JLabel(" mins  ");
+		JLabel seconds = new JLabel(" secs");
 		
 		final SpinnerModel hourModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
 		final SpinnerModel minuteModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
@@ -166,7 +167,10 @@ public class NewTaskPanel extends JPanel
 		secondSpinner.setPreferredSize(new Dimension(75, secondSpinner.getPreferredSize().height));
 		
 		JPanel durationPanel = new JPanel();
-		durationPanel.setLayout(new FlowLayout());
+		FlowLayout panelLayout = new FlowLayout();
+		panelLayout.setHgap(0);
+		panelLayout.setVgap(0);
+		durationPanel.setLayout(panelLayout);
 		
 		durationPanel.add(hourSpinner);
 		durationPanel.add(hours);
