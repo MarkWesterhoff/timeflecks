@@ -289,7 +289,6 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("Save"))
