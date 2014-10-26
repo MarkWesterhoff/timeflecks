@@ -20,7 +20,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 	
 	private final JTable table;
 	
-	private HashMap<String,Comparator<Task>> comboMap;
+	private LinkedHashMap<String,Comparator<Task>> comboMap;
 	private JButton upButton;
 	private JButton downButton;
 	
@@ -38,7 +38,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 		
 		// Combobox for Sorting
 		// construct the JComboBox
-		comboMap = new HashMap<String, Comparator<Task>>();
+		comboMap = new LinkedHashMap<String, Comparator<Task>>();
 		comboMap.put("Name", Task.nameComparator);
 		comboMap.put("Manual", Task.manualComparator);
 		comboMap.put("Due Date", Task.dueDateComparator);
