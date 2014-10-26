@@ -117,7 +117,7 @@ public class Timeflecks
 		this.currentFile = currentFile;
 	}
 
-	public void openDatabaseFile(File newFile) throws SQLException, IOException
+	public void openDatabaseFile(File newFile) throws SQLException, IOException, ClassNotFoundException
 	{
 		setDBConnector(new SQLiteConnector(newFile));
 		setCurrentFile(newFile);
@@ -131,7 +131,7 @@ public class Timeflecks
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
 	}
 
-	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
+	public TaskList loadTaskListFromConnector(SQLiteConnector connector) throws SQLException, IOException, ClassNotFoundException
 	{
 		ArrayList<Task> tasksFromFile = connector.getAllTasks();
 		ArrayList<Event> eventsFromFile = connector.getAllEvents();
