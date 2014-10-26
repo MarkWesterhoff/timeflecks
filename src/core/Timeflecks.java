@@ -29,7 +29,7 @@ public class Timeflecks
 	{
 		taskList = new TaskList();
 		dbConnector = new SQLiteConnector();
-		IDGenerator = new IDGenerator();
+		idGenerator = new IDGenerator();
 		setCurrentFile(new File("calendar1.db"));
 		
 		// TODO Be able to seed ID generator with an ID
@@ -67,11 +67,6 @@ public class Timeflecks
 		this.idGenerator = idGenerator;
 	}
 
-	public static void main(String[] args)
-	{
-
-	}
-
 	public File getCurrentFile()
 	{
 		return currentFile;
@@ -80,6 +75,15 @@ public class Timeflecks
 	public void setCurrentFile(File currentFile)
 	{
 		this.currentFile = currentFile;
+	}
+	
+	
+	
+	
+	
+	public static void main(String[] args)
+	{
+
 	}
 
 }
