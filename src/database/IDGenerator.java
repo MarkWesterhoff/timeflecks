@@ -4,6 +4,9 @@ public class IDGenerator
 {
 	private long currentID = 0;
 	
+	public IDGenerator() {
+		currentID = 0;
+	}
 	public IDGenerator(long ID) {
 		currentID = ID;
 	}
