@@ -66,6 +66,10 @@ public class Event implements Scheduleable, Serializable
 
 	public void setStartTime(Date startTime)
 	{
+		if(startTime == null) {
+			logger.logp(Level.WARNING, "core.Event", "core.Event.setStartTime()", "Start time should not be set to null for events");
+			throw new IllegalArgumentException("Events should not have a null start time.");
+		}
 		this.startTime = startTime;
 	}
 

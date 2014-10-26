@@ -40,7 +40,6 @@ public class TaskListTableModel extends AbstractTableModel {
 	 * Accessor for the number of rows in the table.
 	 * @return the number of rows in the table.
 	 */
-	@Override
 	public int getRowCount() {
 		return taskList.getTasks().size();
 	}
@@ -49,7 +48,6 @@ public class TaskListTableModel extends AbstractTableModel {
 	 * Accessor for the number of columns in the table.
 	 * @return the number of columns in the table.
 	 */
-	@Override
 	public int getColumnCount() {
 		return 2;
 	}
@@ -127,7 +125,6 @@ public class TaskListTableModel extends AbstractTableModel {
 	 * @param rowIndex - the index of the row within the table model
 	 * @param columnIndex - 0 for completed, 1 for name 
 	 */
-	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Task task = taskList.getTasks().get(rowIndex);
 		switch(columnIndex) {
