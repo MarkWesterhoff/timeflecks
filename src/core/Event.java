@@ -8,8 +8,6 @@ import java.util.logging.Level;
 
 import logging.GlobalLogger;
 
-import database.SQLiteConnector;
-
 /**
  * 
  * Represents an event on the calendar

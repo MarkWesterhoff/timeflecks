@@ -10,8 +10,6 @@ import java.util.logging.Level;
 
 import logging.GlobalLogger;
 
-import database.SQLiteConnector;
-
 /**
  * 
  * Represents a single scheduleable task -- the heart of the application.
