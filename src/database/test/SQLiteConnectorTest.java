@@ -22,26 +22,13 @@ public class SQLiteConnectorTest {
 	
 	/**
 	 * Tests the constructor of the SQLiteConnector.
-	 * 
-	 * @throws SQLException
-	 * @throws IOException 
-	 */
-	@Test
-	public void testConstructor() throws SQLException, IOException {
-		// Positive tests
-		//TODO: SQLiteConnector.getInstance();
-	}
-	
-	/**
-	 * Tests switchDatabase functionality to set up a new DB.
+	 *
 	 * @throws SQLException
 	 * @throws IOException
 	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void testSwitchDatabase() throws SQLException, IOException, ClassNotFoundException {
-		//TODO: fix testSwitchDatabase()
-		/* 
+	public void testConstructor() throws SQLException, IOException, ClassNotFoundException {
 		ArrayList<File> files = new ArrayList<File>();
 		 
 		files.add(new File("testSwitchDatabase1.db"));
@@ -49,21 +36,20 @@ public class SQLiteConnectorTest {
 		files.add(new File("testSwitchDatabase3.db"));
 		
 		// Positive tests
-		SQLiteConnector.switchDatabase(files.get(0));
-		SQLiteConnector.getInstance().serializeAndSave(new Task("task1"));
-		SQLiteConnector.switchDatabase(files.get(1));
-		SQLiteConnector.getInstance().serializeAndSave(new Task("task2"));
-		SQLiteConnector.switchDatabase(files.get(2));
-		Task task = new Task("task3");
-		SQLiteConnector.getInstance().serializeAndSave(task);
+		new SQLiteConnector(files.get(0)).serializeAndSave(new Task("task1"));
+		new SQLiteConnector(files.get(1)).serializeAndSave(new Task("task2"));
 		
-		Task returnTask = SQLiteConnector.getInstance().getSerializedTask(task.getId());
+		Task task = new Task("task3");
+		SQLiteConnector conn = new SQLiteConnector(files.get(2));
+		conn.serializeAndSave(task);
+		
+		Task returnTask = conn.getSerializedTask(task.getId());
 		assertEquals("Names should match", task.getName(), returnTask.getName());
 		
 		
 		// Negative tests
 		try {
-			SQLiteConnector.switchDatabase(new File("test1.notdb"));
+			new SQLiteConnector(new File("test1.notdb"));
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}
@@ -72,7 +58,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			SQLiteConnector.switchDatabase(new File(""));
+			new SQLiteConnector(new File(""));
 			fail("Expected IllegalArgumentException because "
 					+ "of no extension");
 		}
@@ -81,7 +67,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			SQLiteConnector.switchDatabase(new File("asdf"));
+			new SQLiteConnector(new File("asdf"));
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}
@@ -92,7 +78,6 @@ public class SQLiteConnectorTest {
 		for (File f : files) {
 			Files.delete(f.toPath());
 		}
-		*/
 	}
 	
 	/**
