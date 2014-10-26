@@ -24,16 +24,16 @@ public class Task implements Scheduleable, Serializable
 {	
 	private static final long serialVersionUID = 1L;
 
-	protected String name;
-	protected Date startTime;
-	protected String description;
-	protected final long id;
+	private String name;
+	private Date startTime;
+	private String description;
+	private final long id;
 
 	/*
 	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
 	 * takes a <code>long</code>, so math can be done. In milliseconds.
 	 */
-	protected long duration;
+	private long duration;
 	
 	private boolean completed;
 	private Date dueDate;
@@ -41,7 +41,7 @@ public class Task implements Scheduleable, Serializable
 	private ArrayList<String> tags;
 	private long ordering;
 
-	protected transient Logger logger;
+	private transient Logger logger;
 	
 	public Task(String name)
 	{
