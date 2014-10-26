@@ -408,10 +408,13 @@ public final class SQLiteConnector {
 		}
 		rs.next();
 		
-		long highestId = rs.getLong(1);
+		long highestId = -1;
+		// Check for 0 rows in the database
+		if (!rs.isAfterLast()) {
+			highestId = rs.getLong(1);
+		}
 		
 		rs.close();
 		return highestId;
 	}
-	
 }
