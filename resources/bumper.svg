@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="55"
+   height="40"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -56,7 +56,7 @@
      id="layer1">
     <path
        style="fill:#000000;fill-opacity:1;stroke:#caa61d;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 89.849659,162.56745 17.305251,16.13457"
+       d="m 10.849659,12.56745 17.305251,16.13457"
        id="path2991"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/chris/Documents/classes/Fall14/SDD/timeflecks/resources/down.png"
@@ -64,7 +64,7 @@
        inkscape:export-ydpi="90" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:#caa61d;stroke-width:7;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 124.33879,162.58135 -17.30525,16.13457"
+       d="m 45.33879,12.58135 -17.30525,16.13457"
        id="path2991-0"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/chris/Documents/classes/Fall14/SDD/timeflecks/resources/down.png"
