@@ -18,7 +18,12 @@ import core.Timeflecks;
 public class TaskListTablePanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final int MIN_COMPLETED_COLUMN_WIDTH = 60;
+	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 40;
+	private static final int MIN_NAME_COLUMN_WIDTH = 30;
+	private static final int PREFERRED_NAME_COLUMN_WIDTH = 200;
+	
 	private final JTable table;
 
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
@@ -45,7 +50,6 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(this);
-		;
 
 		JLabel sortLabel = new JLabel("Sort By: ");
 
@@ -75,9 +79,19 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 		// Actual table
 		table = new JTable(tableModel);
+		
+		// Set column widths
+		table.getColumnModel().getColumn(0)
+				.setMinWidth(MIN_COMPLETED_COLUMN_WIDTH);
+		table.getColumnModel().getColumn(0)
+				.setPreferredWidth(PREFERRED_COMPLETED_COLUMN_WIDTH);
+		table.getColumnModel().getColumn(1).setMinWidth(MIN_NAME_COLUMN_WIDTH);
+		table.getColumnModel().getColumn(1)
+				.setPreferredWidth(PREFERRED_NAME_COLUMN_WIDTH);
+
 		JScrollPane scroll = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		table.setAutoCreateRowSorter(true);
+		table.setAutoCreateRowSorter(false);
 		add(scroll, BorderLayout.CENTER);
 
 	}
@@ -179,10 +193,14 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 	public static void main(String[] args)
 	{
-		TaskList tl = Timeflecks.getSharedApplication().getTaskList();
+		Timeflecks.getSharedApplication().getTaskList().addTask(new Task("task1"));
+		Task task2 = new Task("task2");
+		task2.setCompleted(true);
+		Timeflecks.getSharedApplication().getTaskList().addTask(task2);
+		
 		JFrame frame = new JFrame();
 		TaskListTablePanel tltp = new TaskListTablePanel(
-				new TaskListTableModel(tl));
+				new TaskListTableModel(Timeflecks.getSharedApplication().getTaskList()));
 
 		frame.getContentPane().add(tltp, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
