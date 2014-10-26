@@ -139,9 +139,6 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 	
 	public static void main(String[] args) {
 		TaskList tl = TaskList.getInstance();
-		tl.addTask(new Task("GHI"));
-		tl.addTask(new Task("ABC"));
-		tl.addTask(new Task("DEF"));
 
 		JFrame frame = new JFrame();
 		TaskListTablePanel tltp = new TaskListTablePanel(new TaskListTableModel(tl));
