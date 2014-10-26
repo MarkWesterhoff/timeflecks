@@ -13,7 +13,6 @@ import javax.swing.table.TableModel;
 
 import logging.GlobalLogger;
 import core.Task;
-import core.TaskList;
 import core.Timeflecks;
 
 public class TaskListTablePanel extends JPanel implements ActionListener
