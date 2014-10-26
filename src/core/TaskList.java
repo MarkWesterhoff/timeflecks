@@ -13,16 +13,6 @@ import logging.GlobalLogger;
 //I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
 {
-	static TaskList instance;
-	
-	public static TaskList getInstance()
-	{
-		if (instance == null)
-		{
-			instance = new TaskList();
-		}
-		return instance;
-	}
 	
 	// Class implementation
 	
@@ -31,7 +21,7 @@ public class TaskList
 	private transient Logger logger;
 	private Comparator<Task> taskComparator;
 	
-	private TaskList()
+	public TaskList()
 	{
 		tasks = new ArrayList<Task>();
 		events = new ArrayList<Event>();

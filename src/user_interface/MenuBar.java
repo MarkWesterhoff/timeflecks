@@ -13,6 +13,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import core.TaskList;
+import core.Timeflecks;
 import database.SQLiteConnector;
 
 public class MenuBar extends JMenuBar implements ActionListener
@@ -196,7 +197,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 		// see Asana for discussion
 		try
 		{
-			TaskList.getInstance().saveAllTasksAndEvents();
+			Timeflecks.getSharedApplication().getTaskList()
+					.saveAllTasksAndEvents();
 		}
 		catch (SQLException e)
 		{
@@ -235,7 +237,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 	{
 		try
 		{
-			TaskList.getInstance().saveAllTasksAndEvents();
+			Timeflecks.getSharedApplication().getTaskList()
+					.saveAllTasksAndEvents();
 		}
 		catch (SQLException e)
 		{
@@ -324,7 +327,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 				try
 				{
 					SQLiteConnector.switchDatabase(selectedFile);
-					TaskList.getInstance().saveAllTasksAndEvents();
+					Timeflecks.getSharedApplication().getTaskList()
+							.saveAllTasksAndEvents();
 					success = true;
 				}
 				catch (IllegalArgumentException e)
