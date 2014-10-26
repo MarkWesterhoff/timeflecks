@@ -17,6 +17,7 @@ import com.toedter.calendar.JDateChooser;
 
 import core.Task;
 import core.TaskList;
+import core.Timeflecks;
 
 public class NewTaskPanel extends JPanel implements ActionListener
 {
@@ -358,7 +359,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				}
 
 				// Actually create the task and add it to the list
-				TaskList instance = TaskList.getInstance();
+				TaskList instance = Timeflecks.getSharedApplication()
+						.getTaskList();
 
 				instance.addTask(task);
 				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
