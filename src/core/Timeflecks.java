@@ -121,7 +121,6 @@ public class Timeflecks
 	{
 		setDBConnector(new SQLiteConnector(newFile));
 		setCurrentFile(newFile);
-		setTaskList(new TaskList());
 
 		long highestID = getDBConnector().getHighestID();
 
@@ -129,6 +128,7 @@ public class Timeflecks
 		setIdGenerator(newGenerator);
 
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
+		setTaskList(newList);
 	}
 
 	public TaskList loadTaskListFromConnector(SQLiteConnector connector) throws SQLException, IOException, ClassNotFoundException
