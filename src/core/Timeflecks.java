@@ -1,6 +1,7 @@
 package core;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import database.*;
 
@@ -47,12 +48,12 @@ public class Timeflecks
 		this.taskList = taskList;
 	}
 
-	public SQLiteConnector getDbConnector()
+	public SQLiteConnector getDBConnector()
 	{
 		return dbConnector;
 	}
 
-	public void setDbConnector(SQLiteConnector dbConnector)
+	public void setDBConnector(SQLiteConnector dbConnector)
 	{
 		this.dbConnector = dbConnector;
 	}
@@ -77,6 +78,29 @@ public class Timeflecks
 		this.currentFile = currentFile;
 	}
 	
+	public void openDatabaseFile(File newFile)
+	{
+		setDbConnector(new SQLiteConnector(newFile));
+		setCurrentFile(newFile);
+		setTaskList(new TaskList());
+		
+		long highestID = SQLiteConnector.getHighestID();
+		
+		IDGenerator newGenerator = new IDGenerator(highestID);
+		setIdGenerator(newGenerator);
+		
+		TaskList newList = loadTaskListFromConnector(getDBConnector());
+	}
+	
+	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
+	{
+		ArrayList<Task> tasksFromFile = connector.getAllTasks();
+		ArrayList<Event> eventsFromFile = connector.getAllEvents();
+		
+		TaskList newList = new TaskList(tasksFromFile, eventsFromFile);
+		
+		return newList;
+	}
 	
 	
 	
