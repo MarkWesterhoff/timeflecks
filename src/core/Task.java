@@ -23,12 +23,7 @@ import database.SQLiteConnector;
 public class Task implements Scheduleable, Serializable
 {	
 	private static final long serialVersionUID = 1L;
-	
-	public final static int HIGH_PRIORITY = 2;
-	public final static int MEDIUM_PRIORITY = 1;
-	public final static int LOW_PRIORITY = 0;
-	public final static int NO_PRIORITY_SELECTED = -1;
-	
+
 	protected String name;
 	protected Date startTime;
 	protected String description;
@@ -42,7 +37,7 @@ public class Task implements Scheduleable, Serializable
 	
 	private boolean completed;
 	private Date dueDate;
-	private int priority;
+	private Priority priority;
 	private ArrayList<String> tags;
 	private long ordering;
 
@@ -57,7 +52,7 @@ public class Task implements Scheduleable, Serializable
 		this.logger = GlobalLogger.getLogger();
 		logger.logp(Level.INFO, "core.Task", "core.Task()", 
 				"Creating task " + this.name + " with id " + id);
-		priority = NO_PRIORITY_SELECTED;
+		priority = Priority.NO_PRIORITY_SELECTED;
 		tags = new ArrayList<String>();
 	}
 
@@ -153,12 +148,12 @@ public class Task implements Scheduleable, Serializable
 		this.completed = value;
 	}
 
-	public int getPriority()
+	public Priority getPriority()
 	{
 		return priority;
 	}
 
-	public void setPriority(int priority)
+	public void setPriority(Priority priority)
 	{
 		this.priority = priority;
 	}
@@ -230,7 +225,7 @@ public class Task implements Scheduleable, Serializable
 	
 	public final static Comparator<Task> priorityComparator = new Comparator<Task>() {
 		public int compare(Task t1, Task t2) {
-			return -Integer.compare(t1.priority, t2.priority);
+			return -Integer.compare(t1.priority.getValue(), t2.priority.getValue());
 		}
 	};
 	

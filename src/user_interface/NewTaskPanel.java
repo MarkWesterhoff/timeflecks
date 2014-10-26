@@ -15,6 +15,7 @@ import logging.GlobalLogger;
 
 import com.toedter.calendar.JDateChooser;
 
+import core.Priority;
 import core.Task;
 import core.TaskList;
 
@@ -340,15 +341,15 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				{
 					if (taskPriorityComboBox.getSelectedIndex() == 1)
 					{
-						task.setPriority(Task.HIGH_PRIORITY);
+						task.setPriority(Priority.HIGH_PRIORITY);
 					}
 					else if (taskPriorityComboBox.getSelectedIndex() == 2)
 					{
-						task.setPriority(Task.MEDIUM_PRIORITY);
+						task.setPriority(Priority.MEDIUM_PRIORITY);
 					}
 					else if (taskPriorityComboBox.getSelectedIndex() == 3)
 					{
-						task.setPriority(Task.LOW_PRIORITY);
+						task.setPriority(Priority.LOW_PRIORITY);
 					}
 				}
 
