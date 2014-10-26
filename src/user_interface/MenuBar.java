@@ -5,10 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.GlobalLogger.getLogger();
+import java.util.logging.*;
 
 import logging.GlobalLogger;
-import logging.GlobalGlobalLogger.getLogger();
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -49,7 +48,7 @@ public class MenuBar extends JMenuBar implements ActionListener
 	 */
 	private void createAndAddFileMenu()
 	{
-		GlobalGlobalLogger.getLogger().getGlobalLogger.getLogger()().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
 				"Creating file menu");
 
 		// Create the file menu
@@ -69,7 +68,7 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		filemenu.add(menuItem);
 
-		GlobalGlobalLogger.getLogger().getGlobalLogger.getLogger()().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
 				"Added open menu");
 
 		// Add a separator, like many applications have
