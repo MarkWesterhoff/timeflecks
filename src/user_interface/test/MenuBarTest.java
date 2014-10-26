@@ -24,7 +24,7 @@ public class MenuBarTest
 
 			newFrame.setSize(400, 400);
 			newFrame.setAutoRequestFocus(true);
-			newFrame.setResizable(false);
+			newFrame.setResizable(true);
 
 			newFrame.setVisible(true);
 		}
