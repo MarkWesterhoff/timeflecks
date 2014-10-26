@@ -1,5 +1,6 @@
 package user_interface;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
@@ -26,8 +27,12 @@ public class MainWindow extends JFrame
 				setTitle("Timeflecks");
 
 				addComponents();
+				logger.logp(Level.INFO, "MainWindow", "MainWindow",
+						"Added components");
 
 				displayFrame();
+				logger.logp(Level.INFO, "MainWindow", "MainWindow",
+						"Displaying frame");
 			}
 		});
 
@@ -35,13 +40,28 @@ public class MainWindow extends JFrame
 
 	public void addComponents()
 	{
-
+		// Add the menu bar
+		MenuBar menu = new MenuBar();
+		setJMenuBar(menu);
+		
+		
 	}
 
 	public void displayFrame()
 	{
+		// TODO: Remove this
+		setSize(400, 400);
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setVisible(true);
+	//	setVisible(true);
 	}
+
+	public static void main(String[] args)
+	{
+		MainWindow window = new MainWindow();
+		
+		window.setVisible(true);
+	}
+	
 
 }

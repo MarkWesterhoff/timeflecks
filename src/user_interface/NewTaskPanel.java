@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import logging.GlobalLogger;
@@ -19,11 +18,22 @@ import com.toedter.calendar.JDateChooser;
 import core.Task;
 import core.TaskList;
 
-public class NewTaskPanel extends JPanel
+public class NewTaskPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 
 	private Logger logger;
+
+	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
+			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
+			taskDescriptionLabel;
+	private JTextField taskNameField;
+	private JDateChooser startDateChooser, dueDateChooser;
+	private SpinnerModel hourModel, minuteModel, secondModel;
+	private JComboBox<String> taskPriorityComboBox;
+	private JTextArea taskDescriptionArea;
+
+	private JButton saveButton, cancelButton;
 
 	public NewTaskPanel()
 	{
@@ -39,7 +49,7 @@ public class NewTaskPanel extends JPanel
 
 		// Title Label
 
-		JLabel titleLabel = new JLabel("New Task");
+		titleLabel = new JLabel("New Task");
 		titleLabel.setHorizontalAlignment(JLabel.CENTER);
 		titleLabel.setBorder(new EmptyBorder(10, 4, 4, 4));
 
@@ -64,7 +74,7 @@ public class NewTaskPanel extends JPanel
 
 		// TODO Put ++ instead of manual stuff
 
-		JLabel taskNameLabel = new JLabel("Name");
+		taskNameLabel = new JLabel("Name");
 		taskNameLabel.setHorizontalAlignment(JLabel.LEFT);
 
 		gc.gridx = 0;
@@ -77,7 +87,7 @@ public class NewTaskPanel extends JPanel
 		gc.ipadx = 0;
 		gc.ipady = 0;
 
-		final JTextField taskNameField = new JTextField(30);
+		taskNameField = new JTextField(30);
 		taskNameLabel.setLabelFor(taskNameField); // Accessibility
 
 		gc.gridy++;
@@ -94,15 +104,14 @@ public class NewTaskPanel extends JPanel
 		//
 		// This is our open source library
 
-		JLabel taskStartDateLabel = new JLabel("Start Date");
+		taskStartDateLabel = new JLabel("Start Date");
 
 		gc.gridy++;
 		gc.insets = labelInsets;
 
 		centerPanel.add(taskStartDateLabel, gc);
 
-		final JDateChooser startDateChooser = new JDateChooser(null,
-				"MM/dd/yyyy hh:mm:ss a");
+		startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
 
 		startDateChooser.setMinimumSize(new Dimension(175, startDateChooser
 				.getMinimumSize().height));
@@ -117,15 +126,14 @@ public class NewTaskPanel extends JPanel
 		centerPanel.add(startDateChooser, gc);
 
 		// Due Date Support
-		JLabel taskDueDateLabel = new JLabel("Due Date");
+		taskDueDateLabel = new JLabel("Due Date");
 
 		gc.gridy++;
 		gc.insets = labelInsets;
 
 		centerPanel.add(taskDueDateLabel, gc);
 
-		final JDateChooser dueDateChooser = new JDateChooser(null,
-				"MM/dd/yyyy hh:mm:ss a");
+		dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
 
 		dueDateChooser.setMinimumSize(new Dimension(175, dueDateChooser
 				.getMinimumSize().height));
@@ -142,7 +150,9 @@ public class NewTaskPanel extends JPanel
 		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added date choosers");
 
-		JLabel taskDurationLabel = new JLabel("Duration");
+		// Duration support
+
+		taskDurationLabel = new JLabel("Duration");
 
 		gc.gridy++;
 		gc.insets = labelInsets;
@@ -155,12 +165,9 @@ public class NewTaskPanel extends JPanel
 		JLabel minutes = new JLabel(" mins  ");
 		JLabel seconds = new JLabel(" secs");
 
-		final SpinnerModel hourModel = new SpinnerNumberModel(0, 0,
-				Integer.MAX_VALUE, 1);
-		final SpinnerModel minuteModel = new SpinnerNumberModel(0, 0,
-				Integer.MAX_VALUE, 1);
-		final SpinnerModel secondModel = new SpinnerNumberModel(0, 0,
-				Integer.MAX_VALUE, 1);
+		hourModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+		minuteModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+		secondModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
 
 		JSpinner hourSpinner = new JSpinner(hourModel);
 		JSpinner minuteSpinner = new JSpinner(minuteModel);
@@ -206,14 +213,14 @@ public class NewTaskPanel extends JPanel
 
 		// Priority Support
 
-		JLabel taskPriorityLabel = new JLabel("Priority");
+		taskPriorityLabel = new JLabel("Priority");
 
 		gc.gridy++;
 		gc.insets = labelInsets;
 
 		centerPanel.add(taskPriorityLabel, gc);
 
-		final JComboBox<String> taskPriorityComboBox = new JComboBox<String>();
+		taskPriorityComboBox = new JComboBox<String>();
 		taskPriorityComboBox.addItem("Not Set");
 		taskPriorityComboBox.addItem("High");
 		taskPriorityComboBox.addItem("Medium");
@@ -230,14 +237,14 @@ public class NewTaskPanel extends JPanel
 				"Added priority drop down");
 
 		// Description
-		JLabel taskDescriptionLabel = new JLabel("Description");
+		taskDescriptionLabel = new JLabel("Description");
 
 		gc.gridy++;
 		gc.insets = labelInsets;
 
 		centerPanel.add(taskDescriptionLabel, gc);
 
-		final JTextArea taskDescriptionArea = new JTextArea(4, 30);
+		taskDescriptionArea = new JTextArea(4, 30);
 		taskDescriptionArea.setLineWrap(true);
 		taskDescriptionArea.setEditable(true);
 
@@ -261,122 +268,15 @@ public class NewTaskPanel extends JPanel
 
 		// Save and cancel button
 
-		JButton saveButton = new JButton("Save");
-		JButton cancelButton = new JButton("Cancel");
+		saveButton = new JButton("Save");
+		cancelButton = new JButton("Cancel");
+		
+		saveButton.setActionCommand("Save");
+		cancelButton.setActionCommand("Cancel");
 
-		saveButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (taskNameField.getText().length() == 0)
-				{
-					logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-							"Save button pressed. Missing required name.");
+		saveButton.addActionListener(this);
 
-					JOptionPane.showMessageDialog(centerPanel,
-							"You must specify a name for this task.",
-							"Name Required", JOptionPane.WARNING_MESSAGE);
-				}
-				else
-				{
-					logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-							"Save button pressed. Saving task.");
-
-					Task task = new Task(taskNameField.getText());
-
-					if (startDateChooser.getDate() != null)
-					{
-						task.setStartTime(startDateChooser.getDate());
-					}
-
-					if (dueDateChooser.getDate() != null)
-					{
-						task.setDueDate(dueDateChooser.getDate());
-					}
-
-					long duration = 0;
-					duration += (Integer) secondModel.getValue() * 1000;
-					duration += (Integer) minuteModel.getValue() * 60 * 1000;
-					duration += (Integer) hourModel.getValue() * 60 * 60 * 1000;
-
-					// long seconds = timeInMilliSeconds / 1000;
-					// long minutes = seconds / 60;
-					// long hours = minutes / 60;
-					// long days = hours / 24;
-					// String time = days + ":" + hours % 24 + ":" + minutes %
-					// 60 + ":" + seconds % 60;
-
-					if (duration != 0)
-					{
-						task.setDuration(duration);
-					}
-
-					if (taskPriorityComboBox.getSelectedIndex() != 0)
-					{
-						if (taskPriorityComboBox.getSelectedIndex() == 1)
-						{
-							task.setPriority(Task.HIGH_PRIORITY);
-						}
-						else if (taskPriorityComboBox.getSelectedIndex() == 2)
-						{
-							task.setPriority(Task.MEDIUM_PRIORITY);
-						}
-						else if (taskPriorityComboBox.getSelectedIndex() == 3)
-						{
-							task.setPriority(Task.LOW_PRIORITY);
-						}
-					}
-
-					if (taskDescriptionArea.getText().length() != 0)
-					{
-						task.setDescription(taskDescriptionArea.getText());
-					}
-
-					TaskList instance = TaskList.getInstance();
-
-					instance.addTask(task);
-					logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-							"Added task to TaskList.");
-
-					try
-					{
-						task.saveToDatabase();
-						logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-								"Saved task to database.");
-					}
-					catch (SQLException e1)
-					{
-						logger.logp(Level.WARNING, "NewTaskPanel",
-								"NewTaskPanel",
-								"SQLException caught when saving task to database.\nSQL State:\n"
-										+ e1.getSQLState() + "\nMessage:\n"
-										+ e1.getMessage());
-						// e1.printStackTrace();
-					}
-					catch (IOException e1)
-					{
-						logger.logp(Level.WARNING, "NewTaskPanel",
-								"NewTaskPanel",
-								"IOException caught when saving task to database.\nMessage:\n"
-										+ e1.getLocalizedMessage());
-						// e1.printStackTrace();
-					}
-
-					dismissPane();
-				}
-			}
-		});
-
-		cancelButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-						"Cancel button pressed. Dismissing Panel.");
-
-				dismissPane();
-			}
-		});
+		cancelButton.addActionListener(this);
 
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new BorderLayout());
@@ -387,6 +287,213 @@ public class NewTaskPanel extends JPanel
 
 		this.add(subpanel, BorderLayout.SOUTH);
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getActionCommand().equals("Save"))
+		{
+			if (taskNameField.getText().length() == 0)
+			{
+				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+						"Save button pressed. Missing required name.");
+
+				JOptionPane.showMessageDialog(this,
+						"You must specify a name for this task.",
+						"Name Required", JOptionPane.WARNING_MESSAGE);
+			}
+			else
+			{
+				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+						"Save button pressed. Saving task.");
+
+				Task task = new Task(taskNameField.getText());
+
+				if (startDateChooser.getDate() != null)
+				{
+					task.setStartTime(startDateChooser.getDate());
+				}
+
+				if (dueDateChooser.getDate() != null)
+				{
+					task.setDueDate(dueDateChooser.getDate());
+				}
+
+				long duration = 0;
+				duration += (Integer) secondModel.getValue() * 1000;
+				duration += (Integer) minuteModel.getValue() * 60 * 1000;
+				duration += (Integer) hourModel.getValue() * 60 * 60 * 1000;
+
+				// long seconds = timeInMilliSeconds / 1000;
+				// long minutes = seconds / 60;
+				// long hours = minutes / 60;
+				// long days = hours / 24;
+				// String time = days + ":" + hours % 24 + ":" + minutes %
+				// 60 + ":" + seconds % 60;
+
+				if (duration != 0)
+				{
+					task.setDuration(duration);
+				}
+
+				if (taskPriorityComboBox.getSelectedIndex() != 0)
+				{
+					if (taskPriorityComboBox.getSelectedIndex() == 1)
+					{
+						task.setPriority(Task.HIGH_PRIORITY);
+					}
+					else if (taskPriorityComboBox.getSelectedIndex() == 2)
+					{
+						task.setPriority(Task.MEDIUM_PRIORITY);
+					}
+					else if (taskPriorityComboBox.getSelectedIndex() == 3)
+					{
+						task.setPriority(Task.LOW_PRIORITY);
+					}
+				}
+
+				if (taskDescriptionArea.getText().length() != 0)
+				{
+					task.setDescription(taskDescriptionArea.getText());
+				}
+
+				// Actually create the task and add it to the list
+				TaskList instance = TaskList.getInstance();
+
+				instance.addTask(task);
+				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+						"Added task to TaskList.\n" + task);
+
+				try
+				{
+					task.saveToDatabase();
+					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+							"Saved task to database.");
+				}
+				catch (SQLException a)
+				{
+					logger.logp(
+							Level.WARNING,
+							"NewTaskPanel",
+							"actionPerformed",
+							"SQLException caught when saving task to database.\nSQL State:\n"
+									+ a.getSQLState() + "\nMessage:\n"
+									+ a.getMessage());
+
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Database Error. (1302)\nYour task was not saved. Please try again, or check your databse file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+
+					// TODO Auto-generated catch block
+					a.printStackTrace();
+				}
+				catch (IOException a)
+				{
+					logger.logp(Level.WARNING, "NewTaskPanel",
+							"actionPerformed",
+							"IOException caught when saving task to database.\nMessage:\n"
+									+ a.getLocalizedMessage());
+
+					// Trouble serializing objects
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Object Serialization Error. (1303)\nYour task was not saved. Please try again, or check your databse file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+
+				dismissPane();
+			}
+		}
+		else if (e.getActionCommand().equals("Cancel"))
+		{
+			logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+					"Cancel button pressed. Dismissing Panel.");
+
+			if (hasEnteredText())
+			{
+				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+						"Task modified. Prompting user.");
+
+				Object[] options = { "Discard Task", "Cancel" };
+				int reply = JOptionPane
+						.showOptionDialog(
+								this,
+								"You have edited this task. Do you want to save your changes?",
+								"Task Changed", JOptionPane.DEFAULT_OPTION,
+								JOptionPane.WARNING_MESSAGE, null, options,
+								options[1]);
+
+				if (reply == JOptionPane.YES_OPTION)
+				{
+					// The user selected to discard the task
+					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+							"User elected to discard the task. Dismissing Panel.");
+					
+					dismissPane();
+				}
+				else
+				{
+					// We simply return the user to editing
+					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+							"User selected to continue editing the task.");
+				}
+			}
+			else
+			{
+				dismissPane();
+			}
+		}
+		else
+		{
+			
+		}
+	}
+
+	public boolean hasEnteredText()
+	{
+		boolean returnBool = false;
+		if (taskNameField.getText() != null
+				&& taskNameField.getText().length() > 0)
+		{
+			returnBool = true;
+		}
+
+		if (startDateChooser.getDate() != null)
+		{
+			returnBool = true;
+			;
+		}
+
+		if (dueDateChooser.getDate() != null)
+		{
+			returnBool = true;
+		}
+
+		long duration = 0;
+		duration += (Integer) secondModel.getValue() * 1000;
+		duration += (Integer) minuteModel.getValue() * 60 * 1000;
+		duration += (Integer) hourModel.getValue() * 60 * 60 * 1000;
+
+		if (duration != 0)
+		{
+			returnBool = true;
+		}
+
+		if (taskPriorityComboBox.getSelectedIndex() != 0)
+		{
+			returnBool = true;
+		}
+
+		if (taskDescriptionArea.getText().length() != 0)
+		{
+			returnBool = true;
+		}
+
+		return returnBool;
 	}
 
 	public void dismissPane()
@@ -463,4 +570,5 @@ public class NewTaskPanel extends JPanel
 			}
 		});
 	}
+
 }
