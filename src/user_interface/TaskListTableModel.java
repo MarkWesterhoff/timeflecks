@@ -1,7 +1,6 @@
 package user_interface;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -13,8 +12,6 @@ public class TaskListTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private transient Logger logger;
-	
 	private TaskList taskList;
 	
 	/**
@@ -23,8 +20,7 @@ public class TaskListTableModel extends AbstractTableModel {
 	 * @param taskList The TaskList holding the Tasks for the table model
 	 */
 	public TaskListTableModel(TaskList taskList) {
-		logger = GlobalLogger.getLogger();
-		logger.logp(Level.INFO, "TaskListTableModel", "TaskListTableModel", "Constructing TaskListTableModel.");
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel", "TaskListTableModel", "Constructing TaskListTableModel.");
 		this.taskList = taskList;
 	}
 	
@@ -89,7 +85,7 @@ public class TaskListTableModel extends AbstractTableModel {
 	 * @param col the column index of the cell
 	 */
 	public void setValueAt(Object value, int row, int col) {
-        logger.logp(Level.INFO, "TaskListTableView", "setValueAt", 
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableView", "setValueAt", 
         		String.format("Setting value at (%d, %d) to %s", row, col, value)); 
 		Task task = (Task)taskList.getTasks().get(row);
         switch (col) {
