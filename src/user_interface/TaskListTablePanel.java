@@ -126,7 +126,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 				downButton.setEnabled(false);
 			}
 			
-		} else if(e.getActionCommand() == "bump up") {
+		} else if(e.getActionCommand() == "Move Up") {
 			
 			int row = table.getSelectedRow();
 			if(row > 0) {
@@ -138,7 +138,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 						"Task in row " + row + " bumped up.");
 			}
 			
-		} else if(e.getActionCommand() == "bump down") {
+		} else if(e.getActionCommand() == "Move Down") {
 			
 			int row = table.getSelectedRow();
 			if(row > -1 && row < table.getRowCount() - 1) {
@@ -153,7 +153,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 			logger.logp(Level.WARNING, "TaskListTablePanel", 
 						"actionPerformed()",
 						"Action command " + e.getActionCommand() + 
-						"not found");
+						" not found");
 		}
 	}
 	
