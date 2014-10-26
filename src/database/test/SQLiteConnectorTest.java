@@ -1,11 +1,16 @@
 package database.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,11 +26,71 @@ public class SQLiteConnectorTest {
 	 * Tests the constructor of the SQLiteConnector.
 	 * 
 	 * @throws SQLException
+	 * @throws IOException 
 	 */
 	@Test
-	public void testConstructor() throws SQLException {
+	public void testConstructor() throws SQLException, IOException {
 		// Positive tests
 		SQLiteConnector.getInstance();
+	}
+	
+	/**
+	 * Tests switchDatabase functionality to set up a new DB.
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ClassNotFoundException 
+	 */
+	@Test
+	public void testSwitchDatabase() throws SQLException, IOException, ClassNotFoundException {
+		ArrayList<File> files = new ArrayList<File>();
+		files.add(new File("testSwitchDatabase1.db"));
+		files.add(new File("testSwitchDatabase2.db"));
+		files.add(new File("testSwitchDatabase3.db"));
+		
+		// Positive tests
+		SQLiteConnector.switchDatabase(files.get(0));
+		SQLiteConnector.getInstance().serializeAndSave(new Task("task1"));
+		SQLiteConnector.switchDatabase(files.get(1));
+		SQLiteConnector.getInstance().serializeAndSave(new Task("task2"));
+		SQLiteConnector.switchDatabase(files.get(2));
+		Task task = new Task("task3");
+		SQLiteConnector.getInstance().serializeAndSave(task);
+		
+		Task returnTask = SQLiteConnector.getInstance().getSerializedTask(task.getId());
+		assertEquals("Names should match", task.getName(), returnTask.getName());
+		
+		
+		// Negative tests
+		try {
+			SQLiteConnector.switchDatabase(new File("test1.notdb"));
+			fail("Expected IllegalArgumentException because "
+					+ "of wrong extension");
+		}
+		catch (IllegalArgumentException i){
+			// expected
+		}
+		
+		try {
+			SQLiteConnector.switchDatabase(new File(""));
+			fail("Expected IllegalArgumentException because "
+					+ "of no extension");
+		}
+		catch (IllegalArgumentException i){
+			// expected
+		}
+		
+		try {
+			SQLiteConnector.switchDatabase(new File("asdf"));
+			fail("Expected IllegalArgumentException because "
+					+ "of wrong extension");
+		}
+		catch (IllegalArgumentException i){
+			// expected
+		}
+		
+		for (File f : files) {
+			Files.delete(f.toPath());
+		}
 	}
 	
 	/**
@@ -39,6 +104,7 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testSaveAndLoad() throws SQLException, IOException, ClassNotFoundException {
+		SQLiteConnector.switchDatabase(new File("testSaveAndLoad.db"));
 		SQLiteConnector conn = SQLiteConnector.getInstance();
 		
 		Task task = new Task("task1");
@@ -82,6 +148,37 @@ public class SQLiteConnectorTest {
 		
 		// Negative tests
 		
+	}
+	
+	/**
+	 * Tests functionality of the SQLiteConnector.delete method.
+	 * 
+	 * @throws SQLException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@Test
+	public void testDelete() throws SQLException, IOException, ClassNotFoundException {
+		SQLiteConnector.switchDatabase(new File("testDelete.db"));
+		
+		Task task = new Task("task1");
+		Task task2 = new Task("task2");
+		SQLiteConnector.getInstance().serializeAndSave(task);
+		SQLiteConnector.getInstance().serializeAndSave(task2);
+		
+		// Attempt to delete
+		SQLiteConnector.getInstance().delete(task.getId());
+		
+		// Try to get still existing task back
+		SQLiteConnector.getInstance().getSerializedTask(task2.getId());
+		
+		try {
+			SQLiteConnector.getInstance().getSerializedTask(task.getId());
+			fail("Getting a deleted task should not succeed");
+		}
+		catch (SQLException s) {
+			// expected
+		}
 	}
 	
 	/**

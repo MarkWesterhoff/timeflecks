@@ -1,6 +1,7 @@
 package database;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Connection;
@@ -16,6 +17,7 @@ import core.Task;
 import core.Event;
 import logging.GlobalLogger;
 import utility.ByteUtility;
+import utility.FileUtility;
 
 /**
  * Represents the types of objects that can be saved to this database.
@@ -63,6 +65,13 @@ public final class SQLiteConnector {
 			+ "AND type = ? "
 			+ "LIMIT 1";
 
+	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = 
+			"DELETE FROM serialized_time_objects "
+			+ "WHERE id = ?";
+	
+	private static final String defaultDatabasePath = "calendar1.db";
+	private static String databasePath = defaultDatabasePath;
+	
 	/* SQLiteConnector is a singleton */
 	private static SQLiteConnector instance;
 	
@@ -71,6 +80,27 @@ public final class SQLiteConnector {
 			instance = new SQLiteConnector();
 		}
 		return instance;
+	}
+	
+	/**
+	 * Sets the path for the database being connected to.
+	 * @param newDatabasePath
+	 * @throws SQLException 
+	 * @throws IOException 
+	 */
+	public static void switchDatabase(File newDatabaseFile) throws SQLException, IOException {
+		// Check to make sure it's a .db file
+		if (newDatabaseFile == null 
+				|| !FileUtility.getFileExtension(newDatabaseFile).equals(".db")) {
+			throw new IllegalArgumentException("newDatabasePath");
+		}
+		
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"switchDatabase(File)", "Switching database to file " 
+				+ newDatabaseFile.getCanonicalPath());
+		
+		databasePath = newDatabaseFile.getCanonicalPath();
+		instance = new SQLiteConnector();
 	}
 	
 	private transient Logger logger;
@@ -86,6 +116,8 @@ public final class SQLiteConnector {
 		
 		logger.logp(Level.INFO, "SQLiteConnector", "SQLiteConnector", 
 				"Constructing SQLiteConnector");
+
+		// Initialize database
 		Connection c = this.getConnection();
 		try {
 			Statement stmt = c.createStatement();
@@ -106,8 +138,8 @@ public final class SQLiteConnector {
 	 */
 	private Connection getConnection() throws SQLException {
 		logger.logp(Level.INFO, "SQLiteConnector", "getConnection", 
-				"Establishing conenction with database test.db");
-		String connectionString = "jdbc:sqlite:test.db";
+				"Establishing conenction with database " + databasePath);
+		String connectionString = "jdbc:sqlite:" + databasePath;
 		return DriverManager.getConnection(connectionString);
 	}
 	
@@ -256,6 +288,28 @@ public final class SQLiteConnector {
 			stmt.close();
 			
 			return (Event)deserializedObject; 
+		}
+		finally {
+			c.close();
+		}
+	}
+	
+	/**
+	 * Deletes the entry for the specified id from the database.
+	 * 
+	 * @param id the id of the serialized object from the database
+	 * @throws SQLException when there is a problem deleting
+	 */
+	public void delete(long id) throws SQLException {
+		logger.logp(Level.INFO, "SQLiteConnector", "delete", 
+				"Deleting Task/Event with id " + Long.toString(id));
+		
+		Connection c = this.getConnection();
+		try {
+			PreparedStatement stmt = c.prepareStatement(SQL_DELETE_SERIALIZED_TIMEOBJECT);
+			stmt.setLong(1, id);
+			stmt.executeUpdate();
+			stmt.close();
 		}
 		finally {
 			c.close();
