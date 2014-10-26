@@ -1,13 +1,15 @@
 package core;
 
+import java.io.File;
+
 import database.*;
 
 public class Timeflecks
 {
 	// Singleton behavior
-	
+
 	static Timeflecks instance;
-		
+
 	public static Timeflecks getSharedApplication()
 	{
 		if (instance == null)
@@ -16,19 +18,24 @@ public class Timeflecks
 		}
 		return instance;
 	}
-	
+
 	// Instance
 	private TaskList taskList;
 	private SQLiteConnector dbConnector;
 	private IDGenerator idGenerator;
-	
+	private File currentFile;
+
 	public Timeflecks()
 	{
 		taskList = new TaskList();
 		dbConnector = new SQLiteConnector();
 		IDGenerator = new IDGenerator();
+		setCurrentFile(new File("calendar1.db"));
+		
+		// TODO Be able to seed ID generator with an ID
+		// TODO be able to get max ID in database from sqliteconnector
+		// TODO
 	}
-	
 
 	public TaskList getTaskList()
 	{
@@ -59,16 +66,20 @@ public class Timeflecks
 	{
 		this.idGenerator = idGenerator;
 	}
-	
-	
-	
-	
-	
-	
+
 	public static void main(String[] args)
 	{
-		
 
+	}
+
+	public File getCurrentFile()
+	{
+		return currentFile;
+	}
+
+	public void setCurrentFile(File currentFile)
+	{
+		this.currentFile = currentFile;
 	}
 
 }
