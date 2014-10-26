@@ -36,7 +36,7 @@ public class MenuBar extends JMenuBar implements ActionListener
 		createAndAddFileMenu();
 
 		// TODO Add back in the edit menu if we want one
-		// createAndAddEditMenu();
+		 createAndAddEditMenu();
 
 		createAndAddHelpMenu();
 
@@ -246,7 +246,10 @@ public class MenuBar extends JMenuBar implements ActionListener
 			{
 				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
 						"Open command generated SQLException. Showing dialog.");
+				
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand", "Stack Trace:\n" + e.getStackTrace());
 
+				
 				JOptionPane
 						.showMessageDialog(
 								this,
