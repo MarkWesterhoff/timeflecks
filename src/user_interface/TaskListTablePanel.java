@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -25,14 +24,10 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
 	private JButton upButton;
 	private JButton downButton;
-
-	private transient Logger logger;
-
+	
 	public TaskListTablePanel(TableModel tableModel)
 	{
 		super();
-
-		logger = GlobalLogger.getLogger();
 
 		setLayout(new BorderLayout());
 
@@ -94,14 +89,14 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		if (buttonIcon.getImageLoadStatus() == java.awt.MediaTracker.COMPLETE)
 		{
 			button = new JButton(buttonIcon);
-			logger.logp(Level.INFO, "TaskListTabelPanel",
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTabelPanel",
 					"createIconedButton()", buttonName
 							+ " icon successfully loaded");
 		}
 		else
 		{
 			button = new JButton(buttonName);
-			logger.logp(Level.WARNING, "TaskListTabelPanel",
+			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTabelPanel",
 					"TaskListTablePanel()", buttonName
 							+ " icon could not be loaded");
 		}
@@ -152,7 +147,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row - 1).setOrdering(row);
 				refresh();
-				logger.logp(Level.INFO, "TaskListTablePanel",
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()", "Task in row " + row
 								+ " bumped up.");
 			}
@@ -169,14 +164,14 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row + 1).setOrdering(row);
 				refresh();
-				logger.logp(Level.INFO, "TaskListTablePanel",
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()", "Task in row " + row
 								+ " bumped down.");
 			}
 		}
 		else
 		{
-			logger.logp(Level.WARNING, "TaskListTablePanel",
+			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
 					"actionPerformed()",
 					"Action command " + e.getActionCommand() + " not found");
 		}

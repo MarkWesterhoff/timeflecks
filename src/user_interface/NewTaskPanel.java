@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,8 +23,6 @@ public class NewTaskPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger;
-
 	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
 			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
 			taskDescriptionLabel;
@@ -40,13 +37,10 @@ public class NewTaskPanel extends JPanel implements ActionListener
 	public NewTaskPanel()
 	{
 		super();
-
-		logger = GlobalLogger.getLogger();
-
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(350, 395));
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Beginning interface setup");
 
 		// Title Label
@@ -97,7 +91,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(taskNameField, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added name field");
 
 		// Using JCalendar from here:
@@ -149,7 +143,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(dueDateChooser, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added date choosers");
 
 		// Duration support
@@ -210,7 +204,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(durationPanel, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added duration pickers");
 
 		// Priority Support
@@ -235,7 +229,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(taskPriorityComboBox, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added priority drop down");
 
 		// Description
@@ -261,7 +255,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(scrollPane, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
 				"Added text area for description");
 
 		// Tags support goes here
@@ -297,7 +291,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		{
 			if (taskNameField.getText().length() == 0)
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 						"Save button pressed. Missing required name.");
 
 				JOptionPane.showMessageDialog(this,
@@ -306,7 +300,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 			}
 			else
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 						"Save button pressed. Saving task.");
 
 				Task task = new Task(taskNameField.getText());
@@ -364,18 +358,18 @@ public class NewTaskPanel extends JPanel implements ActionListener
 						.getTaskList();
 
 				instance.addTask(task);
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 						"Added task to TaskList.\n" + task);
 
 				try
 				{
 					task.saveToDatabase();
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 							"Saved task to database.");
 				}
 				catch (SQLException a)
 				{
-					logger.logp(
+					GlobalLogger.getLogger().logp(
 							Level.WARNING,
 							"NewTaskPanel",
 							"actionPerformed",
@@ -394,7 +388,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				}
 				catch (IOException a)
 				{
-					logger.logp(Level.WARNING, "NewTaskPanel",
+					GlobalLogger.getLogger().logp(Level.WARNING, "NewTaskPanel",
 							"actionPerformed",
 							"IOException caught when saving task to database.\nMessage:\n"
 									+ a.getLocalizedMessage());
@@ -412,12 +406,12 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		}
 		else if (e.getActionCommand().equals("Cancel"))
 		{
-			logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 					"Cancel button pressed. Dismissing Panel.");
 
 			if (hasEnteredText())
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 						"Task modified. Prompting user.");
 
 				Object[] options = { "Discard Task", "Cancel" };
@@ -432,7 +426,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				if (reply == JOptionPane.YES_OPTION)
 				{
 					// The user selected to discard the task
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 							"User elected to discard the task. Dismissing Panel.");
 
 					dismissPane();
@@ -440,7 +434,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				else
 				{
 					// We simply return the user to editing
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 							"User selected to continue editing the task.");
 				}
 			}
