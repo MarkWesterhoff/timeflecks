@@ -25,6 +25,11 @@ public class TaskList
 		tasks = new ArrayList<Task>();
 		events = new ArrayList<Event>();
 	}
+	
+	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
+		this.tasks = tasks;
+		this.events = events;
+	}
 
 	public ArrayList<Task> getTasks()
 	{
