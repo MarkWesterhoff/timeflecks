@@ -3,23 +3,15 @@ package user_interface;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import logging.GlobalLogger;
-
 import core.Task;
 import core.TaskList;
 
@@ -33,35 +25,62 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 	private JButton downButton;
 	
 	private transient Logger logger;
-	
-	
+
 	public TaskListTablePanel(TableModel tableModel) {
 		super();
 		
 		logger = GlobalLogger.getLogger();
-
-		upButton = createIconedButton("resources/up.png","bump up");
-		downButton = createIconedButton("resources/down.png","bump down");
-
 		
+		setLayout(new BorderLayout());
+		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		
+		// Combobox for Sorting
 		// construct the JComboBox
 		comboMap = new HashMap<String, Comparator<Task>>();
 		comboMap.put("Name", Task.nameComparator);
-		comboMap.put("Due date", Task.dueDateComparator);
 		comboMap.put("Manual", Task.manualComparator);
+		comboMap.put("Due Date", Task.dueDateComparator);
 		comboMap.put("Priority", Task.priorityComparator);
 		JComboBox<String> sortList = new JComboBox<String>(comboMap.keySet().toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
-		sortList.addActionListener(this);
-		add(sortList);
+		sortList.addActionListener(this);;
 		
+		JLabel sortLabel = new JLabel("Sort By: ");
+		
+		JPanel sortSet = new JPanel();
+		sortSet.setLayout(new BorderLayout()); // Could just as easily be FlowLayout, same below
+		
+		sortSet.add(sortLabel, BorderLayout.WEST);
+		sortSet.add(sortList, BorderLayout.EAST);
+		
+		topPanel.add(sortSet, BorderLayout.WEST);
+		
+		// Up and down bump buttons
+		upButton = createIconedButton("resources/up.png","Move Up");
+		downButton = createIconedButton("resources/down.png","Move Down");
+		
+		JPanel buttonSet = new JPanel();
+		buttonSet.setLayout(new BorderLayout()); 
+		
+		// Goes with buttons
+		buttonSet.add(upButton, BorderLayout.WEST);
+		buttonSet.add(downButton, BorderLayout.EAST);
+		
+		topPanel.add(buttonSet, BorderLayout.EAST);
+		
+		add(topPanel, BorderLayout.NORTH);
+		
+		// Actual table
 		table = new JTable(tableModel);
 		JScrollPane scroll = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(true);
-		add(scroll);
-		add(upButton);
-		add(downButton);
+		add(scroll, BorderLayout.CENTER);
+		
+		
+		
 	}
 	
 	private JButton createIconedButton(String iconPath, String buttonName) {
