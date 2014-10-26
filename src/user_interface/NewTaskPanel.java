@@ -382,9 +382,6 @@ public class NewTaskPanel extends JPanel implements ActionListener
 									this,
 									"Database Error. (1302)\nYour task was not saved. Please try again, or check your database file.",
 									"Database Error", JOptionPane.ERROR_MESSAGE);
-
-					// TODO Auto-generated catch block
-					a.printStackTrace();
 				}
 				catch (IOException a)
 				{
