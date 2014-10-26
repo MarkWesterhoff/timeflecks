@@ -16,6 +16,8 @@ public class MainWindow extends JFrame
 
 	public MainWindow()
 	{
+		
+		
 		super();
 
 		SwingUtilities.invokeLater(new Runnable()
