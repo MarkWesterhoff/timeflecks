@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -68,6 +69,15 @@ public final class SQLiteConnector {
 	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = 
 			"DELETE FROM serialized_time_objects "
 			+ "WHERE id = ?";
+	
+	private static final String SQL_GET_ALL_OBJECTS = 
+			"SELECT serialized_time_object "
+			+ "FROM 'serialized_time_objects'"
+			+ "WHERE type = ?";
+	
+	private static final String SQL_GET_HIGHEST_ID =
+			"SELECT MAX(id) "
+			+ "FROM 'serialized_time_objects' ";
 	
 	private static final String defaultDatabasePath = "calendar1.db";
 	private static String databasePath = defaultDatabasePath;
@@ -305,4 +315,103 @@ public final class SQLiteConnector {
 			c.close();
 		}
 	}
+	
+	/**
+	 * Gets all serialized tasks from the database, deserializes them, and
+	 * returns them.
+	 * 
+	 * @return an ArrayList of all tasks in the database
+	 * @throws SQLException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public ArrayList<Task> getAllTasks() throws SQLException, ClassNotFoundException, IOException {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		
+		// Get all Tasks from the database
+		Connection c = this.getConnection();
+		ResultSet rs = null;
+		try {
+			PreparedStatement stmt = c.prepareStatement(SQL_GET_ALL_OBJECTS);
+			stmt.setString(1, Character.toString(SerializableTypes.TASK.getValue()));
+			rs = stmt.executeQuery();
+			stmt.close();
+		}
+		finally {
+			c.close();
+		}
+		
+		// Deserialize the objects and add to list of Tasks
+		while(rs.next()) {
+			byte[] buf = rs.getBytes(1);
+			Object deserializedObject = ByteUtility.getObject(buf);
+			tasks.add((Task)deserializedObject);
+		}
+		rs.close();
+		
+		return tasks;
+	}
+	
+	/**
+	 * Gets all serialized events from the database, deserializes them, and
+	 * returns them.
+	 * 
+	 * @return an ArrayList of all events in the database
+	 * @throws SQLException 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public ArrayList<Event> getAllEvents() throws SQLException, ClassNotFoundException, IOException {
+		ArrayList<Event> events = new ArrayList<Event>();
+		
+		// Get all Events from the database
+		Connection c = this.getConnection();
+		ResultSet rs = null;
+		try {
+			PreparedStatement stmt = c.prepareStatement(SQL_GET_ALL_OBJECTS);
+			stmt.setString(1, Character.toString(SerializableTypes.EVENT.getValue()));
+			rs = stmt.executeQuery();
+			stmt.close();
+		}
+		finally {
+			c.close();
+		}
+		
+		// Deserialize the objects and add to list of Events
+		while(rs.next()) {
+			byte[] buf = rs.getBytes(1);
+			Object deserializedObject = ByteUtility.getObject(buf);
+			events.add((Event)deserializedObject);
+		}
+		rs.close();
+		
+		return events;
+	}
+	
+	/**
+	 * Gets the highest ID used in the database and returns it.
+	 * 
+	 * @return the highest id
+	 * @throws SQLException 
+	 */
+	public long getHighestID() throws SQLException {
+		// Query database for maximum id
+		Connection c = this.getConnection();
+		ResultSet rs = null;
+		try {
+			PreparedStatement stmt = c.prepareStatement(SQL_GET_HIGHEST_ID);
+			rs = stmt.executeQuery();
+			stmt.close();
+		}
+		finally {
+			c.close();
+		}
+		rs.next();
+		
+		long highestId = rs.getLong(1);
+		
+		rs.close();
+		return highestId;
+	}
+	
 }
