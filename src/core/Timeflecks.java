@@ -1,8 +1,15 @@
 package core;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import logging.GlobalLogger;
 import database.*;
 
 public class Timeflecks
@@ -25,14 +32,45 @@ public class Timeflecks
 	private SQLiteConnector dbConnector;
 	private IDGenerator idGenerator;
 	private File currentFile;
+	private JFrame mainFrame;
 
 	public Timeflecks()
 	{
 		taskList = new TaskList();
-		dbConnector = new SQLiteConnector();
+		
+		try
+		{
+			dbConnector = new SQLiteConnector();
+		}
+		catch (SQLException e)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
+					"Timeflecks",
+					"Open command generated SQLException. Showing dialog.");
+
+			JOptionPane.showMessageDialog(getMainFrame(),
+					"Database Error. (1600)\nCould not create new database.",
+					"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+		catch (IOException e)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
+					"Timeflecks",
+					"Open command generated IOException. Showing dialog.");
+
+			// Trouble serializing objects
+			JOptionPane
+					.showMessageDialog(
+							getMainFrame(),
+							"Object Serialization Error. (1601)\nCould not save empty database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+		
 		idGenerator = new IDGenerator();
 		setCurrentFile(new File("calendar1.db"));
-		
+
+		setMainFrame(new JFrame("Timeflecks"));
+
 		// TODO Be able to seed ID generator with an ID
 		// TODO be able to get max ID in database from sqliteconnector
 		// TODO
@@ -77,34 +115,50 @@ public class Timeflecks
 	{
 		this.currentFile = currentFile;
 	}
-	
-	public void openDatabaseFile(File newFile)
+
+	public void openDatabaseFile(File newFile) throws SQLException, IOException
 	{
-		setDbConnector(new SQLiteConnector(newFile));
+		setDBConnector(new SQLiteConnector(newFile));
 		setCurrentFile(newFile);
 		setTaskList(new TaskList());
-		
+
 		long highestID = SQLiteConnector.getHighestID();
-		
+
 		IDGenerator newGenerator = new IDGenerator(highestID);
 		setIdGenerator(newGenerator);
-		
+
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
 	}
-	
+
 	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
 	{
 		ArrayList<Task> tasksFromFile = connector.getAllTasks();
 		ArrayList<Event> eventsFromFile = connector.getAllEvents();
-		
+
 		TaskList newList = new TaskList(tasksFromFile, eventsFromFile);
-		
+
 		return newList;
 	}
-	
-	
-	
-	
+
+	public void saveDatabaseFileAs(File newFile) throws SQLException,
+			IOException
+	{
+		setDBConnector(new SQLiteConnector(newFile));
+		setCurrentFile(newFile);
+
+		getTaskList().saveAllTasksAndEvents();
+	}
+
+	public JFrame getMainFrame()
+	{
+		return mainFrame;
+	}
+
+	public void setMainFrame(JFrame mainFrame)
+	{
+		this.mainFrame = mainFrame;
+	}
+
 	public static void main(String[] args)
 	{
 

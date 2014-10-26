@@ -180,54 +180,96 @@ public class MenuBar extends JMenuBar implements ActionListener
 		int returnVal = fileChooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			System.out.println("You chose to open this file: "
-					+ fileChooser.getSelectedFile().getName());
-		}
+			File selectedFile = fileChooser.getSelectedFile();
+			
+			try
+			{
+				Timeflecks.getSharedApplication().getTaskList()
+						.saveAllTasksAndEvents();
+			}
+			catch (SQLException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"Open command generated SQLException. Showing dialog.");
 
-		File selectedFile = fileChooser.getSelectedFile();
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
+								"Database Error", JOptionPane.ERROR_MESSAGE);
+			}
+			catch (IOException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"Open command generated IOException. Showing dialog.");
 
-		// Make sure it is a different .db file
-		// TODO make sure that this is not current File
-
-		// Save all tasks and events
-		// TODO Figure out whether or not this should be saving all anyways -
-		// see Asana for discussion
-		try
-		{
-			Timeflecks.getSharedApplication().getTaskList()
-					.saveAllTasksAndEvents();
-		}
-		catch (SQLException e)
-		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
-					"Open command generated SQLException. Showing dialog.");
-
-			JOptionPane
+				// Trouble serializing objects
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
+								"Database Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			// Make sure it is a different .db file
+			try
+			{
+				if (selectedFile.getCanonicalPath().equals(Timeflecks.getSharedApplication().getCurrentFile().getCanonicalPath()))
+				{
+					// If they are the same file
+					JOptionPane
 					.showMessageDialog(
 							this,
-							"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
-							"Database Error", JOptionPane.ERROR_MESSAGE);
+							"This is the currently open file.",
+							"Currently Open File", JOptionPane.WARNING_MESSAGE);
+					
+					return; // Do nothing for this part
+				}
+			}
+			catch (IOException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"File system error. Cannot compare new file to current file.");
+
+				// Trouble serializing objects
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"File System Error. (1500)\nUnable to compare the new file to the current file. Please select a different file and try again.",
+								"File System Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+			try
+			{
+				Timeflecks.getSharedApplication().openDatabaseFile(selectedFile);
+			}
+			catch (SQLException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"Open command generated SQLException. Showing dialog.");
+
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Database Error. (1310)\nCould not open database file.",
+								"Database Error", JOptionPane.ERROR_MESSAGE);
+			}
+			catch (IOException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"Open command generated IOException. Showing dialog.");
+
+				// Trouble serializing objects
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Object Serialization Error. (1311)\nCould not read items from database file.",
+								"Database Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+			// TODO Check that this makes a full repaint
+			this.getTopLevelAncestor().invalidate();
 		}
-		catch (IOException e)
-		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
-					"Open command generated IOException. Showing dialog.");
-
-			// Trouble serializing objects
-			JOptionPane
-					.showMessageDialog(
-							this,
-							"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
-							"Database Error", JOptionPane.ERROR_MESSAGE);
-		}
-
-		// new Application
-
-		// Ask SQLConnector to load it in, taskList, update GUI
-		// TODO Use canonical file path from File object
-
-		// Closes current window
-
 	}
 
 	public void performSaveCommand()
@@ -323,9 +365,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 				// Call switch
 				try
 				{
-					SQLiteConnector.switchDatabase(selectedFile);
-					Timeflecks.getSharedApplication().getTaskList()
-							.saveAllTasksAndEvents();
+					Timeflecks.getSharedApplication().saveDatabaseFileAs(selectedFile);
+					
 					success = true;
 				}
 				catch (IllegalArgumentException e)
