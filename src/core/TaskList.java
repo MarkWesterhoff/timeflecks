@@ -29,6 +29,7 @@ public class TaskList
 	private ArrayList<Task> tasks;
 	private ArrayList<Event> events;
 	private transient Logger logger;
+	private Comparator<Task> taskComparator;
 	
 	private TaskList()
 	{
@@ -69,8 +70,16 @@ public class TaskList
 		tasks.add(t);
 	}
 	
+	// DEPRECATED, use sort() and setTaskComparator
+	
 	public void sortTasks(Comparator<Task> taskComp) {
 		Collections.sort(tasks,taskComp);
+		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.sortTasks()",
+				"Sorting task list");
+	}
+	
+	public void sort() {
+		Collections.sort(tasks,taskComparator);
 		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.sortTasks()",
 				"Sorting task list");
 	}
@@ -92,6 +101,11 @@ public class TaskList
 		for (Event e : events) {
 			e.saveToDatabase();
 		}
+	}
+
+	public void setTaskComparator(Comparator<Task> taskComparator)
+	{
+		this.taskComparator = taskComparator;
 	}
 
 }
