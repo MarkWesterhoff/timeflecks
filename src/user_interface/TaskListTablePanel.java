@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -27,6 +28,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	private final JTable table;
 
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
+	private JButton newButton;
+	private JButton editButton;
 	private JButton upButton;
 	private JButton downButton;
 	
@@ -37,8 +40,20 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		setLayout(new BorderLayout());
 
 		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
+		topPanel.setLayout(new GridLayout(1, 4));
+		
+		// New and edit buttons
+		newButton = new JButton("New...");
+		newButton.setActionCommand("newTask");
+		newButton.addActionListener(this);
+		topPanel.add(newButton);
+		
+		editButton = new JButton("Edit...");
+		editButton.setActionCommand("editTask");
+		editButton.addActionListener(this);
+		topPanel.add(editButton);
 
+		
 		// Combobox for Sorting
 		// construct the JComboBox
 		comboMap = new LinkedHashMap<String, Comparator<Task>>();
@@ -60,7 +75,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		sortSet.add(sortLabel, BorderLayout.WEST);
 		sortSet.add(sortList, BorderLayout.EAST);
 
-		topPanel.add(sortSet, BorderLayout.WEST);
+		topPanel.add(sortSet);
 
 		// Up and down bump buttons
 		upButton = createIconedButton("resources/up.png", "Move Up");
@@ -73,7 +88,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		buttonSet.add(upButton, BorderLayout.WEST);
 		buttonSet.add(downButton, BorderLayout.EAST);
 
-		topPanel.add(buttonSet, BorderLayout.EAST);
+		topPanel.add(buttonSet);
 
 		add(topPanel, BorderLayout.NORTH);
 
@@ -129,7 +144,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	// handle changing of SortList
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getActionCommand() == "dropdownsort")
+		if (e.getActionCommand().equals("dropdownsort"))
 		{
 
 			// TODO Resolve this warning
@@ -150,7 +165,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			}
 
 		}
-		else if (e.getActionCommand() == "Move Up")
+		else if (e.getActionCommand().equals("Move Up"))
 		{
 
 			int row = table.getSelectedRow();
@@ -167,7 +182,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			}
 			table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
 		}
-		else if (e.getActionCommand() == "Move Down")
+		else if (e.getActionCommand().equals("Move Down"))
 		{
 
 			int row = table.getSelectedRow();
@@ -183,6 +198,18 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 								+ " bumped down.");
 				table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
 			}
+		}
+		else if (e.getActionCommand().equals("newTask")) {
+			//TODO
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+					"actionPerformed(ActionEvent)",
+					"New task button pressed. Bringing up NewTaskPanel.");
+		}
+		else if (e.getActionCommand().equals("editTask")) {
+			//TODO
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+					"actionPerformed(ActionEvent)",
+					"Edit task button pressed. Bringing up EditTaskPanel.");
 		}
 		else
 		{
