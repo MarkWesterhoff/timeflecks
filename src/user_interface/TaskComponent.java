@@ -17,14 +17,15 @@ public class TaskComponent extends JComponent
 
 	private Task task;
 
-	public TaskComponent(Task taskToDraw)
+	public TaskComponent(Task taskToDraw, Rectangle newBounds)
 	{
 		super();
 
 		task = taskToDraw;
+		this.setBounds(newBounds);
 
-
-		setBorder(BorderFactory.createLineBorder(Color.black));
+		setBorder(BorderFactory.createEmptyBorder());
+//		setBorder(BorderFactory.createLineBorder(Color.black));
 
 		// TODO Preferred size, etc.
 	}
@@ -39,11 +40,13 @@ public class TaskComponent extends JComponent
 
 		// The frame will get updated each time when we do this, so we can just
 		// go off of that.
+		
+		System.out.println(frame);
 
 		// Draw the rectangle first, so the string shows up on top of it
 		g2.setPaint(Color.white);
 		g2.fillRect(frame.x, frame.y, frame.width, frame.height);
-		g2.setPaint(Color.black);
+		g2.setPaint(Color.red);
 		g2.drawRect(frame.x, frame.y, frame.width, frame.height);
 
 		// Draw the string title of the task
@@ -71,16 +74,20 @@ public class TaskComponent extends JComponent
 		try
 		{
 			Task t = new Task("New Task Blah Blah Blah");
-			TaskComponent p = new TaskComponent(t);
+			TaskComponent p = new TaskComponent(t, new Rectangle(2,2,100,100));
 			JPanel panel = new JPanel();
 			panel.add(p);
 			panel.setPreferredSize(new Dimension(400, 400));
 			JFrame newFrame = new JFrame("Task Component Test");
+			
+			
 
 			newFrame.getContentPane().add(p);
 
 			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+			newFrame.pack();
+			
 			newFrame.setSize(400, 400);
 
 			newFrame.setAutoRequestFocus(true);
