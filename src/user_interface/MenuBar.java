@@ -4,7 +4,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.*;
 
 import logging.GlobalLogger;
@@ -264,6 +263,18 @@ public class MenuBar extends JMenuBar implements ActionListener
 						.showMessageDialog(
 								this,
 								"Object Serialization Error. (1311)\nCould not read items from database file.",
+								"Database Error", JOptionPane.ERROR_MESSAGE);
+			}
+			catch (ClassNotFoundException e)
+			{
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+						"Open command generated IOException. Showing dialog.");
+
+				// Trouble serializing objects
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Object Serialization Error. (1312)\nClass not found when reading from database.",
 								"Database Error", JOptionPane.ERROR_MESSAGE);
 			}
 
