@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import user_interface.MainWindow;
 import logging.GlobalLogger;
 import database.*;
 
@@ -32,12 +33,12 @@ public class Timeflecks
 	private SQLiteConnector dbConnector;
 	private IDGenerator idGenerator;
 	private File currentFile;
-	private JFrame mainFrame;
+	private MainWindow mainWindow;
 
 	public Timeflecks()
 	{
 		taskList = new TaskList();
-		
+
 		try
 		{
 			dbConnector = new SQLiteConnector();
@@ -65,11 +66,11 @@ public class Timeflecks
 							"Object Serialization Error. (1601)\nCould not save empty database file.",
 							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
-		
+
 		idGenerator = new IDGenerator();
 		setCurrentFile(new File("calendar1.db"));
 
-		setMainFrame(new JFrame("Timeflecks"));
+		setMainWindow(new MainWindow());
 
 		// TODO Be able to seed ID generator with an ID
 		// TODO be able to get max ID in database from sqliteconnector
@@ -149,19 +150,19 @@ public class Timeflecks
 		getTaskList().saveAllTasksAndEvents();
 	}
 
-	public JFrame getMainFrame()
+	public MainWindow getMainWindow()
 	{
-		return mainFrame;
+		return mainWindow;
 	}
 
-	public void setMainFrame(JFrame mainFrame)
+	public void setMainWindow(MainWindow mainWindow)
 	{
-		this.mainFrame = mainFrame;
+		this.mainWindow = mainWindow;
 	}
 
 	public static void main(String[] args)
 	{
-
+		Timeflecks application = Timeflecks.getSharedApplication();
 	}
 
 }
