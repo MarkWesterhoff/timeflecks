@@ -49,7 +49,7 @@ public class Timeflecks
 					"Timeflecks",
 					"Open command generated SQLException. Showing dialog.");
 
-			JOptionPane.showMessageDialog(getMainFrame(),
+			JOptionPane.showMessageDialog(getMainWindow(),
 					"Database Error. (1600)\nCould not create new database.",
 					"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
@@ -62,7 +62,7 @@ public class Timeflecks
 			// Trouble serializing objects
 			JOptionPane
 					.showMessageDialog(
-							getMainFrame(),
+							getMainWindow(),
 							"Object Serialization Error. (1601)\nCould not save empty database file.",
 							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}

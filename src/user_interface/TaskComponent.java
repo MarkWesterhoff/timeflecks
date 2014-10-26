@@ -16,22 +16,17 @@ public class TaskComponent extends JComponent
 	private static final long serialVersionUID = 1L;
 
 	private Task task;
-	private Rectangle frame;
 
-	public TaskComponent(Task taskToDraw, Rectangle newFrame)
+	public TaskComponent(Task taskToDraw)
 	{
 		super();
 
 		task = taskToDraw;
-		frame = newFrame;
+
 
 		setBorder(BorderFactory.createLineBorder(Color.black));
 
-		this.setPreferredSize(new Dimension(frame.width, frame.height));
-
-		// TODO keep this from breaking if you make it too small (down in the
-		// math)
-		this.setMinimumSize(new Dimension(frame.width, frame.height));
+		// TODO Preferred size, etc.
 	}
 
 	public void paintComponent(Graphics g)
@@ -39,6 +34,8 @@ public class TaskComponent extends JComponent
 		super.paintComponent(g);
 
 		Graphics2D g2 = (Graphics2D) g;
+		
+		Rectangle frame = this.getBounds();
 
 		// The frame will get updated each time when we do this, so we can just
 		// go off of that.
@@ -68,18 +65,13 @@ public class TaskComponent extends JComponent
 				frame.y + getInsets().top + topInset);
 	}
 
-	public void setFrame(Rectangle newFrame)
-	{
-		frame = newFrame;
-	}
 
 	public static void main(String[] args)
 	{
 		try
 		{
 			Task t = new Task("New Task Blah Blah Blah");
-			TaskComponent p = new TaskComponent(t, new Rectangle(10, 10, 200,
-					100));
+			TaskComponent p = new TaskComponent(t);
 			JPanel panel = new JPanel();
 			panel.add(p);
 			panel.setPreferredSize(new Dimension(400, 400));
