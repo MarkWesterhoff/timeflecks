@@ -557,7 +557,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 					// newFrame.setSize(374, 450);
 					newFrame.setAutoRequestFocus(true);
-					newFrame.setResizable(false);
+					newFrame.setResizable(true);
 
 					newFrame.setVisible(true);
 
