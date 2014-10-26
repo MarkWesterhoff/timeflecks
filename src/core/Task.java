@@ -245,7 +245,6 @@ public class Task implements Scheduleable, Serializable
 		logger.logp(Level.INFO, "core.Task", "core.Task.saveToDatabase()", "Saving " 
 				+ this.name + " to database.");
 		
-		SQLiteConnector sqlConn = SQLiteConnector.getInstance();
-		sqlConn.serializeAndSave(this);
+		Timeflecks.getSharedApplication().getDbConnector().serializeAndSave(this);
 	}
 }

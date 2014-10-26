@@ -72,37 +72,6 @@ public final class SQLiteConnector {
 	private static final String defaultDatabasePath = "calendar1.db";
 	private static String databasePath = defaultDatabasePath;
 	
-	/* SQLiteConnector is a singleton */
-	private static SQLiteConnector instance;
-	
-	public static SQLiteConnector getInstance() throws SQLException {
-		if (instance == null) {
-			instance = new SQLiteConnector();
-		}
-		return instance;
-	}
-	
-	/**
-	 * Sets the path for the database being connected to.
-	 * @param newDatabasePath
-	 * @throws SQLException 
-	 * @throws IOException 
-	 */
-	public static void switchDatabase(File newDatabaseFile) throws SQLException, IOException {
-		// Check to make sure it's a .db file
-		if (newDatabaseFile == null 
-				|| !FileUtility.getFileExtension(newDatabaseFile).equals(".db")) {
-			throw new IllegalArgumentException("newDatabasePath");
-		}
-		
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
-				"switchDatabase(File)", "Switching database to file " 
-				+ newDatabaseFile.getCanonicalPath());
-		
-		databasePath = newDatabaseFile.getCanonicalPath();
-		instance = new SQLiteConnector();
-	}
-	
 	private transient Logger logger;
 	
 	/**
@@ -110,13 +79,23 @@ public final class SQLiteConnector {
 	 * the table for storing TimeObjects. Deletes all rows from the table.
 	 *  
 	 * @throws SQLException
+	 * @throws IOException 
 	 */
-	private SQLiteConnector() throws SQLException { 
+	public SQLiteConnector(File databaseFile) throws SQLException, IOException { 
 		this.logger = GlobalLogger.getLogger();
 		
 		logger.logp(Level.INFO, "SQLiteConnector", "SQLiteConnector", 
-				"Constructing SQLiteConnector");
+				"Constructing SQLiteConnector to DB: "
+				+ databaseFile.getCanonicalPath());
 
+		// Check to make sure it's a .db file
+		if (databaseFile == null 
+				|| !FileUtility.getFileExtension(databaseFile).equals(".db")) {
+			throw new IllegalArgumentException("newDatabasePath");
+		}
+		
+		databasePath = databaseFile.getCanonicalPath();
+		
 		// Initialize database
 		Connection c = this.getConnection();
 		try {
