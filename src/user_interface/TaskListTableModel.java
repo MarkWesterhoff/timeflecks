@@ -1,12 +1,16 @@
 package user_interface;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
 import core.Task;
 import core.TaskList;
+import core.Timeflecks;
 
 public class TaskListTableModel extends AbstractTableModel {
 
@@ -96,6 +100,43 @@ public class TaskListTableModel extends AbstractTableModel {
         		task.setName((String)value);
         		break;
     	}
+        try
+		{
+			task.saveToDatabase();
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel", "setValueAt",
+					"Saved modified task to database.");
+		}
+		catch (SQLException a)
+		{
+			GlobalLogger.getLogger().logp(
+					Level.WARNING,
+					"TaskListTableModel",
+					"setValueAt",
+					"SQLException caught when saving modified task to database.\nSQL State:\n"
+							+ a.getSQLState() + "\nMessage:\n"
+							+ a.getMessage());
+
+			JOptionPane
+					.showMessageDialog(
+							Timeflecks.getSharedApplication().getMainWindow(),
+							"Database Error. (1202)\nYour task was not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+		catch (IOException a)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "NewTaskPanel",
+					"actionPerformed",
+					"IOException caught when saving task to database.\nMessage:\n"
+							+ a.getLocalizedMessage());
+
+			// Trouble serializing objects
+			JOptionPane
+					.showMessageDialog(
+							Timeflecks.getSharedApplication().getMainWindow(),
+							"Object Serialization Error. (1203)\nYour task was not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+
         fireTableCellUpdated(row, col);
     }
 	
