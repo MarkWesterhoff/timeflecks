@@ -151,7 +151,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 						"actionPerformed()", "Task in row " + row
 								+ " bumped up.");
 			}
-
+			table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
 		}
 		else if (e.getActionCommand() == "Move Down")
 		{
@@ -167,6 +167,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()", "Task in row " + row
 								+ " bumped down.");
+				table.getSelectionModel().setSelectionInterval(row + 1, row + 1);
 			}
 		}
 		else
