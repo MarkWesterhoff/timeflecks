@@ -75,6 +75,17 @@ public final class SQLiteConnector {
 	private transient Logger logger;
 	
 	/**
+	 * Constructor for SQLiteConnector. Calls other constructor with default
+	 * save file location.
+	 * 
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public SQLiteConnector() throws SQLException, IOException {
+		this(new File(defaultDatabasePath));
+	}
+	
+	/**
 	 * Constructor for SQLiteConnector. Connects to the database and creates
 	 * the table for storing TimeObjects. Deletes all rows from the table.
 	 *  
