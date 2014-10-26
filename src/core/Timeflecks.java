@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import user_interface.MainWindow;

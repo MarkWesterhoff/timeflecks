@@ -1,9 +1,7 @@
 package database;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -241,12 +239,7 @@ public final class SQLiteConnector {
 			rs.next();
 			
 			byte[] buf = rs.getBytes(1);
-			ObjectInputStream inStream = null;
-			if(buf != null) {
-				inStream = new ObjectInputStream(new ByteArrayInputStream(buf));
-			}
-			
-			Object deserializedObject = inStream.readObject();
+			Object deserializedObject = ByteUtility.getObject(buf);
 			
 			rs.close();
 			stmt.close();
@@ -281,7 +274,6 @@ public final class SQLiteConnector {
 			rs.next();
 			
 			byte[] buf = rs.getBytes(1);
-			
 			Object deserializedObject = ByteUtility.getObject(buf);
 			
 			rs.close();

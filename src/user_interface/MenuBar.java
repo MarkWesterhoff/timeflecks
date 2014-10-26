@@ -11,9 +11,7 @@ import logging.GlobalLogger;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import core.TaskList;
 import core.Timeflecks;
-import database.SQLiteConnector;
 
 public class MenuBar extends JMenuBar implements ActionListener
 {

@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import core.Event;
 import core.Task;
-import core.TaskList;
 import core.Timeflecks;
 import database.SQLiteConnector;
 
