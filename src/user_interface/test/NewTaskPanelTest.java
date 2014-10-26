@@ -1,8 +1,8 @@
 package user_interface.test;
 
 import java.awt.*;
+
 import javax.swing.*;
-import javax.swing.UIManager.*;
 
 import org.junit.Test;
 
@@ -20,28 +20,6 @@ public class NewTaskPanelTest
 
 				try
 				{
-					for (LookAndFeelInfo info : UIManager
-							.getInstalledLookAndFeels())
-					{
-						if ("Nimbus".equals(info.getName()))
-						{
-							UIManager.setLookAndFeel(info.getClassName());
-							break;
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					// If Nimbus is not available, you can set the GUI to
-					// another look and feel.
-
-					// TODO: Remove this
-					System.err
-							.println("ERROR: Nimbus not found. Using default look and feel");
-				}
-
-				try
-				{
 					JFrame newFrame = new JFrame("Timeflecks - Add New Task");
 					Container c = newFrame.getContentPane();
 
@@ -53,7 +31,7 @@ public class NewTaskPanelTest
 
 					newFrame.pack();
 
-					newFrame.setSize(374, 400);
+					//newFrame.setSize(374, 450);
 					newFrame.setAutoRequestFocus(true);
 					newFrame.setResizable(false);
 
