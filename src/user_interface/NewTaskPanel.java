@@ -384,7 +384,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 					JOptionPane
 							.showMessageDialog(
 									this,
-									"Database Error. (1302)\nYour task was not saved. Please try again, or check your databse file.",
+									"Database Error. (1302)\nYour task was not saved. Please try again, or check your database file.",
 									"Database Error", JOptionPane.ERROR_MESSAGE);
 
 					// TODO Auto-generated catch block
@@ -401,7 +401,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 					JOptionPane
 							.showMessageDialog(
 									this,
-									"Object Serialization Error. (1303)\nYour task was not saved. Please try again, or check your databse file.",
+									"Object Serialization Error. (1303)\nYour task was not saved. Please try again, or check your database file.",
 									"Database Error", JOptionPane.ERROR_MESSAGE);
 				}
 
