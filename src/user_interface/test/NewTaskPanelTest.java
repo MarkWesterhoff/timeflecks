@@ -31,7 +31,7 @@ public class NewTaskPanelTest
 
 					newFrame.pack();
 
-					//newFrame.setSize(374, 450);
+					// newFrame.setSize(374, 450);
 					newFrame.setAutoRequestFocus(true);
 					newFrame.setResizable(false);
 
