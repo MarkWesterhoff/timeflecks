@@ -113,6 +113,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener {
 	{
 		if(e.getActionCommand() == "dropdownsort") {
 			
+			// TODO Resolve this warning
 			JComboBox<String> box = (JComboBox<String>)(e.getSource());
 			String switchOn = (String)box.getSelectedItem();
 			TaskList.getInstance().setTaskComparator(comboMap.get(switchOn));
