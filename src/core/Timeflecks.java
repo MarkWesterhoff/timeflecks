@@ -123,7 +123,7 @@ public class Timeflecks
 		setCurrentFile(newFile);
 		setTaskList(new TaskList());
 
-		long highestID = SQLiteConnector.getHighestID();
+		long highestID = getDBConnector().getHighestID();
 
 		IDGenerator newGenerator = new IDGenerator(highestID);
 		setIdGenerator(newGenerator);
