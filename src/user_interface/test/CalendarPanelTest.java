@@ -75,5 +75,33 @@ public class CalendarPanelTest
 		}
 
 	}
+	
+	public static void main(String[] args)
+	{
+		try
+		{
+			JFrame newFrame = new JFrame("Calendar Test");
+
+			CalendarPanel p = new CalendarPanel(true, true, 400, 400);
+			
+
+			newFrame.getContentPane().add(p);
+
+			newFrame.pack();
+
+			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			newFrame.setSize(400, 400);
+			newFrame.setAutoRequestFocus(true);
+			newFrame.setResizable(true);
+
+			newFrame.setVisible(true);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Unable to " + e);
+		}
+	}
 
 }
