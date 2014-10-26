@@ -13,11 +13,11 @@ public class MenuBarTest
 	public void showMenuBarTest()
 	{
 		MenuBar menu = new MenuBar();
-				
+
 		try
 		{
 			JFrame newFrame = new JFrame("Menu Bar Test");
-			
+
 			newFrame.setJMenuBar(menu);
 
 			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -43,8 +43,7 @@ public class MainWindow extends JFrame
 		// Add the menu bar
 		MenuBar menu = new MenuBar();
 		setJMenuBar(menu);
-		
-		
+
 	}
 
 	public void displayFrame()
@@ -53,15 +52,14 @@ public class MainWindow extends JFrame
 		setSize(400, 400);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	//	setVisible(true);
+		// setVisible(true);
 	}
 
 	public static void main(String[] args)
 	{
 		MainWindow window = new MainWindow();
-		
+
 		window.setVisible(true);
 	}
-	
 
 }

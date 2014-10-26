@@ -270,7 +270,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		saveButton = new JButton("Save");
 		cancelButton = new JButton("Cancel");
-		
+
 		saveButton.setActionCommand("Save");
 		cancelButton.setActionCommand("Cancel");
 
@@ -432,7 +432,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 					// The user selected to discard the task
 					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
 							"User elected to discard the task. Dismissing Panel.");
-					
+
 					dismissPane();
 				}
 				else
@@ -449,7 +449,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		}
 		else
 		{
-			
+
 		}
 	}
 

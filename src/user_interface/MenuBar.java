@@ -284,7 +284,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 				// not the same file
 				if (fileExistsAndIsNotSame(selectedFile))
 				{
-					// We need to prompt the user to see if they want to overwrite the file.
+					// We need to prompt the user to see if they want to
+					// overwrite the file.
 					Object[] options = { "Overwrite File", "Choose New File" };
 					int reply = JOptionPane
 							.showOptionDialog(
@@ -297,21 +298,23 @@ public class MenuBar extends JMenuBar implements ActionListener
 					if (reply == JOptionPane.YES_OPTION)
 					{
 						// The user selected to overwrite the file
-						logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+						logger.logp(Level.INFO, "MenuBar",
+								"performSaveAsCommand",
 								"User elected to overwrite existing file.");
-						
+
 						// We just keep going
 					}
 					else
 					{
 						// User selected to not overwrite file
-						logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+						logger.logp(Level.INFO, "MenuBar",
+								"performSaveAsCommand",
 								"User declined to overwrite file, prompting for new file choice.");
-						
+
 						success = false;
 						continue;
 					}
-					
+
 				}
 
 				// Take the file that comes in and try, catch
@@ -332,12 +335,13 @@ public class MenuBar extends JMenuBar implements ActionListener
 							"performSaveAsCommand",
 							"Illegal argument from SQLiteConnector when attempting to switch database. Showing dialog, prompting for proper extension.");
 					success = false;
-					
+
 					JOptionPane
-					.showMessageDialog(
-							this,
-							"Invalid filename. (1200)\nPlease make sure that your file is valid and has the extension \".db\".",
-							"Invalid Filename", JOptionPane.ERROR_MESSAGE);
+							.showMessageDialog(
+									this,
+									"Invalid filename. (1200)\nPlease make sure that your file is valid and has the extension \".db\".",
+									"Invalid Filename",
+									JOptionPane.ERROR_MESSAGE);
 				}
 				catch (SQLException e)
 				{
@@ -386,26 +390,29 @@ public class MenuBar extends JMenuBar implements ActionListener
 				"No Help Available", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/** 
+	/**
 	 * Checks against the existence of the file (same file is ok).
 	 * 
-	 * @param newFile The file to check
+	 * @param newFile
+	 *            The file to check
 	 * @return True if there is a problem. False if there is no problem
 	 */
 	public boolean fileExistsAndIsNotSame(File newFile)
 	{
-		if (newFile.exists()){
+		if (newFile.exists())
+		{
 			// The file exists
-//			if (Timeflecks.getInstance().getCurrentFile().equals(newFile))
-//			{
-//				return false;
-//			}
-//			else
-//			{
-				// If it exists and is not the same, then we have an error, and need to prompt the user.
-//				return true;
-//			}
-			
+			// if (Timeflecks.getInstance().getCurrentFile().equals(newFile))
+			// {
+			// return false;
+			// }
+			// else
+			// {
+			// If it exists and is not the same, then we have an error, and need
+			// to prompt the user.
+			// return true;
+			// }
+
 			// TODO remove this
 			return true;
 		}
@@ -413,8 +420,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 		{
 			return false;
 		}
-		// TODO Check against Application having a the same "current file" 
-		
+		// TODO Check against Application having a the same "current file"
+
 	}
 
 	/**
