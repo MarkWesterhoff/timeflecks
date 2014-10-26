@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -9,8 +10,10 @@ import java.util.logging.Logger;
 import logging.GlobalLogger;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import core.TaskList;
+import database.SQLiteConnector;
 
 public class MenuBar extends JMenuBar implements ActionListener
 {
@@ -171,68 +174,252 @@ public class MenuBar extends JMenuBar implements ActionListener
 	public void performOpenCommand()
 	{
 		// Show jFileChooser
-		
-		// Make sure that it is a .db file
-		
+
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Timeflecks Database Files", "db");
+		fileChooser.setFileFilter(filter);
+		int returnVal = fileChooser.showOpenDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			System.out.println("You chose to open this file: "
+					+ fileChooser.getSelectedFile().getName());
+		}
+
+		File selectedFile = fileChooser.getSelectedFile();
+
 		// Make sure it is a different .db file
-		
+		// TODO make sure that this is not current File
+
 		// Save all tasks and events
-		
-		// new Application
-		// Ask SQLConnector to load it in, taskList, update GUI
-		// Closes current window
-	}
-	
-	public void performSaveCommand()
-	{
-		TaskList list = TaskList.getInstance();
-		
+		// TODO Figure out whether or not this should be saving all anyways -
+		// see Asana for discussion
 		try
 		{
-			list.saveAllTasksAndEvents();
+			TaskList.getInstance().saveAllTasksAndEvents();
+		}
+		catch (SQLException e)
+		{
+			logger.logp(Level.WARNING, "MenuBar", "performOpenCommand",
+					"Open command generated SQLException. Showing dialog.");
+
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+		catch (IOException e)
+		{
+			logger.logp(Level.WARNING, "MenuBar", "performOpenCommand",
+					"Open command generated IOException. Showing dialog.");
+
+			// Trouble serializing objects
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		// new Application
+
+		// Ask SQLConnector to load it in, taskList, update GUI
+		// TODO Use canonical file path from File object
+
+		// Closes current window
+
+	}
+
+	public void performSaveCommand()
+	{
+		try
+		{
+			TaskList.getInstance().saveAllTasksAndEvents();
 		}
 		catch (SQLException e)
 		{
 			logger.logp(Level.WARNING, "MenuBar", "performSaveCommand",
 					"Save command generated SQLException. Showing dialog.");
-			
-			JOptionPane.showMessageDialog(this,
-					"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your databse file.",
-					"Database Error", JOptionPane.ERROR_MESSAGE);
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
 		catch (IOException e)
 		{
 			logger.logp(Level.WARNING, "MenuBar", "performSaveCommand",
 					"Save command generated IOException. Showing dialog.");
-			
+
 			// Trouble serializing objects
-			JOptionPane.showMessageDialog(this,
-					"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your databse file.",
-					"Database Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane
+					.showMessageDialog(
+							this,
+							"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	public void performSaveAsCommand()
 	{
-		// TODO : Save as must only allow .db files
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+				"Timeflecks Database Files", "db");
+		fileChooser.setFileFilter(filter);
+
+		boolean success = false;
+
+		do
+		{
+			int returnVal = fileChooser.showSaveDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION)
+			{
+				logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+						"User chose file " + fileChooser.getSelectedFile());
+
+				File selectedFile = fileChooser.getSelectedFile();
+				// TODO Make sure the user is warned if the file exists and is
+				// not the same file
+				if (fileExistsAndIsNotSame(selectedFile))
+				{
+					// We need to prompt the user to see if they want to overwrite the file.
+					Object[] options = { "Overwrite File", "Choose New File" };
+					int reply = JOptionPane
+							.showOptionDialog(
+									this,
+									"This file already exists. Would you like to overwrite it with the current data file?",
+									"File Exists", JOptionPane.DEFAULT_OPTION,
+									JOptionPane.WARNING_MESSAGE, null, options,
+									options[1]);
+
+					if (reply == JOptionPane.YES_OPTION)
+					{
+						// The user selected to overwrite the file
+						logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+								"User elected to overwrite existing file.");
+						
+						// We just keep going
+					}
+					else
+					{
+						// User selected to not overwrite file
+						logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+								"User declined to overwrite file, prompting for new file choice.");
+						
+						success = false;
+						continue;
+					}
+					
+				}
+
+				// Take the file that comes in and try, catch
+				// IllegalArgumentException, show alert asking for new file -
+				// they can go back and cancel
+				// Call switch
+				try
+				{
+					SQLiteConnector.switchDatabase(selectedFile);
+					TaskList.getInstance().saveAllTasksAndEvents();
+					success = true;
+				}
+				catch (IllegalArgumentException e)
+				{
+					logger.logp(
+							Level.WARNING,
+							"MenuBar",
+							"performSaveAsCommand",
+							"Illegal argument from SQLiteConnector when attempting to switch database. Showing dialog, prompting for proper extension.");
+					success = false;
+					
+					JOptionPane
+					.showMessageDialog(
+							this,
+							"Invalid filename. (1200)\nPlease make sure that your file is valid and has the extension \".db\".",
+							"Invalid Filename", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (SQLException e)
+				{
+					logger.logp(Level.WARNING, "MenuBar",
+							"performSaveAsCommand",
+							"Save As command generated SQLException. Showing dialog.");
+
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (IOException e)
+				{
+					logger.logp(Level.WARNING, "MenuBar",
+							"performSaveAsCommand",
+							"Save As command generated IOException. Showing dialog.");
+
+					// Trouble serializing objects
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			else
+			{
+				logger.logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+						"User cancelled Save As operation, continuing.");
+				success = true;
+			}
+		} while (!success);
 	}
-	
+
 	public void performEditCommand()
 	{
-		// TODO This should edit the currently selected task? 
+		// TODO This should edit the currently selected task?
 	}
-	
+
 	public void performNoHelpCommand()
 	{
+		JOptionPane.showMessageDialog(this,
+				"Help is not available in this version of the application.",
+				"No Help Available", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/** 
+	 * Checks against the existence of the file (same file is ok).
+	 * 
+	 * @param newFile The file to check
+	 * @return True if there is a problem. False if there is no problem
+	 */
+	public boolean fileExistsAndIsNotSame(File newFile)
+	{
+		if (newFile.exists()){
+			// The file exists
+//			if (Timeflecks.getInstance().getCurrentFile().equals(newFile))
+//			{
+//				return false;
+//			}
+//			else
+//			{
+				// If it exists and is not the same, then we have an error, and need to prompt the user.
+//				return true;
+//			}
+			
+			// TODO remove this
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		// TODO Check against Application having a the same "current file" 
 		
 	}
 
-	
 	/**
-	 * actionPerformed interprets the event from any menu item being pressed and performs the appropriate action
+	 * actionPerformed interprets the event from any menu item being pressed and
+	 * performs the appropriate action
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
