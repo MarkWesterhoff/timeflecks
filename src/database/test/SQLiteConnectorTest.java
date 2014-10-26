@@ -16,6 +16,7 @@ import org.junit.Test;
 import core.Event;
 import core.Task;
 import core.TaskList;
+import core.Timeflecks;
 import database.SQLiteConnector;
 
 public class SQLiteConnectorTest {
@@ -91,20 +92,14 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testSaveAndLoad() throws SQLException, IOException, ClassNotFoundException {
-		//TODO: fix testSaveAndLoad()
-		/*
-		SQLiteConnector.switchDatabase(new File("testSaveAndLoad.db"));
-		
-		SQLiteConnector conn = SQLiteConnector.getInstance();
-		
 		Task task = new Task("task1");
-		conn.serializeAndSave(task);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
 		
 		Event event = new Event("event1", new Date(), 1);
-		conn.serializeAndSave(event);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(event);
 		
 		// Positive tests for Task
-		Task returnTask = conn.getSerializedTask(task.getId());
+		Task returnTask = Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task.getId());
 		
 		assertEquals("Descriptions should match", task.getDescription(), 
 				returnTask.getDescription());
@@ -123,7 +118,7 @@ public class SQLiteConnectorTest {
 		assertEquals("Tags should match", task.getTags(), returnTask.getTags());
 		
 		// Positive tests for Event
-		Event returnEvent = (Event)conn.getSerializedEvent(event.getId());
+		Event returnEvent = (Event)Timeflecks.getSharedApplication().getDBConnector().getSerializedEvent(event.getId());
 		assertEquals("Descriptions should match", event.getDescription(), 
 				returnEvent.getDescription());
 		assertEquals("Duration should match", event.getDuration(), 
@@ -137,7 +132,7 @@ public class SQLiteConnectorTest {
 				returnEvent.getStartTime());
 		
 		// Negative tests
-		*/
+		
 		
 	}
 	
@@ -150,30 +145,24 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testDelete() throws SQLException, IOException, ClassNotFoundException {
-		//TODO: testDelete
-		/*
-		SQLiteConnector.switchDatabase(new File("testDelete.db"));
-		
-		
 		Task task = new Task("task1");
 		Task task2 = new Task("task2");
-		SQLiteConnector.getInstance().serializeAndSave(task);
-		SQLiteConnector.getInstance().serializeAndSave(task2);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task2);
 		
 		// Attempt to delete
-		SQLiteConnector.getInstance().delete(task.getId());
+		Timeflecks.getSharedApplication().getDBConnector().delete(task.getId());
 		
 		// Try to get still existing task back
-		SQLiteConnector.getInstance().getSerializedTask(task2.getId());
+		Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task2.getId());
 		
 		try {
-			SQLiteConnector.getInstance().getSerializedTask(task.getId());
+			Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task.getId());
 			fail("Getting a deleted task should not succeed");
 		}
 		catch (SQLException s) {
 			// expected
 		}
-		*/
 	}
 	
 	/**
@@ -184,11 +173,8 @@ public class SQLiteConnectorTest {
 	@Ignore
 	@Test
 	public void stressTestSerialization() throws SQLException, IOException {
-		//TODO: fix stressTestSerialization()
-		/*
 		int numTasks = 100;
 		
-		TaskList taskList = TaskList.getInstance();
 		for(int i = 0; i < numTasks/2; ++i) {
 			Task t = new Task("task" + Integer.toString(i));
 			t.setDescription("Description of the task.");
@@ -198,25 +184,24 @@ public class SQLiteConnectorTest {
 			t.addTag("tag3");
 			t.addTag("tag4");
 			t.setStartTime(new Date());
-			taskList.addTask(t);
+			Timeflecks.getSharedApplication().getTaskList().addTask(t);
 		}
 		
 		for(int i = 0; i < numTasks/2; ++i) {
 			Event e = new Event("event" + Integer.toString(i), new Date(), 100);
 			e.setDescription("Description of the event.");
-			taskList.addEvent(e);
+			Timeflecks.getSharedApplication().getTaskList().addEvent(e);
 		}
 		
 		// Time saving of all tasks
 		long time = System.currentTimeMillis();
 		
-		taskList.saveAllTasksAndEvents();
+		Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
 		
 		time = System.currentTimeMillis() - time;
 		System.out.println("Time to save all Objects: " 
 					+ Float.toString((float)time/1000));
 		System.out.println("Objects saved per second: " 
 					+ Float.toString(numTasks/((float)time/1000)));
-		*/
 	}
 }
