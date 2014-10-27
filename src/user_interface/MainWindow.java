@@ -57,7 +57,7 @@ public class MainWindow extends JFrame
 		setJMenuBar(menu);
 		
 		// Add the task list panel
-		TaskListTableModel taskListTableModel = new TaskListTableModel(Timeflecks.getSharedApplication().getTaskList());
+		TaskListTableModel taskListTableModel = new TaskListTableModel();
 		panel = new TaskListTablePanel(taskListTableModel);
 		
 		getContentPane().add(panel);

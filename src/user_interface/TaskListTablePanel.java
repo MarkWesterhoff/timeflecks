@@ -267,8 +267,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 		JFrame frame = new JFrame();
 		TaskListTablePanel tltp = new TaskListTablePanel(
-				new TaskListTableModel(Timeflecks.getSharedApplication()
-						.getTaskList()));
+				new TaskListTableModel());
 
 		frame.getContentPane().add(tltp, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

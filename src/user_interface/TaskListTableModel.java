@@ -18,8 +18,6 @@ public class TaskListTableModel extends AbstractTableModel
 
 	private static final long serialVersionUID = 1L;
 
-	private TaskList taskList;
-
 	/**
 	 * Constructor for the TaskListTableModel. Takes a TaskList that holds the
 	 * Tasks.
@@ -27,23 +25,10 @@ public class TaskListTableModel extends AbstractTableModel
 	 * @param taskList
 	 *            The TaskList holding the Tasks for the table model
 	 */
-	public TaskListTableModel(TaskList taskList)
+	public TaskListTableModel()
 	{
-		Objects.requireNonNull(taskList);
-
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
 				"TaskListTableModel", "Constructing TaskListTableModel.");
-		this.taskList = taskList;
-	}
-
-	/**
-	 * Accessor for taskList.
-	 * 
-	 * @return the TaskList
-	 */
-	public TaskList getTaskList()
-	{
-		return this.taskList;
 	}
 
 	/**
@@ -53,7 +38,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return taskList.getTasks().size();
+		return Timeflecks.getSharedApplication().getTaskList().getTasks().size();
 	}
 
 	/**
@@ -118,7 +103,7 @@ public class TaskListTableModel extends AbstractTableModel
 				"setValueAt",
 				String.format("Setting value at (%d, %d) to %s", row, col,
 						value));
-		Task task = (Task) taskList.getTasks().get(row);
+		Task task = (Task) Timeflecks.getSharedApplication().getTaskList().getTasks().get(row);
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
@@ -198,7 +183,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		Task task = taskList.getTasks().get(rowIndex);
+		Task task = Timeflecks.getSharedApplication().getTaskList().getTasks().get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return task.isCompleted();
