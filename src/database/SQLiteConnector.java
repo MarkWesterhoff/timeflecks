@@ -92,6 +92,16 @@ public final class SQLiteConnector
 	
 	private static final String defaultDatabasePath = "calendar1.db";
 	private static String databasePath = defaultDatabasePath;
+	
+	/**
+	 * Get the current database path. May be either absolute or relative path.
+	 * 
+	 * @return The path to the current database file.
+	 */
+	public String getDatabasePath()
+	{
+		return databasePath;
+	}
 
 	/**
 	 * Constructor for SQLiteConnector. Calls other constructor with default
