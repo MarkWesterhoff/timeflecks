@@ -52,30 +52,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 395));
+		this.getContentPane().setPreferredSize(new Dimension(350, 365));
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Beginning interface setup");
 
 		// Title Label
 
-		if (taskToEdit == null)
-		{
-			titleLabel = new JLabel("New Task");
-		}
-		else
-		{
-			titleLabel = new JLabel("Edit Task");
-		}
-
-		titleLabel.setHorizontalAlignment(JLabel.CENTER);
-		titleLabel.setBorder(new EmptyBorder(10, 4, 4, 4));
-
-		Font font = titleLabel.getFont();
-		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-		titleLabel.setFont(boldFont);
-
-		this.getContentPane().add(titleLabel, BorderLayout.NORTH);
+		//addTitleLabel();
 
 		// Center will be the forms, in a panel with FlowLayout (default, but we
 		// set it for clarity)
@@ -371,6 +355,28 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	}
 
+	@SuppressWarnings("unused")
+	private void addTitleLabel()
+	{
+		if (taskToEdit == null)
+		{
+			titleLabel = new JLabel("New Task");
+		}
+		else
+		{
+			titleLabel = new JLabel("Edit Task");
+		}
+
+		titleLabel.setHorizontalAlignment(JLabel.CENTER);
+		titleLabel.setBorder(new EmptyBorder(10, 4, 4, 4));
+
+		Font font = titleLabel.getFont();
+		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+		titleLabel.setFont(boldFont);
+
+		this.getContentPane().add(titleLabel, BorderLayout.NORTH);
+	}
+
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("Save"))
@@ -567,7 +573,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (startDateChooser.getDate() != null)
 		{
 			returnBool = true;
-			;
 		}
 
 		if (dueDateChooser.getDate() != null)
@@ -600,7 +605,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public void dismissPane()
 	{
-		this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+		this.processWindowEvent(new WindowEvent(this,
+				WindowEvent.WINDOW_CLOSING));
 	}
 
 	public void displayFrame()
@@ -613,7 +619,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			this.setTitle("Timeflecks - Edit Task");
 		}
-		
+
 		System.out.println("SAVED THE FRAME");
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -622,18 +628,18 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		this.setAutoRequestFocus(true);
 		this.setResizable(true);
+		this.setMinimumSize(new Dimension(380, 400));
 
 		this.setVisible(true);
-		
 	}
 
 	public static void main(String args[])
 	{
 		Task task1 = new Task("task 1");
 		NewTaskPanel p = new NewTaskPanel(task1);
-		
+
 		NewTaskPanel p1 = new NewTaskPanel();
-		
+
 		p.displayFrame();
 	}
 
