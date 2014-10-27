@@ -151,7 +151,6 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	public void refresh()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"refresh()", "Refreshing TaskListTableModel");
 				"refresh()", "Refreshing TaskListTableModel" + this.table);
 		Timeflecks.getSharedApplication().getTaskList().sort();
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
