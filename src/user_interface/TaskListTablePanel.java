@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -29,6 +31,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
 	private JButton newTaskButton;
 	private JButton editTaskButton;
+	private JButton deleteTaskButton;
 	private JButton upButton;
 	private JButton downButton;
 
@@ -82,13 +85,16 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		// Add the new task and the edit task buttons
 		newTaskButton = new JButton("New Task");
 		editTaskButton = new JButton("Edit Task");
-
+		deleteTaskButton = new JButton("Delete Task");
+		
 		newTaskButton.setActionCommand("New Task");
 		editTaskButton.setActionCommand("Edit Task");
-
+		deleteTaskButton.setActionCommand("Delete Task");
+		
 		newTaskButton.addActionListener(this);
 		editTaskButton.addActionListener(this);
-
+		deleteTaskButton.addActionListener(this);
+		
 		JPanel newButtonPanel = new JPanel();
 
 		// layout.setVgap(8);
@@ -97,7 +103,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 		newButtonPanel.add(newTaskButton);
 		newButtonPanel.add(editTaskButton);
-
+		newButtonPanel.add(deleteTaskButton);
+		
 		topPanel.add(newButtonPanel, BorderLayout.WEST);
 
 		add(topPanel, BorderLayout.NORTH);
@@ -242,6 +249,82 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				// This happens if there are no tasks selected
 				
 				// TODO Grey out the Edit Task Button if there are no tasks selected
+				
+				GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"Selected row is out of bounds for the current table.");
+			}
+			
+		}
+		else if (e.getActionCommand().equals("Delete Task"))
+		{
+			int row = table.getSelectedRow();
+			if (row >= 0 && row < table.getRowCount())
+			{
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"Delete task button pressed. Deleting currently selected task.");
+				
+				// We need to prompt the user to see if they want to
+				// delete the task.
+				Object[] options = { "Delete Task", "Cancel" };
+				int reply = JOptionPane
+						.showOptionDialog(
+								this,
+								"Are you sure you wish to delete this task?",
+								"Confirm Delete", JOptionPane.DEFAULT_OPTION,
+								JOptionPane.WARNING_MESSAGE, null, options,
+								options[1]);
+
+				if (reply == JOptionPane.YES_OPTION)
+				{
+					// The user selected to delete the Task
+					GlobalLogger.getLogger().logp(Level.INFO,
+							"TaskListTablePanel", "performSaveAsCommand",
+							"User elected to overwrite existing file.");
+
+					Task t = Timeflecks.getSharedApplication().getTaskList()
+							.getTasks().remove(row);
+					try
+					{
+						Timeflecks.getSharedApplication().getDBConnector()
+								.delete(t.getId());
+					}
+					catch (SQLException a)
+					{
+						GlobalLogger.getLogger().logp(
+								Level.WARNING,
+								"TaskListTablePanel",
+								"actionPerformed()",
+								"SQLException caught when deletingd task from database.\nSQL State:\n"
+										+ a.getSQLState() + "\nMessage:\n"
+										+ a.getMessage());
+
+						JOptionPane
+								.showMessageDialog(
+										Timeflecks.getSharedApplication()
+												.getMainWindow(),
+										"Database Error. (1102)\nYour task was not deleted. Please try again, or check your database file.",
+										"Database Error",
+										JOptionPane.ERROR_MESSAGE);
+					}
+					Timeflecks.getSharedApplication().getMainWindow().refresh();
+				}
+				else
+				{
+					// User selected to not delete task
+					GlobalLogger
+							.getLogger()
+							.logp(Level.INFO, "TaskListTablePanel",
+									"performSaveAsCommand",
+									"User declined to overwrite file, prompting for new file choice.");
+				}
+			}
+			else
+			{
+				// This happens if there are no tasks selected
+				
+				// TODO Gray out the Delete Task Button if there are no tasks selected
 				
 				GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
 						"actionPerformed(ActionEvent)",
