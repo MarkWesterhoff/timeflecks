@@ -15,6 +15,7 @@ public class GlobalLogger {
 	public static Logger getLogger() {
 		if (logger == null) {
 			logger = Logger.getLogger(GlobalLogger.class.getName());
+			//logger.setLevel(Level.OFF);
 			logger.setLevel(Level.INFO);
 		}
 		return logger;
