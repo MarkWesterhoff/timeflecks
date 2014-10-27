@@ -34,9 +34,9 @@ public class MenuBar extends JMenuBar implements ActionListener
 		createAndAddFileMenu();
 
 		// TODO Add back in the edit menu if we want one
-		 createAndAddEditMenu();
+		createAndAddEditMenu();
 
-		createAndAddHelpMenu();
+		// createAndAddHelpMenu();
 
 	}
 
@@ -45,8 +45,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 	 */
 	private void createAndAddFileMenu()
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
-				"Creating file menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddFileMenu", "Creating file menu");
 
 		// Create the file menu
 		filemenu = new JMenu("File");
@@ -65,8 +65,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		filemenu.add(menuItem);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
-				"Added open menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddFileMenu", "Added open menu");
 
 		// Add a separator, like many applications have
 		filemenu.addSeparator();
@@ -81,8 +81,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		filemenu.add(menuItem);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
-				"Added save menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddFileMenu", "Added save menu");
 
 		// Save as... menu item
 
@@ -94,11 +94,11 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		filemenu.add(menuItem);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
-				"Added save as... menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddFileMenu", "Added save as... menu");
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddFileMenu",
-				"File menu generation complete");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddFileMenu", "File menu generation complete");
 	}
 
 	/**
@@ -106,8 +106,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 	 */
 	private void createAndAddEditMenu()
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddEditMenu",
-				"Creating edit menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddEditMenu", "Creating edit menu");
 
 		// Create the edit menu
 		editmenu = new JMenu("Edit");
@@ -117,7 +117,16 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		add(editmenu);
 
-		// Open menu item
+		// Edit menu items
+		menuItem = new JMenuItem("New Task...", KeyEvent.VK_N);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+				InputEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Create new task");
+		menuItem.addActionListener(this);
+
+		editmenu.add(menuItem);
+
 		menuItem = new JMenuItem("Edit Task...", KeyEvent.VK_E);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E,
 				InputEvent.CTRL_DOWN_MASK));
@@ -127,8 +136,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		editmenu.add(menuItem);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddEditMenu",
-				"Added edit menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddEditMenu", "Added edit menu");
 
 	}
 
@@ -137,8 +146,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 	 */
 	private void createAndAddHelpMenu()
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddHelpMenu",
-				"Creating help menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddHelpMenu", "Creating help menu");
 
 		// Create the file menu
 		helpmenu = new JMenu("Help");
@@ -161,8 +170,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		helpmenu.add(menuItem);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "createAndAddHelpMenu",
-				"Added help menu");
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"createAndAddHelpMenu", "Added help menu");
 
 	}
 
@@ -178,7 +187,7 @@ public class MenuBar extends JMenuBar implements ActionListener
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			File selectedFile = fileChooser.getSelectedFile();
-			
+
 			try
 			{
 				Timeflecks.getSharedApplication().getTaskList()
@@ -186,7 +195,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 			}
 			catch (SQLException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
 						"Open command generated SQLException. Showing dialog.");
 
 				JOptionPane
@@ -197,7 +207,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 			}
 			catch (IOException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
 						"Open command generated IOException. Showing dialog.");
 
 				// Trouble serializing objects
@@ -207,26 +218,28 @@ public class MenuBar extends JMenuBar implements ActionListener
 								"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
 								"Database Error", JOptionPane.ERROR_MESSAGE);
 			}
-			
+
 			// Make sure it is a different .db file
 			try
 			{
-				if (selectedFile.getCanonicalPath().equals(Timeflecks.getSharedApplication().getCurrentFile().getCanonicalPath()))
+				if (selectedFile.getCanonicalPath().equals(
+						Timeflecks.getSharedApplication().getCurrentFile()
+								.getCanonicalPath()))
 				{
 					// If they are the same file
-					JOptionPane
-					.showMessageDialog(
-							this,
+					JOptionPane.showMessageDialog(this,
 							"This is the currently open file.",
 							"Currently Open File", JOptionPane.WARNING_MESSAGE);
-					
+
 					return; // Do nothing for this part
 				}
 			}
 			catch (IOException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
-						"File system error. Cannot compare new file to current file.");
+				GlobalLogger
+						.getLogger()
+						.logp(Level.WARNING, "MenuBar", "performOpenCommand",
+								"File system error. Cannot compare new file to current file.");
 
 				// Trouble serializing objects
 				JOptionPane
@@ -238,16 +251,19 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 			try
 			{
-				Timeflecks.getSharedApplication().openDatabaseFile(selectedFile);
+				Timeflecks.getSharedApplication()
+						.openDatabaseFile(selectedFile);
 			}
 			catch (SQLException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
 						"Open command generated SQLException. Showing dialog.");
-				
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand", "Stack Trace:\n" + e.getStackTrace());
 
-				
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
+						"Stack Trace:\n" + e.getStackTrace());
+
 				JOptionPane
 						.showMessageDialog(
 								this,
@@ -256,7 +272,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 			}
 			catch (IOException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
 						"Open command generated IOException. Showing dialog.");
 
 				// Trouble serializing objects
@@ -268,7 +285,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 			}
 			catch (ClassNotFoundException e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performOpenCommand",
+				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+						"performOpenCommand",
 						"Open command generated IOException. Showing dialog.");
 
 				// Trouble serializing objects
@@ -293,7 +311,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 		}
 		catch (SQLException e)
 		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performSaveCommand",
+			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+					"performSaveCommand",
 					"Save command generated SQLException. Showing dialog.");
 
 			JOptionPane
@@ -304,7 +323,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 		}
 		catch (IOException e)
 		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar", "performSaveCommand",
+			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+					"performSaveCommand",
 					"Save command generated IOException. Showing dialog.");
 
 			// Trouble serializing objects
@@ -330,7 +350,8 @@ public class MenuBar extends JMenuBar implements ActionListener
 			int returnVal = fileChooser.showSaveDialog(this);
 			if (returnVal == JFileChooser.APPROVE_OPTION)
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+				GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+						"performSaveAsCommand",
 						"User chose file " + fileChooser.getSelectedFile());
 
 				File selectedFile = fileChooser.getSelectedFile();
@@ -361,9 +382,11 @@ public class MenuBar extends JMenuBar implements ActionListener
 					else
 					{
 						// User selected to not overwrite file
-						GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-								"performSaveAsCommand",
-								"User declined to overwrite file, prompting for new file choice.");
+						GlobalLogger
+								.getLogger()
+								.logp(Level.INFO, "MenuBar",
+										"performSaveAsCommand",
+										"User declined to overwrite file, prompting for new file choice.");
 
 						success = false;
 						continue;
@@ -377,17 +400,19 @@ public class MenuBar extends JMenuBar implements ActionListener
 				// Call switch
 				try
 				{
-					Timeflecks.getSharedApplication().saveDatabaseFileAs(selectedFile);
-					
+					Timeflecks.getSharedApplication().saveDatabaseFileAs(
+							selectedFile);
+
 					success = true;
 				}
 				catch (IllegalArgumentException e)
 				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"MenuBar",
-							"performSaveAsCommand",
-							"Illegal argument from SQLiteConnector when attempting to switch database. Showing dialog, prompting for proper extension.");
+					GlobalLogger
+							.getLogger()
+							.logp(Level.WARNING,
+									"MenuBar",
+									"performSaveAsCommand",
+									"Illegal argument from SQLiteConnector when attempting to switch database. Showing dialog, prompting for proper extension.");
 					success = false;
 
 					JOptionPane
@@ -399,9 +424,11 @@ public class MenuBar extends JMenuBar implements ActionListener
 				}
 				catch (SQLException e)
 				{
-					GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-							"performSaveAsCommand",
-							"Save As command generated SQLException. Showing dialog.");
+					GlobalLogger
+							.getLogger()
+							.logp(Level.WARNING, "MenuBar",
+									"performSaveAsCommand",
+									"Save As command generated SQLException. Showing dialog.");
 
 					JOptionPane
 							.showMessageDialog(
@@ -411,9 +438,11 @@ public class MenuBar extends JMenuBar implements ActionListener
 				}
 				catch (IOException e)
 				{
-					GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-							"performSaveAsCommand",
-							"Save As command generated IOException. Showing dialog.");
+					GlobalLogger
+							.getLogger()
+							.logp(Level.WARNING, "MenuBar",
+									"performSaveAsCommand",
+									"Save As command generated IOException. Showing dialog.");
 
 					// Trouble serializing objects
 					JOptionPane
@@ -425,16 +454,52 @@ public class MenuBar extends JMenuBar implements ActionListener
 			}
 			else
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "performSaveAsCommand",
+				GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+						"performSaveAsCommand",
 						"User cancelled Save As operation, continuing.");
 				success = true;
 			}
 		} while (!success);
 	}
 
+	public void performNewCommand()
+	{
+		// This should probably be a method for someone who manages this stuff
+		// TODO Same with the file handling
+		
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"performNewCommand()",
+				"New task command issued. Bringing up NewTaskPanel.");
+		
+		NewTaskPanel p = new NewTaskPanel();
+		p.displayFrame();
+	}
+	
 	public void performEditCommand()
 	{
-		// TODO This should edit the currently selected task?
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"performEditCommand()",
+				"Edit task command issued. Bringing up NewTaskPanel.");
+		
+		JTable table = Timeflecks.getSharedApplication().getMainWindow().getTablePanel().getTable();
+		
+		int row = table.getSelectedRow();
+		if (row >= 0 && row < table.getRowCount())
+		{
+			NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
+					.get(row));
+			p.displayFrame();
+		}
+		else
+		{
+			// This happens if there are no tasks selected
+			
+			// TODO Grey out the Edit Task Button if there are no tasks selected
+			
+			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
+					"performEditCommand()",
+					"Selected row is out of bounds for the current table.");
+		}
 	}
 
 	public void performNoHelpCommand()
@@ -456,26 +521,24 @@ public class MenuBar extends JMenuBar implements ActionListener
 		if (newFile.exists())
 		{
 			// The file exists
-			// if (Timeflecks.getInstance().getCurrentFile().equals(newFile))
-			// {
-			// return false;
-			// }
-			// else
-			// {
-			// If it exists and is not the same, then we have an error, and need
-			// to prompt the user.
-			// return true;
-			// }
+			if (Timeflecks.getSharedApplication().getCurrentFile()
+					.equals(newFile))
+			{
+				return false;
+			}
+			else
+			{
+				// If it exists and is not the same, then we have an error, and
+				// need
+				// to prompt the user.
+				return true;
+			}
 
-			// TODO remove this
-			return true;
 		}
 		else
 		{
 			return false;
 		}
-		// TODO Check against Application having a the same "current file"
-
 	}
 
 	/**
@@ -484,39 +547,45 @@ public class MenuBar extends JMenuBar implements ActionListener
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed", "actionPerformed"
-				+ "\nCommand: " + e.getActionCommand());
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
+				"actionPerformed" + "\nCommand: " + e.getActionCommand());
 
 		String cmd = e.getActionCommand();
 
 		if (cmd.equalsIgnoreCase("Open"))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
-					"Open menu item selected");
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "Open menu item selected");
 			performOpenCommand();
 		}
 		else if (cmd.equalsIgnoreCase("Save"))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
-					"Save menu item selected");
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "Save menu item selected");
 			performSaveCommand();
 		}
 		else if (cmd.equalsIgnoreCase("Save As..."))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
-					"Save as... menu item selected");
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "Save as... menu item selected");
 			performSaveAsCommand();
+		}
+		else if (cmd.equalsIgnoreCase("New Task..."))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "New task... menu item selected");
+			performNewCommand();
 		}
 		else if (cmd.equalsIgnoreCase("Edit Task..."))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
-					"Edit task... menu item selected");
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "Edit task... menu item selected");
 			performEditCommand();
 		}
 		else if (cmd.equalsIgnoreCase("No Help For You!"))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
-					"No Help For You! menu item selected");
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "No Help For You! menu item selected");
 			performNoHelpCommand();
 		}
 	}
