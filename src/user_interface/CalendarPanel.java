@@ -174,7 +174,14 @@ public class CalendarPanel extends JPanel
 					- leftInset, durationInHours * hourIncrement);
 
 			// Draw the rectangle first, so the string shows up on top of it
-			g.setColor(Color.white);
+			if (t.isCompleted())
+			{
+				g.setColor(Color.getHSBColor(0f, 0f, .94f));
+			}
+			else
+			{
+				g.setColor(Color.white);
+			}
 			g.fillRect(frame.x, frame.y, frame.width, frame.height);
 			g.setColor(Color.black);
 			g.drawRect(frame.x, frame.y, frame.width, frame.height);
@@ -187,8 +194,6 @@ public class CalendarPanel extends JPanel
 			int fontHeight2 = (int) g2.getFont()
 					.getLineMetrics(t.getName(), frc2).getHeight();
 
-			// TODO implement wrapping of names
-
 			final int textLeftInset = 2;
 			final int textTopInset = 2 + fontHeight2;
 
@@ -198,9 +203,13 @@ public class CalendarPanel extends JPanel
 			// frame,
 			// and then it will be given a place to draw by the calendar.
 
+			this.drawString(g, t.getName(), frame.x + getInsets().left
+					+ textLeftInset, frame.y + getInsets().top + textTopInset,
+					frame.width);
+
 			// Note that it is our job not to draw outside of our insets...
-			g.drawString(t.getName(), frame.x + getInsets().left
-					+ textLeftInset, frame.y + getInsets().top + textTopInset);
+			// g.drawString(t.getName(), frame.x + getInsets().left
+			// + textLeftInset, frame.y + getInsets().top + textTopInset);
 
 			// TaskComponent tc = new TaskComponent(t, new Rectangle(leftInset,
 			// firstInset + taskHours * hourIncrement, d.width - rightInset,
@@ -210,6 +219,36 @@ public class CalendarPanel extends JPanel
 			// TaskComponent tc2 = new TaskComponent(t, new Rectangle(leftInset,
 			// 1, 100, 200));
 			// add(tc);
+		}
+	}
+
+	public void drawString(Graphics g, String s, int x, int y, int width)
+	{
+		FontMetrics fm = g.getFontMetrics();
+
+		int lineHeight = fm.getHeight();
+
+		int curX = x;
+		int curY = y;
+
+		String[] words = s.split(" ");
+
+		for (String word : words)
+		{
+			// Find out the width of the word.
+			int wordWidth = fm.stringWidth(word + " ");
+
+			// If text exceeds the width, then move to next line.
+			if (curX + wordWidth >= x + width)
+			{
+				curY += lineHeight;
+				curX = x;
+			}
+
+			g.drawString(word, curX, curY);
+
+			// Move over to the right for next word.
+			curX += wordWidth;
 		}
 	}
 
@@ -231,16 +270,23 @@ public class CalendarPanel extends JPanel
 		for (Task t : Timeflecks.getSharedApplication().getTaskList()
 				.getTasks())
 		{
-			// Same day will just return false if they are null
-			if (sameDay(t.getStartTime(), this.getDate()))
+			if (t.isScheduled())
 			{
-				// They are on the same day
-				tasksToPaint.add(t);
+				// Same day will just return false if they are null
+				if (sameDay(t.getStartTime(), this.getDate()))
+				{
+					// They are on the same day
+					tasksToPaint.add(t);
+				}
 			}
 		}
 
 		// Now we have the list of tasks to paint, we want to make sure that
 		// they are painted in paintComponent.
+
+		// this.invalidate();
+		this.repaint();
+		// this.revalidate();
 	}
 
 	public boolean sameDay(Date firstDate, Date secondDate)
