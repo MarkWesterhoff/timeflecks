@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import core.Timeflecks;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class MainWindow extends JFrame
 				displayFrame();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
+				
+				Timeflecks.getSharedApplication().getMainWindow().refresh();
 			}
 		});
 	}
