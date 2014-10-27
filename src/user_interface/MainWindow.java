@@ -5,8 +5,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
-import core.Timeflecks;
-
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
