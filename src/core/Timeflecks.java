@@ -40,8 +40,9 @@ public class Timeflecks
 		taskList = new TaskList();
 
 		try
-		{
-			dbConnector = new SQLiteConnector();
+		{	
+			setCurrentFile(new File("calendar1.db"));
+			openDatabaseFile(getCurrentFile());	
 		}
 		catch (SQLException e)
 		{
@@ -66,12 +67,14 @@ public class Timeflecks
 							"Object Serialization Error. (1601)\nCould not save empty database file.",
 							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		idGenerator = new IDGenerator();
-		setCurrentFile(new File("calendar1.db"));
-
+		catch (Exception e)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
+					"Timeflecks",
+					"Unknown excpetion:" + e.getMessage());
+		}
+		
 		setMainWindow(new MainWindow());
-
 	}
 
 	public TaskList getTaskList()
