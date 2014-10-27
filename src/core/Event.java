@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -30,6 +31,9 @@ public class Event implements Scheduleable, Serializable
 
 	public Event(String name, Date startTime, long duration)
 	{
+		Objects.requireNonNull(name);
+		Objects.requireNonNull(startTime);
+		
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		this.startTime = startTime;
@@ -50,6 +54,7 @@ public class Event implements Scheduleable, Serializable
 
 	public void setName(String name)
 	{
+		Objects.requireNonNull(name);
 		this.name = name;
 	}
 

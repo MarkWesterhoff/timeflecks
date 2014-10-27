@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
@@ -103,6 +104,7 @@ public class Timeflecks
 
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
+		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
 
@@ -113,11 +115,13 @@ public class Timeflecks
 
 	public void setCurrentFile(File currentFile)
 	{
+		Objects.requireNonNull(currentFile);
 		this.currentFile = currentFile;
 	}
 
 	public void openDatabaseFile(File newFile) throws SQLException, IOException, ClassNotFoundException
 	{
+		Objects.requireNonNull(newFile);
 		setDBConnector(new SQLiteConnector(newFile, false));
 		setCurrentFile(newFile);
 
@@ -132,6 +136,7 @@ public class Timeflecks
 
 	public TaskList loadTaskListFromConnector(SQLiteConnector connector) throws SQLException, IOException, ClassNotFoundException
 	{
+		Objects.requireNonNull(connector);
 		ArrayList<Task> tasksFromFile = connector.getAllTasks();
 		ArrayList<Event> eventsFromFile = connector.getAllEvents();
 
@@ -143,6 +148,7 @@ public class Timeflecks
 	public void saveDatabaseFileAs(File newFile) throws SQLException,
 			IOException
 	{
+		Objects.requireNonNull(newFile);
 		setDBConnector(new SQLiteConnector(newFile, true));
 		setCurrentFile(newFile);
 

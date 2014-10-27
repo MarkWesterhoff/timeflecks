@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -39,6 +40,8 @@ public class Task implements Scheduleable, Serializable
 
 	public Task(String name)
 	{
+		Objects.requireNonNull(name);
+		
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		completed = false;
@@ -66,6 +69,7 @@ public class Task implements Scheduleable, Serializable
 
 	public void setName(String name)
 	{
+		Objects.requireNonNull(name);
 		this.name = name;
 	}
 
@@ -176,16 +180,20 @@ public class Task implements Scheduleable, Serializable
 
 	public void setTags(ArrayList<String> tags)
 	{
+		Objects.requireNonNull(tags);
 		this.tags = tags;
 	}
 
 	public boolean hasTag(String tag)
 	{
+		Objects.requireNonNull(tag);
 		return tags.contains(tag);
 	}
 
 	public void addTag(String tagname)
 	{
+		Objects.requireNonNull(tagname);
+		
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 				"core.Task.addTag(tagname)",
 				"Adding new tag " + tagname + " to task with id " + id);
