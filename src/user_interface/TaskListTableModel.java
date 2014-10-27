@@ -111,6 +111,7 @@ public class TaskListTableModel extends AbstractTableModel
 			break;
 		case 1:
 			task.setName((String) value);
+			Timeflecks.getSharedApplication().getMainWindow().refresh();
 			break;
 		}
 		try
