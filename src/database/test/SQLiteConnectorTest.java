@@ -36,11 +36,11 @@ public class SQLiteConnectorTest {
 		files.add(new File("testSwitchDatabase3.db"));
 		
 		// Positive tests
-		new SQLiteConnector(files.get(0)).serializeAndSave(new Task("task1"));
-		new SQLiteConnector(files.get(1)).serializeAndSave(new Task("task2"));
+		new SQLiteConnector(files.get(0), true).serializeAndSave(new Task("task1"));
+		new SQLiteConnector(files.get(1), true).serializeAndSave(new Task("task2"));
 		
 		Task task = new Task("task3");
-		SQLiteConnector conn = new SQLiteConnector(files.get(2));
+		SQLiteConnector conn = new SQLiteConnector(files.get(2), true);
 		conn.serializeAndSave(task);
 		
 		Task returnTask = conn.getSerializedTask(task.getId());
@@ -49,7 +49,7 @@ public class SQLiteConnectorTest {
 		
 		// Negative tests
 		try {
-			new SQLiteConnector(new File("test1.notdb"));
+			new SQLiteConnector(new File("test1.notdb"), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}
@@ -58,7 +58,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			new SQLiteConnector(new File(""));
+			new SQLiteConnector(new File(""), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of no extension");
 		}
@@ -67,7 +67,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			new SQLiteConnector(new File("asdf"));
+			new SQLiteConnector(new File("asdf"), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}

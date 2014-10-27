@@ -118,7 +118,7 @@ public class Timeflecks
 
 	public void openDatabaseFile(File newFile) throws SQLException, IOException, ClassNotFoundException
 	{
-		setDBConnector(new SQLiteConnector(newFile));
+		setDBConnector(new SQLiteConnector(newFile, false));
 		setCurrentFile(newFile);
 
 		long highestID = getDBConnector().getHighestID();
@@ -143,7 +143,7 @@ public class Timeflecks
 	public void saveDatabaseFileAs(File newFile) throws SQLException,
 			IOException
 	{
-		setDBConnector(new SQLiteConnector(newFile));
+		setDBConnector(new SQLiteConnector(newFile, true));
 		setCurrentFile(newFile);
 
 		getTaskList().saveAllTasksAndEvents();
