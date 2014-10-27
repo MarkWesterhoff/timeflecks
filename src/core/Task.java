@@ -116,11 +116,11 @@ public class Task implements Scheduleable, Serializable
 
 	/**
 	 * 
-	 * @return whether the object has assigned a start time
+	 * @return whether the object has assigned a start time and a duration
 	 */
 	public boolean isScheduled()
 	{
-		return !(startTime == null);
+		return (startTime != null && duration != 0);
 	}
 
 	public String getDescription()
