@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import logging.GlobalLogger;
-
-import database.IDGenerator;
-import database.SQLiteConnector;
-
 
 /**
  * 
@@ -22,30 +18,32 @@ public class Event implements Scheduleable, Serializable
 {
 	private static final long serialVersionUID = 1L;
 
-	protected String name;
-	protected Date startTime;
-	protected String description;
-	protected final long id;
-
-	protected transient Logger logger;
+	private String name;
+	private Date startTime;
+	private String description;
+	private final long id;
 
 	/*
 	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
 	 * takes a <code>long</code>, so math can be done. In milliseconds.
 	 */
-	protected long duration;
-	
+	private long duration;
+
 	public Event(String name, Date startTime, long duration)
 	{
-		id = IDGenerator.getNextID();
+		Objects.requireNonNull(name);
+		Objects.requireNonNull(startTime);
+		
+		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		this.startTime = startTime;
 		this.duration = duration;
-		this.logger = GlobalLogger.getLogger();
-		logger.logp(Level.INFO, "core.Event","core.Event()","Creating event " + this.name + " with id " + id);
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event()",
+				"Creating event " + this.name + " with id " + id);
 	}
-	
-	public long getId() {
+
+	public long getId()
+	{
 		return id;
 	}
 
@@ -56,6 +54,7 @@ public class Event implements Scheduleable, Serializable
 
 	public void setName(String name)
 	{
+		Objects.requireNonNull(name);
 		this.name = name;
 	}
 
@@ -66,9 +65,13 @@ public class Event implements Scheduleable, Serializable
 
 	public void setStartTime(Date startTime)
 	{
-		if(startTime == null) {
-			logger.logp(Level.WARNING, "core.Event", "core.Event.setStartTime()", "Start time should not be set to null for events");
-			throw new IllegalArgumentException("Events should not have a null start time.");
+		if (startTime == null)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "core.Event",
+					"core.Event.setStartTime()",
+					"Start time should not be set to null for events");
+			throw new IllegalArgumentException(
+					"Events should not have a null start time.");
 		}
 		this.startTime = startTime;
 	}
@@ -101,18 +104,19 @@ public class Event implements Scheduleable, Serializable
 	{
 		this.duration = duration;
 	}
-	
+
 	/**
 	 * Saves this TimeObject to the database.
 	 * 
-	 * @throws SQLException when there is a problem writing to the database
-	 * @throws IOException when there is a problem with serialization
+	 * @throws SQLException
+	 *             when there is a problem writing to the database
+	 * @throws IOException
+	 *             when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
-		logger.logp(Level.INFO, "core.Event", "core.Event.saveToDatabase()", "Saving " 
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event.saveToDatabase()", "Saving " 
 				+ this.name + " to database.");
 		
-		SQLiteConnector conn = SQLiteConnector.getInstance();
-		conn.serializeAndSave(this);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
 	}
 }

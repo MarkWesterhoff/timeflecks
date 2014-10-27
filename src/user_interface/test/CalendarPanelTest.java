@@ -1,6 +1,7 @@
 package user_interface.test;
 
 import java.awt.FlowLayout;
+import java.util.Date;
 
 import javax.swing.*;
 
@@ -39,15 +40,17 @@ public class CalendarPanelTest
 				CalendarPanel p;
 				if (i == 0)
 				{
-					p = new CalendarPanel(true, true, width, height);
+					p = new CalendarPanel(new Date(), true, true, width, height);
 				}
 				else if (i == 6)
 				{
-					p = new CalendarPanel(false, false, width, height);
+					p = new CalendarPanel(new Date(), false, false, width,
+							height);
 				}
 				else
 				{
-					p = new CalendarPanel(false, true, width, height);
+					p = new CalendarPanel(new Date(), false, true, width,
+							height);
 				}
 
 				container.add(p);
@@ -75,15 +78,15 @@ public class CalendarPanelTest
 		}
 
 	}
-	
+
 	public static void main(String[] args)
 	{
 		try
 		{
 			JFrame newFrame = new JFrame("Calendar Test");
 
-			CalendarPanel p = new CalendarPanel(true, true, 400, 400);
-			
+			CalendarPanel p = new CalendarPanel(new Date(), true, true, 400,
+					400);
 
 			newFrame.getContentPane().add(p);
 

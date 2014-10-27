@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 public class ByteUtility {
 	/**
@@ -15,7 +16,9 @@ public class ByteUtility {
 	 * @throws IOException when there is a problem serializing the object
 	 */
 	public static byte[] getBytes(Object obj) throws IOException {
-	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    Objects.requireNonNull(obj);
+	    
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	    ObjectOutputStream oos = new ObjectOutputStream(bos);
 	    oos.writeObject(obj);
 	    oos.flush();
@@ -35,6 +38,8 @@ public class ByteUtility {
 	 * 						the serialized object
 	 */
 	public static Object getObject(byte[] bytes) throws ClassNotFoundException, IOException {
+		Objects.requireNonNull(bytes);
+		
 		ObjectInputStream inStream = null;
 		if(bytes != null) {
 			inStream = new ObjectInputStream(new ByteArrayInputStream(bytes));

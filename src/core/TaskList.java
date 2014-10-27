@@ -5,37 +5,34 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import logging.GlobalLogger;
 
 //I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
 {
-	static TaskList instance;
-	
-	public static TaskList getInstance()
-	{
-		if (instance == null)
-		{
-			instance = new TaskList();
-		}
-		return instance;
-	}
-	
+
 	// Class implementation
-	
+
 	private ArrayList<Task> tasks;
 	private ArrayList<Event> events;
-	private transient Logger logger;
 	private Comparator<Task> taskComparator;
-	
-	private TaskList()
+
+	public TaskList()
 	{
 		tasks = new ArrayList<Task>();
 		events = new ArrayList<Event>();
-		this.logger = GlobalLogger.getLogger();
+		taskComparator = Task.nameComparator;
+	}
+	
+	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
+		Objects.requireNonNull(tasks);
+		Objects.requireNonNull(events);
+		
+		this.tasks = tasks;
+		this.events = events;
 	}
 
 	public ArrayList<Task> getTasks()
@@ -47,58 +44,74 @@ public class TaskList
 	{
 		return events;
 	}
-	
+
 	public void setTasks(ArrayList<Task> tasks)
 	{
+		Objects.requireNonNull(tasks);
 		this.tasks = tasks;
 	}
-	
+
 	public void setEvents(ArrayList<Event> events)
 	{
+		Objects.requireNonNull(events);
 		this.events = events;
 	}
-	
-	public void addEvent(Event e) {
-		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.addEvent(e)",
+
+	public void addEvent(Event e)
+	{
+		Objects.requireNonNull(e);
+		
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
+				"core.TaskList.addEvent(e)",
 				"Adding new event with id " + e.getId() + " to event list");
 		events.add(e);
 	}
-	
-	public void addTask(Task t) {
-		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.addTask(e)",
+
+	public void addTask(Task t)
+	{
+		Objects.requireNonNull(t);
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
+				"core.TaskList.addTask(e)",
 				"Adding new task with id " + t.getId() + " to task list");
 		tasks.add(t);
 	}
-	
+
 	// DEPRECATED, use sort() and setTaskComparator
-	
-	public void sortTasks(Comparator<Task> taskComp) {
-		Collections.sort(tasks,taskComp);
-		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.sortTasks()",
-				"Sorting task list");
-	}
-	
-	public void sort() {
-		Collections.sort(tasks,taskComparator);
-		logger.logp(Level.INFO, "core.TaskList", "core.TaskList.sortTasks()",
-				"Sorting task list");
-	}
-	
+
+	public void sortTasks(Comparator<Task> taskComp)
+	{
+		Objects.requireNonNull(taskComp);
 		
+		Collections.sort(tasks, taskComp);
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
+				"core.TaskList.sortTasks()", "Sorting task list");
+	}
+
+	public void sort()
+	{
+		Collections.sort(tasks, taskComparator);
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
+				"core.TaskList.sortTasks()", "Sorting task list");
+	}
+
 	/**
 	 * Saves all tasks to the database.
-	 * @throws IOException 
-	 * @throws SQLException 
+	 * 
+	 * @throws IOException
+	 * @throws SQLException
 	 */
-	public void saveAllTasksAndEvents() throws SQLException, IOException {
-		logger.logp(Level.INFO, "core.TaskList", 
+	public void saveAllTasksAndEvents() throws SQLException, IOException
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.saveAllTasksAndEvents",
 				"saving all tasks and events to database");
-		for (Task t : tasks) {
+		for (Task t : tasks)
+		{
 			t.saveToDatabase();
 		}
-		
-		for (Event e : events) {
+
+		for (Event e : events)
+		{
 			e.saveToDatabase();
 		}
 	}

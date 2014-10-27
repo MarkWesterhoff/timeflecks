@@ -15,52 +15,41 @@ import org.junit.Test;
 
 import core.Event;
 import core.Task;
-import core.TaskList;
+import core.Timeflecks;
 import database.SQLiteConnector;
 
 public class SQLiteConnectorTest {
 	
 	/**
 	 * Tests the constructor of the SQLiteConnector.
-	 * 
-	 * @throws SQLException
-	 * @throws IOException 
-	 */
-	@Test
-	public void testConstructor() throws SQLException, IOException {
-		// Positive tests
-		SQLiteConnector.getInstance();
-	}
-	
-	/**
-	 * Tests switchDatabase functionality to set up a new DB.
+	 *
 	 * @throws SQLException
 	 * @throws IOException
 	 * @throws ClassNotFoundException 
 	 */
 	@Test
-	public void testSwitchDatabase() throws SQLException, IOException, ClassNotFoundException {
+	public void testConstructor() throws SQLException, IOException, ClassNotFoundException {
 		ArrayList<File> files = new ArrayList<File>();
+		 
 		files.add(new File("testSwitchDatabase1.db"));
 		files.add(new File("testSwitchDatabase2.db"));
 		files.add(new File("testSwitchDatabase3.db"));
 		
 		// Positive tests
-		SQLiteConnector.switchDatabase(files.get(0));
-		SQLiteConnector.getInstance().serializeAndSave(new Task("task1"));
-		SQLiteConnector.switchDatabase(files.get(1));
-		SQLiteConnector.getInstance().serializeAndSave(new Task("task2"));
-		SQLiteConnector.switchDatabase(files.get(2));
-		Task task = new Task("task3");
-		SQLiteConnector.getInstance().serializeAndSave(task);
+		new SQLiteConnector(files.get(0), true).serializeAndSave(new Task("task1"));
+		new SQLiteConnector(files.get(1), true).serializeAndSave(new Task("task2"));
 		
-		Task returnTask = SQLiteConnector.getInstance().getSerializedTask(task.getId());
+		Task task = new Task("task3");
+		SQLiteConnector conn = new SQLiteConnector(files.get(2), true);
+		conn.serializeAndSave(task);
+		
+		Task returnTask = conn.getSerializedTask(task.getId());
 		assertEquals("Names should match", task.getName(), returnTask.getName());
 		
 		
 		// Negative tests
 		try {
-			SQLiteConnector.switchDatabase(new File("test1.notdb"));
+			new SQLiteConnector(new File("test1.notdb"), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}
@@ -69,7 +58,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			SQLiteConnector.switchDatabase(new File(""));
+			new SQLiteConnector(new File(""), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of no extension");
 		}
@@ -78,7 +67,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		try {
-			SQLiteConnector.switchDatabase(new File("asdf"));
+			new SQLiteConnector(new File("asdf"), true);
 			fail("Expected IllegalArgumentException because "
 					+ "of wrong extension");
 		}
@@ -102,17 +91,14 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testSaveAndLoad() throws SQLException, IOException, ClassNotFoundException {
-		SQLiteConnector.switchDatabase(new File("testSaveAndLoad.db"));
-		SQLiteConnector conn = SQLiteConnector.getInstance();
-		
 		Task task = new Task("task1");
-		conn.serializeAndSave(task);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
 		
 		Event event = new Event("event1", new Date(), 1);
-		conn.serializeAndSave(event);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(event);
 		
 		// Positive tests for Task
-		Task returnTask = conn.getSerializedTask(task.getId());
+		Task returnTask = Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task.getId());
 		
 		assertEquals("Descriptions should match", task.getDescription(), 
 				returnTask.getDescription());
@@ -131,7 +117,7 @@ public class SQLiteConnectorTest {
 		assertEquals("Tags should match", task.getTags(), returnTask.getTags());
 		
 		// Positive tests for Event
-		Event returnEvent = (Event)conn.getSerializedEvent(event.getId());
+		Event returnEvent = (Event)Timeflecks.getSharedApplication().getDBConnector().getSerializedEvent(event.getId());
 		assertEquals("Descriptions should match", event.getDescription(), 
 				returnEvent.getDescription());
 		assertEquals("Duration should match", event.getDuration(), 
@@ -146,6 +132,7 @@ public class SQLiteConnectorTest {
 		
 		// Negative tests
 		
+		
 	}
 	
 	/**
@@ -157,21 +144,19 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testDelete() throws SQLException, IOException, ClassNotFoundException {
-		SQLiteConnector.switchDatabase(new File("testDelete.db"));
-		
 		Task task = new Task("task1");
 		Task task2 = new Task("task2");
-		SQLiteConnector.getInstance().serializeAndSave(task);
-		SQLiteConnector.getInstance().serializeAndSave(task2);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task2);
 		
 		// Attempt to delete
-		SQLiteConnector.getInstance().delete(task.getId());
+		Timeflecks.getSharedApplication().getDBConnector().delete(task.getId());
 		
 		// Try to get still existing task back
-		SQLiteConnector.getInstance().getSerializedTask(task2.getId());
+		Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task2.getId());
 		
 		try {
-			SQLiteConnector.getInstance().getSerializedTask(task.getId());
+			Timeflecks.getSharedApplication().getDBConnector().getSerializedTask(task.getId());
 			fail("Getting a deleted task should not succeed");
 		}
 		catch (SQLException s) {
@@ -189,7 +174,6 @@ public class SQLiteConnectorTest {
 	public void stressTestSerialization() throws SQLException, IOException {
 		int numTasks = 100;
 		
-		TaskList taskList = TaskList.getInstance();
 		for(int i = 0; i < numTasks/2; ++i) {
 			Task t = new Task("task" + Integer.toString(i));
 			t.setDescription("Description of the task.");
@@ -199,19 +183,19 @@ public class SQLiteConnectorTest {
 			t.addTag("tag3");
 			t.addTag("tag4");
 			t.setStartTime(new Date());
-			taskList.addTask(t);
+			Timeflecks.getSharedApplication().getTaskList().addTask(t);
 		}
 		
 		for(int i = 0; i < numTasks/2; ++i) {
 			Event e = new Event("event" + Integer.toString(i), new Date(), 100);
 			e.setDescription("Description of the event.");
-			taskList.addEvent(e);
+			Timeflecks.getSharedApplication().getTaskList().addEvent(e);
 		}
 		
 		// Time saving of all tasks
 		long time = System.currentTimeMillis();
 		
-		taskList.saveAllTasksAndEvents();
+		Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
 		
 		time = System.currentTimeMillis() - time;
 		System.out.println("Time to save all Objects: " 

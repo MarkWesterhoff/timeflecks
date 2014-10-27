@@ -16,22 +16,18 @@ public class TaskComponent extends JComponent
 	private static final long serialVersionUID = 1L;
 
 	private Task task;
-	private Rectangle frame;
 
-	public TaskComponent(Task taskToDraw, Rectangle newFrame)
+	public TaskComponent(Task taskToDraw, Rectangle newBounds)
 	{
 		super();
 
 		task = taskToDraw;
-		frame = newFrame;
+		this.setBounds(newBounds);
 
-		setBorder(BorderFactory.createLineBorder(Color.black));
+		setBorder(BorderFactory.createEmptyBorder());
+		// setBorder(BorderFactory.createLineBorder(Color.black));
 
-		this.setPreferredSize(new Dimension(frame.width, frame.height));
-
-		// TODO keep this from breaking if you make it too small (down in the
-		// math)
-		this.setMinimumSize(new Dimension(frame.width, frame.height));
+		setPreferredSize(new Dimension(newBounds.width, newBounds.height));
 	}
 
 	public void paintComponent(Graphics g)
@@ -40,13 +36,12 @@ public class TaskComponent extends JComponent
 
 		Graphics2D g2 = (Graphics2D) g;
 
-		// The frame will get updated each time when we do this, so we can just
-		// go off of that.
+		Rectangle frame = this.getBounds();
 
 		// Draw the rectangle first, so the string shows up on top of it
 		g2.setPaint(Color.white);
 		g2.fillRect(frame.x, frame.y, frame.width, frame.height);
-		g2.setPaint(Color.black);
+		g2.setPaint(Color.red);
 		g2.drawRect(frame.x, frame.y, frame.width, frame.height);
 
 		// Draw the string title of the task
@@ -68,18 +63,13 @@ public class TaskComponent extends JComponent
 				frame.y + getInsets().top + topInset);
 	}
 
-	public void setFrame(Rectangle newFrame)
-	{
-		frame = newFrame;
-	}
-
 	public static void main(String[] args)
 	{
 		try
 		{
 			Task t = new Task("New Task Blah Blah Blah");
-			TaskComponent p = new TaskComponent(t, new Rectangle(10, 10, 200,
-					100));
+			TaskComponent p = new TaskComponent(t,
+					new Rectangle(2, 2, 100, 100));
 			JPanel panel = new JPanel();
 			panel.add(p);
 			panel.setPreferredSize(new Dimension(400, 400));
@@ -88,6 +78,8 @@ public class TaskComponent extends JComponent
 			newFrame.getContentPane().add(p);
 
 			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			newFrame.pack();
 
 			newFrame.setSize(400, 400);
 

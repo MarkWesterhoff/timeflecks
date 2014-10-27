@@ -1,5 +1,7 @@
 package utility;
 
+import java.util.Objects;
+
 public class StringUtility {
 	
 	/**
@@ -9,6 +11,8 @@ public class StringUtility {
 	 * @return true if string is alphanumeric, false otherwise
 	 */
 	public static boolean isAlphaNumeric(String str) {
+		Objects.requireNonNull(str);
+		
 		String pattern = "^[a-zA-Z0-9]+$";
 		if(str.matches(pattern)) {
 			return true;

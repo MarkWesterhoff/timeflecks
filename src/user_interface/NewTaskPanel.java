@@ -1,12 +1,10 @@
 package user_interface;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,14 +13,15 @@ import logging.GlobalLogger;
 
 import com.toedter.calendar.JDateChooser;
 
+import core.Priority;
 import core.Task;
-import core.TaskList;
+import core.Timeflecks;
 
-public class NewTaskPanel extends JPanel implements ActionListener
+public class NewTaskPanel extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 
-	private Logger logger;
+	private Task taskToEdit;
 
 	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
 			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
@@ -37,27 +36,27 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 	public NewTaskPanel()
 	{
+		this(null);
+	}
+
+	public NewTaskPanel(Task toEdit)
+	{
 		super();
 
-		logger = GlobalLogger.getLogger();
+		if (toEdit != null)
+		{
+			taskToEdit = toEdit;
+		}
 
-		this.setLayout(new BorderLayout());
-		this.setPreferredSize(new Dimension(350, 395));
+		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().setPreferredSize(new Dimension(350, 365));
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Beginning interface setup");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Beginning interface setup");
 
 		// Title Label
 
-		titleLabel = new JLabel("New Task");
-		titleLabel.setHorizontalAlignment(JLabel.CENTER);
-		titleLabel.setBorder(new EmptyBorder(10, 4, 4, 4));
-
-		Font font = titleLabel.getFont();
-		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
-		titleLabel.setFont(boldFont);
-
-		this.add(titleLabel, BorderLayout.NORTH);
+		// addTitleLabel();
 
 		// Center will be the forms, in a panel with FlowLayout (default, but we
 		// set it for clarity)
@@ -90,13 +89,18 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		taskNameField = new JTextField(30);
 		taskNameLabel.setLabelFor(taskNameField); // Accessibility
 
+		if (taskToEdit != null)
+		{
+			taskNameField.setText(taskToEdit.getName());
+		}
+
 		gc.gridy++;
 		gc.insets = fieldInsets;
 
 		centerPanel.add(taskNameField, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Added name field");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added name field");
 
 		// Using JCalendar from here:
 		// http://toedter.com/jcalendar/
@@ -111,7 +115,15 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(taskStartDateLabel, gc);
 
-		startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+		if (taskToEdit != null)
+		{
+			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
+					"MM/dd/yyyy hh:mm:ss a");
+		}
+		else
+		{
+			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+		}
 
 		startDateChooser.setMinimumSize(new Dimension(175, startDateChooser
 				.getMinimumSize().height));
@@ -133,22 +145,32 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(taskDueDateLabel, gc);
 
-		dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+		if (taskToEdit != null)
+		{
+			dueDateChooser = new JDateChooser(taskToEdit.getDueDate(),
+					"MM/dd/yyyy hh:mm:ss a");
+		}
+		else
+		{
+			dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+		}
+
+		// HERE
 
 		dueDateChooser.setMinimumSize(new Dimension(175, dueDateChooser
 				.getMinimumSize().height));
 		dueDateChooser.setPreferredSize(new Dimension(330, dueDateChooser
 				.getPreferredSize().height));
 
-		taskStartDateLabel.setLabelFor(dueDateChooser); // Accessibility
+		taskDueDateLabel.setLabelFor(dueDateChooser); // Accessibility
 
 		gc.gridy++;
 		gc.insets = fieldInsets;
 
 		centerPanel.add(dueDateChooser, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Added date choosers");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added date choosers");
 
 		// Duration support
 
@@ -165,9 +187,25 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		JLabel minutes = new JLabel(" mins  ");
 		JLabel seconds = new JLabel(" secs");
 
-		hourModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-		minuteModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-		secondModel = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+		if (taskToEdit != null)
+		{
+			long duration = taskToEdit.getDuration();
+			int durationSecs = (int) ((duration / 1000) % 60);
+			int durationMins = (int) ((duration / 1000 / 60) % 60);
+			int durationHours = (int) ((duration / 1000 / 60 / 60) % 24);
+
+			// NOTE: Days go right off the end
+
+			hourModel = new SpinnerNumberModel(durationHours, 0, 23, 1);
+			minuteModel = new SpinnerNumberModel(durationMins, 0, 59, 1);
+			secondModel = new SpinnerNumberModel(durationSecs, 0, 59, 1);
+		}
+		else
+		{
+			hourModel = new SpinnerNumberModel(0, 0, 23, 1);
+			minuteModel = new SpinnerNumberModel(0, 0, 59, 1);
+			secondModel = new SpinnerNumberModel(0, 0, 59, 1);
+		}
 
 		JSpinner hourSpinner = new JSpinner(hourModel);
 		JSpinner minuteSpinner = new JSpinner(minuteModel);
@@ -208,8 +246,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(durationPanel, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Added duration pickers");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added duration pickers");
 
 		// Priority Support
 
@@ -226,6 +264,26 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		taskPriorityComboBox.addItem("Medium");
 		taskPriorityComboBox.addItem("Low");
 
+		if (taskToEdit != null)
+		{
+			if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
+			{
+				taskPriorityComboBox.setSelectedItem("High");
+			}
+			else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
+			{
+				taskPriorityComboBox.setSelectedItem("Medium");
+			}
+			else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
+			{
+				taskPriorityComboBox.setSelectedItem("Low");
+			}
+			else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
+			{
+				taskPriorityComboBox.setSelectedItem("Not Set");
+			}
+		}
+
 		taskPriorityLabel.setLabelFor(taskPriorityComboBox); // Accessibility
 
 		gc.gridy++;
@@ -233,8 +291,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(taskPriorityComboBox, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Added priority drop down");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added priority drop down");
 
 		// Description
 		taskDescriptionLabel = new JLabel("Description");
@@ -248,6 +306,11 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		taskDescriptionArea.setLineWrap(true);
 		taskDescriptionArea.setEditable(true);
 
+		if (taskToEdit != null)
+		{
+			taskDescriptionArea.setText(taskToEdit.getDescription());
+		}
+
 		JScrollPane scrollPane = new JScrollPane(taskDescriptionArea,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -259,8 +322,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 		centerPanel.add(scrollPane, gc);
 
-		logger.logp(Level.INFO, "NewTaskPanel", "NewTaskPanel",
-				"Added text area for description");
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added text area for description");
 
 		// Tags support goes here
 
@@ -285,18 +348,40 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		subpanel.add(saveButton, BorderLayout.EAST);
 		subpanel.add(cancelButton, BorderLayout.WEST);
 
-		this.add(subpanel, BorderLayout.SOUTH);
+		this.getContentPane().add(subpanel, BorderLayout.SOUTH);
 
 	}
 
-	@Override
+	@SuppressWarnings("unused")
+	private void addTitleLabel()
+	{
+		if (taskToEdit == null)
+		{
+			titleLabel = new JLabel("New Task");
+		}
+		else
+		{
+			titleLabel = new JLabel("Edit Task");
+		}
+
+		titleLabel.setHorizontalAlignment(JLabel.CENTER);
+		titleLabel.setBorder(new EmptyBorder(10, 4, 4, 4));
+
+		Font font = titleLabel.getFont();
+		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
+		titleLabel.setFont(boldFont);
+
+		this.getContentPane().add(titleLabel, BorderLayout.NORTH);
+	}
+
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("Save"))
 		{
 			if (taskNameField.getText().length() == 0)
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+						"actionPerformed",
 						"Save button pressed. Missing required name.");
 
 				JOptionPane.showMessageDialog(this,
@@ -305,10 +390,19 @@ public class NewTaskPanel extends JPanel implements ActionListener
 			}
 			else
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
-						"Save button pressed. Saving task.");
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+						"actionPerformed", "Save button pressed. Saving task.");
 
-				Task task = new Task(taskNameField.getText());
+				Task task;
+				if (taskToEdit != null)
+				{
+					task = taskToEdit;
+					task.setName(taskNameField.getText());
+				}
+				else
+				{
+					task = new Task(taskNameField.getText());
+				}
 
 				if (startDateChooser.getDate() != null)
 				{
@@ -332,7 +426,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				// String time = days + ":" + hours % 24 + ":" + minutes %
 				// 60 + ":" + seconds % 60;
 
-				if (duration != 0)
+				// Allow you to zero out the duration if you're editing a task that already exists
+				if (duration != 0 || taskToEdit != null)
 				{
 					task.setDuration(duration);
 				}
@@ -341,15 +436,15 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				{
 					if (taskPriorityComboBox.getSelectedIndex() == 1)
 					{
-						task.setPriority(Task.HIGH_PRIORITY);
+						task.setPriority(Priority.HIGH_PRIORITY);
 					}
 					else if (taskPriorityComboBox.getSelectedIndex() == 2)
 					{
-						task.setPriority(Task.MEDIUM_PRIORITY);
+						task.setPriority(Priority.MEDIUM_PRIORITY);
 					}
 					else if (taskPriorityComboBox.getSelectedIndex() == 3)
 					{
-						task.setPriority(Task.LOW_PRIORITY);
+						task.setPriority(Priority.LOW_PRIORITY);
 					}
 				}
 
@@ -359,21 +454,28 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				}
 
 				// Actually create the task and add it to the list
-				TaskList instance = TaskList.getInstance();
+				if (taskToEdit == null)
+				{
+					// If it already existed, we don't want to add it
+					Timeflecks.getSharedApplication().getTaskList()
+							.addTask(task);
 
-				instance.addTask(task);
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
-						"Added task to TaskList.\n" + task);
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+							"actionPerformed",
+							"Added task to TaskList.\n" + task);
+				}
 
 				try
 				{
+					// Update the task.
 					task.saveToDatabase();
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
-							"Saved task to database.");
+
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+							"actionPerformed", "Saved task to database.");
 				}
 				catch (SQLException a)
 				{
-					logger.logp(
+					GlobalLogger.getLogger().logp(
 							Level.WARNING,
 							"NewTaskPanel",
 							"actionPerformed",
@@ -386,13 +488,12 @@ public class NewTaskPanel extends JPanel implements ActionListener
 									this,
 									"Database Error. (1302)\nYour task was not saved. Please try again, or check your database file.",
 									"Database Error", JOptionPane.ERROR_MESSAGE);
-
-					// TODO Auto-generated catch block
-					a.printStackTrace();
 				}
 				catch (IOException a)
 				{
-					logger.logp(Level.WARNING, "NewTaskPanel",
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"NewTaskPanel",
 							"actionPerformed",
 							"IOException caught when saving task to database.\nMessage:\n"
 									+ a.getLocalizedMessage());
@@ -410,13 +511,14 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		}
 		else if (e.getActionCommand().equals("Cancel"))
 		{
-			logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+					"actionPerformed",
 					"Cancel button pressed. Dismissing Panel.");
 
 			if (hasEnteredText())
 			{
-				logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
-						"Task modified. Prompting user.");
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+						"actionPerformed", "Task modified. Prompting user.");
 
 				Object[] options = { "Discard Task", "Cancel" };
 				int reply = JOptionPane
@@ -430,15 +532,19 @@ public class NewTaskPanel extends JPanel implements ActionListener
 				if (reply == JOptionPane.YES_OPTION)
 				{
 					// The user selected to discard the task
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
-							"User elected to discard the task. Dismissing Panel.");
+					GlobalLogger
+							.getLogger()
+							.logp(Level.INFO, "NewTaskPanel",
+									"actionPerformed",
+									"User elected to discard the task. Dismissing Panel.");
 
 					dismissPane();
 				}
 				else
 				{
 					// We simply return the user to editing
-					logger.logp(Level.INFO, "NewTaskPanel", "actionPerformed",
+					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+							"actionPerformed",
 							"User selected to continue editing the task.");
 				}
 			}
@@ -455,6 +561,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 
 	public boolean hasEnteredText()
 	{
+
 		boolean returnBool = false;
 		if (taskNameField.getText() != null
 				&& taskNameField.getText().length() > 0)
@@ -465,7 +572,6 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		if (startDateChooser.getDate() != null)
 		{
 			returnBool = true;
-			;
 		}
 
 		if (dueDateChooser.getDate() != null)
@@ -493,82 +599,48 @@ public class NewTaskPanel extends JPanel implements ActionListener
 			returnBool = true;
 		}
 
+		// We don't want to prompt if they are editing a task
+		if (taskToEdit != null)
+		{
+			returnBool = false;
+		}
+
 		return returnBool;
 	}
 
 	public void dismissPane()
 	{
-		JComponent parent = (JComponent) getParent();
+		// this.processWindowEvent(new WindowEvent(this,
+		// WindowEvent.WINDOW_CLOSING));
 
-		if (parent != null)
-		{
-			Container toplevel = parent.getTopLevelAncestor();
-			parent.remove(this);
-			toplevel.validate();
-			toplevel.repaint();
-		}
+		// After it is done, we need to refresh everything
+		// Dismissing a newTaskPanel causes a refresh
+		Timeflecks.getSharedApplication().getMainWindow().refresh();
+
+		this.setVisible(false);
+		this.dispose();
 	}
 
-	public static void main(String args[])
+	public void displayFrame()
 	{
-		SwingUtilities.invokeLater(new Runnable()
+		if (taskToEdit == null)
 		{
-			public void run()
-			{
+			this.setTitle("Timeflecks - New Task");
+		}
+		else
+		{
+			this.setTitle("Timeflecks - Edit Task");
+		}
 
-				// Non-Nimbus works better for much of the layout here.
-				// Unfortunately.
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-				// // Set the look and feel to Nimbus
-				// try
-				// {
-				// for (LookAndFeelInfo info : UIManager
-				// .getInstalledLookAndFeels())
-				// {
-				// if ("Nimbus".equals(info.getName()))
-				// {
-				// UIManager.setLookAndFeel(info.getClassName());
-				// break;
-				// }
-				// }
-				// }
-				// catch (Exception e)
-				// {
-				// // If Nimbus is not available, you can set the GUI to
-				// // another look and feel.
-				//
-				// // TODO: Remove this
-				// System.err
-				// .println("ERROR: Nimbus not found. Using default look and feel");
-				// }
+		this.pack();
 
-				try
-				{
-					JFrame newFrame = new JFrame("Timeflecks - Add New Task");
-					Container c = newFrame.getContentPane();
+		this.setAutoRequestFocus(true);
+		this.setResizable(true);
+		this.setMinimumSize(new Dimension(380, 400));
 
-					NewTaskPanel p = new NewTaskPanel();
-
-					c.add(p, BorderLayout.CENTER);
-
-					newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-					newFrame.pack();
-
-					// newFrame.setSize(374, 450);
-					newFrame.setAutoRequestFocus(true);
-					newFrame.setResizable(true);
-
-					newFrame.setVisible(true);
-
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Unable to " + e);
-				}
-			}
-		});
+		this.setVisible(true);
 	}
 
 }

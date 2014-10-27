@@ -1,63 +1,54 @@
 package core;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import logging.GlobalLogger;
 
-import database.IDGenerator;
-import database.SQLiteConnector;
-
 /**
  * 
- * Represents a single scheduleable task -- the heart of the
- *         application.
+ * Represents a single scheduleable task -- the heart of the application.
  * 
  */
 
 public class Task implements Scheduleable, Serializable
-{	
+{
 	private static final long serialVersionUID = 1L;
-	
-	public final static int HIGH_PRIORITY = 2;
-	public final static int MEDIUM_PRIORITY = 1;
-	public final static int LOW_PRIORITY = 0;
-	public final static int NO_PRIORITY_SELECTED = -1;
-	
-	protected String name;
-	protected Date startTime;
-	protected String description;
-	protected final long id;
+
+	private String name;
+	private Date startTime;
+	private String description;
+	private final long id;
 
 	/*
 	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
 	 * takes a <code>long</code>, so math can be done. In milliseconds.
 	 */
-	protected long duration;
-	
+	private long duration;
+
 	private boolean completed;
 	private Date dueDate;
-	private int priority;
+	private Priority priority;
 	private ArrayList<String> tags;
 	private long ordering;
 
-	protected transient Logger logger;
-	
 	public Task(String name)
 	{
-		id = IDGenerator.getNextID();
+		Objects.requireNonNull(name);
+		
+		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		completed = false;
 		setOrdering(id);
-		this.logger = GlobalLogger.getLogger();
-		logger.logp(Level.INFO, "core.Task", "core.Task()", 
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Task", "core.Task()",
 				"Creating task " + this.name + " with id " + id);
-		priority = NO_PRIORITY_SELECTED;
+		priority = Priority.NO_PRIORITY_SELECTED;
 		tags = new ArrayList<String>();
 	}
 
@@ -66,7 +57,8 @@ public class Task implements Scheduleable, Serializable
 	 * functions.
 	 */
 
-	public long getId() {
+	public long getId()
+	{
 		return id;
 	}
 
@@ -77,6 +69,7 @@ public class Task implements Scheduleable, Serializable
 
 	public void setName(String name)
 	{
+		Objects.requireNonNull(name);
 		this.name = name;
 	}
 
@@ -87,15 +80,20 @@ public class Task implements Scheduleable, Serializable
 
 	public void setStartTime(Date startTime)
 	{
-		if(startTime == null) {
-			logger.logp(Level.INFO, "core.Task", 
+		if (startTime == null)
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 					"core.Task.setStartTime(startTime)",
 					"Resetting start time of task with id " + id + ".");
-		} else {
-			logger.logp(Level.INFO, "core.Task", 
+		}
+		else
+		{
+			GlobalLogger.getLogger().logp(
+					Level.INFO,
+					"core.Task",
 					"core.Task.setStartTime(startTime)",
-					"Setting start time to task with id " + id + "as " + 
-							startTime.toString());
+					"Setting start time to task with id " + id + "as "
+							+ startTime.toString());
 		}
 		this.startTime = startTime;
 	}
@@ -106,21 +104,23 @@ public class Task implements Scheduleable, Serializable
 	 */
 	public Date getEndTime()
 	{
-		if (startTime == null) {
+		if (startTime == null)
+		{
 			return null;
 		}
-		else {
+		else
+		{
 			return new Date(startTime.getTime() + duration);
 		}
 	}
 
 	/**
 	 * 
-	 * @return whether the object has assigned a start time
+	 * @return whether the object has assigned a start time and a duration
 	 */
 	public boolean isScheduled()
 	{
-		return !(startTime == null);
+		return (startTime != null && duration != 0);
 	}
 
 	public String getDescription()
@@ -142,23 +142,23 @@ public class Task implements Scheduleable, Serializable
 	{
 		this.duration = duration;
 	}
-	
+
 	public boolean isCompleted()
 	{
 		return completed;
 	}
 
-	public void setCompleted(boolean value) 
+	public void setCompleted(boolean value)
 	{
 		this.completed = value;
 	}
 
-	public int getPriority()
+	public Priority getPriority()
 	{
 		return priority;
 	}
 
-	public void setPriority(int priority)
+	public void setPriority(Priority priority)
 	{
 		this.priority = priority;
 	}
@@ -180,17 +180,22 @@ public class Task implements Scheduleable, Serializable
 
 	public void setTags(ArrayList<String> tags)
 	{
+		Objects.requireNonNull(tags);
 		this.tags = tags;
 	}
 
 	public boolean hasTag(String tag)
 	{
+		Objects.requireNonNull(tag);
 		return tags.contains(tag);
 	}
 
 	public void addTag(String tagname)
 	{
-		logger.logp(Level.INFO, "core.Task", "core.Task.addTag(tagname)", 
+		Objects.requireNonNull(tagname);
+		
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
+				"core.Task.addTag(tagname)",
 				"Adding new tag " + tagname + " to task with id " + id);
 		tags.add(tagname);
 	}
@@ -204,53 +209,69 @@ public class Task implements Scheduleable, Serializable
 	{
 		this.ordering = ordering;
 	}
-	
+
 	/**
 	 * Create comparator objects
 	 */
-	
-	public final static Comparator<Task> nameComparator = new Comparator<Task>() {
-		public int compare(Task t1, Task t2) {
+
+	public final static Comparator<Task> nameComparator = new Comparator<Task>()
+	{
+		public int compare(Task t1, Task t2)
+		{
 			return t1.name.compareTo(t2.name);
 		}
 	};
-	
-	public final static Comparator<Task> dueDateComparator = new Comparator<Task>() {
-		public int compare(Task t1, Task t2) {
+
+	public final static Comparator<Task> dueDateComparator = new Comparator<Task>()
+	{
+		public int compare(Task t1, Task t2)
+		{
 			// put non-scheduled tasks at the end
-			if(t1.dueDate == null) {
-				return (t1.dueDate == t2.dueDate)?0:1;
-			} else if(t2.dueDate == null) {
+			if (t1.dueDate == null)
+			{
+				return (t1.dueDate == t2.dueDate) ? 0 : 1;
+			}
+			else if (t2.dueDate == null)
+			{
 				return -1;
-			} else {
+			}
+			else
+			{
 				return t1.dueDate.compareTo(t2.dueDate);
 			}
 		}
 	};
-	
-	public final static Comparator<Task> priorityComparator = new Comparator<Task>() {
-		public int compare(Task t1, Task t2) {
-			return -Integer.compare(t1.priority, t2.priority);
+
+	public final static Comparator<Task> priorityComparator = new Comparator<Task>()
+	{
+		public int compare(Task t1, Task t2)
+		{
+			return -Integer.compare(t1.priority.getValue(),
+					t2.priority.getValue());
 		}
 	};
-	
-	public final static Comparator<Task> manualComparator = new Comparator<Task>() {
-		public int compare(Task t1, Task t2) {
+
+	public final static Comparator<Task> manualComparator = new Comparator<Task>()
+	{
+		public int compare(Task t1, Task t2)
+		{
 			return Long.compare(t1.ordering, t2.ordering);
 		}
 	};
-	
+
 	/**
 	 * Saves this TimeObject to the database.
 	 * 
-	 * @throws SQLException when there is a problem writing to the database
-	 * @throws IOException when there is a problem with serialization
+	 * @throws SQLException
+	 *             when there is a problem writing to the database
+	 * @throws IOException
+	 *             when there is a problem with serialization
 	 */
 	public void saveToDatabase() throws SQLException, IOException {
-		logger.logp(Level.INFO, "core.Task", "core.Task.saveToDatabase()", "Saving " 
-				+ this.name + " to database.");
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
+				"core.Task.saveToDatabase()",
+				"Saving " + this.name + " to database.");
 		
-		SQLiteConnector sqlConn = SQLiteConnector.getInstance();
-		sqlConn.serializeAndSave(this);
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
 	}
 }

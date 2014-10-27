@@ -1,6 +1,7 @@
 package utility;
 
 import java.io.File;
+import java.util.Objects;
 
 public class FileUtility {
 	/**
@@ -10,7 +11,9 @@ public class FileUtility {
 	 * @return the file's extension
 	 */
 	public static String getFileExtension(File file) {
-	    String name = file.getName();
+	    Objects.requireNonNull(file);
+		
+		String name = file.getName();
 	    int lastIndexOf = name.lastIndexOf(".");
 	    if (lastIndexOf == -1) {
 	        return ""; // empty extension
