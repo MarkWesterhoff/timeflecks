@@ -102,7 +102,7 @@ public class CalendarPanel extends JPanel
 		// ==================================================================
 		// Change these to change how far in from the edges the lines are
 		int insetFromLeft = 0; // See manual 10 later
-		int insetFromRight = 0;
+		int insetFromRight = 8;
 		// ==================================================================
 
 		int leftInset = insetFromLeft;
@@ -125,7 +125,7 @@ public class CalendarPanel extends JPanel
 
 		if (drawRightSideLine)
 		{
-			rightInset = 8 + insetFromRight;
+			rightInset = 0 + insetFromRight;
 		}
 
 		for (int insetFromTop = d.height / 24 - (fontHeight / 2); insetFromTop < d.height
