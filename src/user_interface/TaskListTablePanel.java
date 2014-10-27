@@ -218,9 +218,6 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			
 			NewTaskPanel p = new NewTaskPanel();
 			p.displayFrame();
-			
-			// After it is done, we need to refresh everything
-			Timeflecks.getSharedApplication().getMainWindow().refresh();
 		}
 		else if (e.getActionCommand().equals("Edit Task"))
 		{
@@ -229,14 +226,11 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 					"Edit task button pressed. Bringing up EditTaskPanel.");
 			
 			int row = table.getSelectedRow();
-			if (row > -1 && row < table.getRowCount() - 1)
 			if (row >= 0 && row < table.getRowCount())
 			{
 				NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row));
 				p.displayFrame();
-				
-				Timeflecks.getSharedApplication().getMainWindow().refresh();
 			}
 			else
 			{
