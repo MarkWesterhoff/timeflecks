@@ -426,7 +426,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				// String time = days + ":" + hours % 24 + ":" + minutes %
 				// 60 + ":" + seconds % 60;
 
-				if (duration != 0)
+				// Allow you to zero out the duration if you're editing a task that already exists
+				if (duration != 0 || taskToEdit != null)
 				{
 					task.setDuration(duration);
 				}
