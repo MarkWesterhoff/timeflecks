@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -37,11 +36,12 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	{
 		super();
 
+		Objects.requireNonNull(tableModel);
+
 		setLayout(new BorderLayout());
 
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
-//		topPanel.setLayout(new GridLayout(1, 4));
 
 		// Combobox for Sorting
 		// construct the JComboBox
@@ -54,7 +54,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(this);
-		
+
 		JLabel spacer = new JLabel(" ");
 
 		JLabel sortLabel = new JLabel("Sort By: ");
@@ -63,7 +63,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		FlowLayout layout = new FlowLayout();
 		layout.setHgap(0);
 		layout.setVgap(0);
-		sortSet.setLayout(layout); 
+		sortSet.setLayout(layout);
 
 		sortSet.add(sortLabel);
 		sortSet.add(sortList);
@@ -88,16 +88,16 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 		newTaskButton.addActionListener(this);
 		editTaskButton.addActionListener(this);
-		
+
 		JPanel newButtonPanel = new JPanel();
-		
-//		layout.setVgap(8);
-		
+
+		// layout.setVgap(8);
+
 		newButtonPanel.setLayout(layout);
-		
+
 		newButtonPanel.add(newTaskButton);
 		newButtonPanel.add(editTaskButton);
-		
+
 		topPanel.add(newButtonPanel, BorderLayout.WEST);
 
 		add(topPanel, BorderLayout.NORTH);
