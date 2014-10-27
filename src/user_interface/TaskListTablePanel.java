@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -105,7 +106,13 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		newButtonPanel.add(editTaskButton);
 		newButtonPanel.add(deleteTaskButton);
 		
+		JLabel spacer2 = new JLabel("        ");
+		newButtonPanel.add(spacer2);
+		
 		topPanel.add(newButtonPanel, BorderLayout.WEST);
+		
+		// For now, we just add a spacer
+		//topPanel.setPreferredSize(new Dimension(600, 50));
 
 		add(topPanel, BorderLayout.NORTH);
 
