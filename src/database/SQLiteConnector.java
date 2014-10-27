@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -166,6 +167,8 @@ public final class SQLiteConnector {
 	 * @throws IOException when there is a problem serializing the Task to bytes
 	 */
 	public void serializeAndSave(Task task) throws SQLException, IOException {
+		Objects.requireNonNull(task);
+		
 		logger.logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Task)", 
 				"Serializing and saving Task \"" + task.getName() + "\"");
 		
@@ -181,6 +184,8 @@ public final class SQLiteConnector {
 	 * @throws IOException when there is a problem serializing the Event to bytes
 	 */
 	public void serializeAndSave(Event event) throws SQLException, IOException {
+		Objects.requireNonNull(event);
+		
 		logger.logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Event)", 
 				"Serializing and saving Event \"" + event.getName() + "\"");
 		
@@ -196,6 +201,8 @@ public final class SQLiteConnector {
 	 * @throws SQLException when there is a problem writing to the database
 	 */
 	private void save(long id, char type, byte[] serializedObject) throws SQLException {
+		Objects.requireNonNull(serializedObject);
+		
 		logger.logp(Level.INFO, "SQLiteConnector", "save", 
 				"Saving object with id = " + Long.toString(id) + " and type = "
 				+ Character.toString(type));
