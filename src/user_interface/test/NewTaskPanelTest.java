@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import org.junit.Test;
 
+import core.Task;
 import user_interface.NewTaskPanel;
 
 public class NewTaskPanelTest
@@ -45,5 +46,17 @@ public class NewTaskPanelTest
 				}
 			}
 		});
+	}
+	
+	@Test
+	public void newPanelTest2()
+	{
+		Task task1 = new Task("task 1");
+		NewTaskPanel p = new NewTaskPanel(task1);
+
+		NewTaskPanel p1 = new NewTaskPanel();
+
+		p.displayFrame();
+		p1.displayFrame();
 	}
 }
