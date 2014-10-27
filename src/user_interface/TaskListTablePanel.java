@@ -27,8 +27,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	private final JTable table;
 
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
-	private JButton newButton;
-	private JButton editButton;
+	private JButton newTaskButton;
+	private JButton editTaskButton;
 	private JButton upButton;
 	private JButton downButton;
 
@@ -80,8 +80,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		topPanel.add(sortSet, BorderLayout.EAST);
 
 		// Add the new task and the edit task buttons
-		JButton newTaskButton = new JButton("New Task");
-		JButton editTaskButton = new JButton("Edit Task");
+		newTaskButton = new JButton("New Task");
+		editTaskButton = new JButton("Edit Task");
 
 		newTaskButton.setActionCommand("New Task");
 		editTaskButton.setActionCommand("Edit Task");
@@ -255,6 +255,11 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 					"actionPerformed()",
 					"Action command " + e.getActionCommand() + " not found");
 		}
+	}
+	
+	public JTable getTable()
+	{
+		return table;
 	}
 
 	public static void main(String[] args)
