@@ -167,11 +167,11 @@ public class CalendarPanel extends JPanel
 			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
 					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
 
-			int durationInHours = ((int) t.getDuration() / 1000 / 60 / 60) % 24;
+			double durationInHours = ( t.getDuration() / 1000.0 / 60.0 / 60.0 ) % 24.0;
 
 			Rectangle frame = new Rectangle(leftInset, firstInset
 					+ (int) (taskHours * hourIncrement), d.width - rightInset
-					- leftInset, durationInHours * hourIncrement);
+					- leftInset, (int) (durationInHours * hourIncrement));
 
 			// Draw the rectangle first, so the string shows up on top of it
 			if (t.isCompleted())
