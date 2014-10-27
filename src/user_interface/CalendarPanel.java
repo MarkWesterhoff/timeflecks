@@ -1,19 +1,17 @@
 package user_interface;
 
 import java.awt.*;
+import java.awt.font.FontRenderContext;
 import java.util.logging.Level;
 
 import javax.swing.*;
 
 import logging.GlobalLogger;
-import core.Task;
 
 public class CalendarPanel extends JPanel
 {
 	private boolean drawTimes;
 	private boolean drawRightSideLine;
-	private int height;
-	private int width;
 
 	/**
 	 * Auto generated default serial version UID
@@ -27,8 +25,6 @@ public class CalendarPanel extends JPanel
 
 		this.drawTimes = drawTimes;
 		this.drawRightSideLine = drawRightSideLine;
-		this.height = height;
-		this.width = width;
 
 		setBorder(BorderFactory.createEmptyBorder());
 		// setBorder(BorderFactory.createLineBorder(Color.red));
@@ -44,14 +40,7 @@ public class CalendarPanel extends JPanel
 	{
 		super.paintComponent(g);
 
-		// Allows us to draw before we actually have a size, but we should
-		// always have a size anyways
 		Dimension d = this.getSize();
-		// if(d.width == 0 || d.height == 0)
-		// {
-		// d.width = this.width;
-		// d.height = this.height;
-		// }
 
 		// Draw the times here
 		if (drawTimes)
@@ -99,8 +88,8 @@ public class CalendarPanel extends JPanel
 
 		// ==================================================================
 		// Change these to change how far in from the edges the lines are
-		final int insetFromLeft = 0; // See manual 10 later
-		final int insetFromRight = 0;
+		int insetFromLeft = 0; // See manual 10 later
+		int insetFromRight = 0;
 		// ==================================================================
 
 		int leftInset = insetFromLeft;
@@ -108,18 +97,25 @@ public class CalendarPanel extends JPanel
 
 		if (drawTimes)
 		{
+			insetFromLeft += 8;
 			// Our longest string is any two digit pm/am string, here we will
 			// use 12pm
 			leftInset = g.getFontMetrics(g.getFont()).stringWidth("12pm")
-					+ insetFromLeft + 10;
+					+ insetFromLeft;
 		}
+		
+		// Get the height of the font to draw the lines
+		Graphics2D g2 = (Graphics2D) g;
+		FontRenderContext frc = g2.getFontRenderContext();
+		int fontHeight = (int) g2.getFont().getLineMetrics("12pm", frc)
+						.getHeight();
 
 		if (drawRightSideLine)
 		{
 			rightInset = 8 + insetFromRight;
 		}
 
-		for (int insetFromTop = d.height / 24; insetFromTop < d.height; insetFromTop += d.height / 24)
+		for (int insetFromTop = d.height / 24 - (fontHeight / 2); insetFromTop < d.height - (fontHeight / 2); insetFromTop += d.height / 24)
 		{
 			g.drawLine(leftInset, insetFromTop, d.width - rightInset,
 					insetFromTop);
