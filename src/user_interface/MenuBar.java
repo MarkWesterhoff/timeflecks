@@ -466,36 +466,37 @@ public class MenuBar extends JMenuBar implements ActionListener
 	{
 		// This should probably be a method for someone who manages this stuff
 		// TODO Same with the file handling
-		
+
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
 				"performNewCommand()",
 				"New task command issued. Bringing up NewTaskPanel.");
-		
+
 		NewTaskPanel p = new NewTaskPanel();
 		p.displayFrame();
 	}
-	
+
 	public void performEditCommand()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
 				"performEditCommand()",
 				"Edit task command issued. Bringing up NewTaskPanel.");
-		
-		JTable table = Timeflecks.getSharedApplication().getMainWindow().getTablePanel().getTable();
-		
+
+		JTable table = Timeflecks.getSharedApplication().getMainWindow()
+				.getTablePanel().getTable();
+
 		int row = table.getSelectedRow();
 		if (row >= 0 && row < table.getRowCount())
 		{
-			NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row));
+			NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication()
+					.getTaskList().getTasks().get(row));
 			p.displayFrame();
 		}
 		else
 		{
 			// This happens if there are no tasks selected
-			
+
 			// TODO Grey out the Edit Task Button if there are no tasks selected
-			
+
 			GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
 					"performEditCommand()",
 					"Selected row is out of bounds for the current table.");

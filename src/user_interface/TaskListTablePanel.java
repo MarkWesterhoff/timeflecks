@@ -58,7 +58,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(this);
-		
+
 		JLabel spacer = new JLabel("    ");
 
 		JLabel sortLabel = new JLabel("Sort By: ");
@@ -87,15 +87,15 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		newTaskButton = new JButton("New Task");
 		editTaskButton = new JButton("Edit Task");
 		deleteTaskButton = new JButton("Delete Task");
-		
+
 		newTaskButton.setActionCommand("New Task");
 		editTaskButton.setActionCommand("Edit Task");
 		deleteTaskButton.setActionCommand("Delete Task");
-		
+
 		newTaskButton.addActionListener(this);
 		editTaskButton.addActionListener(this);
 		deleteTaskButton.addActionListener(this);
-		
+
 		JPanel newButtonPanel = new JPanel();
 
 		// layout.setVgap(8);
@@ -105,14 +105,14 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		newButtonPanel.add(newTaskButton);
 		newButtonPanel.add(editTaskButton);
 		newButtonPanel.add(deleteTaskButton);
-		
+
 		JLabel spacer2 = new JLabel("        ");
 		newButtonPanel.add(spacer2);
-		
+
 		topPanel.add(newButtonPanel, BorderLayout.WEST);
-		
+
 		// For now, we just add a spacer
-		//topPanel.setPreferredSize(new Dimension(600, 50));
+		// topPanel.setPreferredSize(new Dimension(600, 50));
 
 		add(topPanel, BorderLayout.NORTH);
 
@@ -158,7 +158,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		button.addActionListener(this);
 		return button;
 	}
-	
+
 	/**
 	 * Fires an event to redraw the table.
 	 */
@@ -234,7 +234,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 					"actionPerformed(ActionEvent)",
 					"New task button pressed. Bringing up NewTaskPanel.");
-			
+
 			NewTaskPanel p = new NewTaskPanel();
 			p.displayFrame();
 		}
@@ -243,45 +243,46 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 					"actionPerformed(ActionEvent)",
 					"Edit task button pressed. Bringing up EditTaskPanel.");
-			
+
 			int row = table.getSelectedRow();
 			if (row >= 0 && row < table.getRowCount())
 			{
-				NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
+				NewTaskPanel p = new NewTaskPanel(Timeflecks
+						.getSharedApplication().getTaskList().getTasks()
 						.get(row));
 				p.displayFrame();
 			}
 			else
 			{
 				// This happens if there are no tasks selected
-				
-				// TODO Grey out the Edit Task Button if there are no tasks selected
-				
-				GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
-						"actionPerformed(ActionEvent)",
+
+				// TODO Grey out the Edit Task Button if there are no tasks
+				// selected
+
+				GlobalLogger.getLogger().logp(Level.WARNING,
+						"TaskListTablePanel", "actionPerformed(ActionEvent)",
 						"Selected row is out of bounds for the current table.");
 			}
-			
+
 		}
 		else if (e.getActionCommand().equals("Delete Task"))
 		{
 			int row = table.getSelectedRow();
 			if (row >= 0 && row < table.getRowCount())
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-						"actionPerformed(ActionEvent)",
-						"Delete task button pressed. Deleting currently selected task.");
-				
+				GlobalLogger
+						.getLogger()
+						.logp(Level.INFO, "TaskListTablePanel",
+								"actionPerformed(ActionEvent)",
+								"Delete task button pressed. Deleting currently selected task.");
+
 				// We need to prompt the user to see if they want to
 				// delete the task.
 				Object[] options = { "Delete Task", "Cancel" };
-				int reply = JOptionPane
-						.showOptionDialog(
-								this,
-								"Are you sure you wish to delete this task?",
-								"Confirm Delete", JOptionPane.DEFAULT_OPTION,
-								JOptionPane.WARNING_MESSAGE, null, options,
-								options[1]);
+				int reply = JOptionPane.showOptionDialog(this,
+						"Are you sure you wish to delete this task?",
+						"Confirm Delete", JOptionPane.DEFAULT_OPTION,
+						JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
 				if (reply == JOptionPane.YES_OPTION)
 				{
@@ -330,14 +331,15 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			else
 			{
 				// This happens if there are no tasks selected
-				
-				// TODO Gray out the Delete Task Button if there are no tasks selected
-				
-				GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
-						"actionPerformed(ActionEvent)",
+
+				// TODO Gray out the Delete Task Button if there are no tasks
+				// selected
+
+				GlobalLogger.getLogger().logp(Level.WARNING,
+						"TaskListTablePanel", "actionPerformed(ActionEvent)",
 						"Selected row is out of bounds for the current table.");
 			}
-			
+
 		}
 		else
 		{
@@ -346,7 +348,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 					"Action command " + e.getActionCommand() + " not found");
 		}
 	}
-	
+
 	public JTable getTable()
 	{
 		return table;
@@ -363,7 +365,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		JFrame frame = new JFrame();
 		TaskListTablePanel tltp = new TaskListTablePanel(
 				new TaskListTableModel());
-// TODO Is this right?
+		// TODO Is this right?
 
 		frame.getContentPane().add(tltp, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

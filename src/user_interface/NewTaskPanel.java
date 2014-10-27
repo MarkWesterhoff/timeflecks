@@ -560,7 +560,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public boolean hasEnteredText()
 	{
-		
+
 		boolean returnBool = false;
 		if (taskNameField.getText() != null
 				&& taskNameField.getText().length() > 0)
@@ -597,7 +597,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			returnBool = true;
 		}
-		
+
 		// We don't want to prompt if they are editing a task
 		if (taskToEdit != null)
 		{
@@ -609,13 +609,13 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public void dismissPane()
 	{
-//		this.processWindowEvent(new WindowEvent(this,
-//				WindowEvent.WINDOW_CLOSING));
-		
+		// this.processWindowEvent(new WindowEvent(this,
+		// WindowEvent.WINDOW_CLOSING));
+
 		// After it is done, we need to refresh everything
 		// Dismissing a newTaskPanel causes a refresh
 		Timeflecks.getSharedApplication().getMainWindow().refresh();
-		
+
 		this.setVisible(false);
 		this.dispose();
 	}
@@ -641,7 +641,5 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		this.setVisible(true);
 	}
-
-	
 
 }

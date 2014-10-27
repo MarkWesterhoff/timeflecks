@@ -2,6 +2,7 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -136,6 +137,17 @@ public class CalendarPanel extends JPanel
 
 		// Now we have the lines and we have the times
 
+		// --------------------------------------------------------------------------------
+		// Draw the date at the top
+
+		String dayOfWeek = new SimpleDateFormat("EEEE").format(this.getDate());
+		String date = new SimpleDateFormat("MM/dd/yyyy").format(this.getDate());
+
+		g.drawString(dayOfWeek, 2, fontHeight);
+		g.drawString(date, 2, 2 * fontHeight);
+
+		// ---------------------------------------------------------------------------------
+
 		// We also have the option to display a line on the right hand side
 		if (drawRightSideLine)
 		{
@@ -147,47 +159,57 @@ public class CalendarPanel extends JPanel
 		for (Task t : tasksToPaint)
 		{
 			int firstInset = d.height / 24 - (fontHeight / 2);
-			
+
 			int hourIncrement = d.height / 24;
-			
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(t.getStartTime());
-			double taskHours = (double)calendar.get(Calendar.HOUR_OF_DAY) + (double)calendar.get(Calendar.MINUTE) / 60.0;
-				
-			int durationInHours = ((int)t.getDuration() / 1000 / 60 / 60) % 24;
-			
-			Rectangle frame = new Rectangle(leftInset, firstInset + (int)(taskHours * hourIncrement), d.width - rightInset - leftInset, durationInHours * hourIncrement);
+			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
+
+			int durationInHours = ((int) t.getDuration() / 1000 / 60 / 60) % 24;
+
+			Rectangle frame = new Rectangle(leftInset, firstInset
+					+ (int) (taskHours * hourIncrement), d.width - rightInset
+					- leftInset, durationInHours * hourIncrement);
 
 			// Draw the rectangle first, so the string shows up on top of it
 			g.setColor(Color.white);
 			g.fillRect(frame.x, frame.y, frame.width, frame.height);
-			g.setColor(Color.red);
+			g.setColor(Color.black);
 			g.drawRect(frame.x, frame.y, frame.width, frame.height);
+
+			// NOTE That if it doesn't show up, make sure the duration isn't
+			// zero
 
 			// Draw the string title of the task
 			FontRenderContext frc2 = g2.getFontRenderContext();
-			int fontHeight2 = (int) g2.getFont().getLineMetrics(t.getName(), frc2)
-					.getHeight();
+			int fontHeight2 = (int) g2.getFont()
+					.getLineMetrics(t.getName(), frc2).getHeight();
 
 			// TODO implement wrapping of names
 
 			final int textLeftInset = 2;
 			final int textTopInset = 2 + fontHeight2;
 
-			// TODO This should be changed to draw components within the bounds of
-			// the component and that's it and not require knowledge of its frame,
+			// TODO This should be changed to draw components within the bounds
+			// of
+			// the component and that's it and not require knowledge of its
+			// frame,
 			// and then it will be given a place to draw by the calendar.
 
 			// Note that it is our job not to draw outside of our insets...
-			g.drawString(t.getName(), frame.x + getInsets().left + textLeftInset,
-					frame.y + getInsets().top + textTopInset);
-			
-			
-//			TaskComponent tc = new TaskComponent(t, new Rectangle(leftInset, firstInset + taskHours * hourIncrement, d.width - rightInset, durationInHours * hourIncrement));
-//			add(tc);
-//			
-//			TaskComponent tc2 = new TaskComponent(t, new Rectangle(leftInset, 1, 100, 200));
-//			add(tc);
+			g.drawString(t.getName(), frame.x + getInsets().left
+					+ textLeftInset, frame.y + getInsets().top + textTopInset);
+
+			// TaskComponent tc = new TaskComponent(t, new Rectangle(leftInset,
+			// firstInset + taskHours * hourIncrement, d.width - rightInset,
+			// durationInHours * hourIncrement));
+			// add(tc);
+			//
+			// TaskComponent tc2 = new TaskComponent(t, new Rectangle(leftInset,
+			// 1, 100, 200));
+			// add(tc);
 		}
 	}
 
@@ -202,10 +224,10 @@ public class CalendarPanel extends JPanel
 
 		// We need to go through the task list and update all tasks that match
 		// the current date
-		
+
 		// Clear it out first
 		tasksToPaint.clear();
-		
+
 		for (Task t : Timeflecks.getSharedApplication().getTaskList()
 				.getTasks())
 		{
@@ -216,8 +238,9 @@ public class CalendarPanel extends JPanel
 				tasksToPaint.add(t);
 			}
 		}
-		
-		// Now we have the list of tasks to paint, we want to make sure that they are painted in paintComponent. 
+
+		// Now we have the list of tasks to paint, we want to make sure that
+		// they are painted in paintComponent.
 	}
 
 	public boolean sameDay(Date firstDate, Date secondDate)
@@ -226,7 +249,7 @@ public class CalendarPanel extends JPanel
 		{
 			return false;
 		}
-		
+
 		Calendar c1 = Calendar.getInstance();
 		Calendar c2 = Calendar.getInstance();
 
@@ -265,11 +288,13 @@ public class CalendarPanel extends JPanel
 				}
 				else if (i == 6)
 				{
-					p = new CalendarPanel(new Date(), false, false, width, height);
+					p = new CalendarPanel(new Date(), false, false, width,
+							height);
 				}
 				else
 				{
-					p = new CalendarPanel(new Date(), false, true, width, height);
+					p = new CalendarPanel(new Date(), false, true, width,
+							height);
 				}
 
 				container.add(p);

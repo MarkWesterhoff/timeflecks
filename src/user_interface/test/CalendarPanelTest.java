@@ -44,11 +44,13 @@ public class CalendarPanelTest
 				}
 				else if (i == 6)
 				{
-					p = new CalendarPanel(new Date(), false, false, width, height);
+					p = new CalendarPanel(new Date(), false, false, width,
+							height);
 				}
 				else
 				{
-					p = new CalendarPanel(new Date(), false, true, width, height);
+					p = new CalendarPanel(new Date(), false, true, width,
+							height);
 				}
 
 				container.add(p);
@@ -76,15 +78,15 @@ public class CalendarPanelTest
 		}
 
 	}
-	
+
 	public static void main(String[] args)
 	{
 		try
 		{
 			JFrame newFrame = new JFrame("Calendar Test");
 
-			CalendarPanel p = new CalendarPanel(new Date(), true, true, 400, 400);
-			
+			CalendarPanel p = new CalendarPanel(new Date(), true, true, 400,
+					400);
 
 			newFrame.getContentPane().add(p);
 
