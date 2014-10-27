@@ -3,6 +3,7 @@ package user_interface;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -19,7 +20,7 @@ import core.Task;
 import core.TaskList;
 import core.Timeflecks;
 
-public class NewTaskPanel extends JPanel implements ActionListener
+public class NewTaskPanel extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
 
@@ -50,8 +51,8 @@ public class NewTaskPanel extends JPanel implements ActionListener
 			taskToEdit = toEdit;
 		}
 
-		this.setLayout(new BorderLayout());
-		this.setPreferredSize(new Dimension(350, 395));
+		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().setPreferredSize(new Dimension(350, 395));
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Beginning interface setup");
@@ -74,7 +75,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		Font boldFont = new Font(font.getFontName(), Font.BOLD, font.getSize());
 		titleLabel.setFont(boldFont);
 
-		this.add(titleLabel, BorderLayout.NORTH);
+		this.getContentPane().add(titleLabel, BorderLayout.NORTH);
 
 		// Center will be the forms, in a panel with FlowLayout (default, but we
 		// set it for clarity)
@@ -366,7 +367,7 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		subpanel.add(saveButton, BorderLayout.EAST);
 		subpanel.add(cancelButton, BorderLayout.WEST);
 
-		this.add(subpanel, BorderLayout.SOUTH);
+		this.getContentPane().add(subpanel, BorderLayout.SOUTH);
 
 	}
 
@@ -597,80 +598,43 @@ public class NewTaskPanel extends JPanel implements ActionListener
 		return returnBool;
 	}
 
-	// TODO Deal with this
 	public void dismissPane()
 	{
-		JComponent parent = (JComponent) getParent();
+		this.processWindowEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+	}
 
-		if (parent != null)
+	public void displayFrame()
+	{
+		if (taskToEdit == null)
 		{
-			Container toplevel = parent.getTopLevelAncestor();
-			parent.remove(this);
-			toplevel.validate();
-			toplevel.repaint();
+			this.setTitle("Timeflecks - New Task");
 		}
+		else
+		{
+			this.setTitle("Timeflecks - Edit Task");
+		}
+		
+		System.out.println("SAVED THE FRAME");
+
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		this.pack();
+
+		this.setAutoRequestFocus(true);
+		this.setResizable(true);
+
+		this.setVisible(true);
+		
 	}
 
 	public static void main(String args[])
 	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-
-				// Non-Nimbus works better for much of the layout here.
-				// Unfortunately.
-
-				// // Set the look and feel to Nimbus
-				// try
-				// {
-				// for (LookAndFeelInfo info : UIManager
-				// .getInstalledLookAndFeels())
-				// {
-				// if ("Nimbus".equals(info.getName()))
-				// {
-				// UIManager.setLookAndFeel(info.getClassName());
-				// break;
-				// }
-				// }
-				// }
-				// catch (Exception e)
-				// {
-				// // If Nimbus is not available, you can set the GUI to
-				// // another look and feel.
-				//
-				// // TODO: Remove this
-				// System.err
-				// .println("ERROR: Nimbus not found. Using default look and feel");
-				// }
-
-				try
-				{
-					JFrame newFrame = new JFrame("Timeflecks - Add New Task");
-					Container c = newFrame.getContentPane();
-
-					NewTaskPanel p = new NewTaskPanel();
-
-					c.add(p, BorderLayout.CENTER);
-
-					newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-					newFrame.pack();
-
-					// newFrame.setSize(374, 450);
-					newFrame.setAutoRequestFocus(true);
-					newFrame.setResizable(true);
-
-					newFrame.setVisible(true);
-
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Unable to " + e);
-				}
-			}
-		});
+		Task task1 = new Task("task 1");
+		NewTaskPanel p = new NewTaskPanel(task1);
+		
+		NewTaskPanel p1 = new NewTaskPanel();
+		
+		p.displayFrame();
 	}
 
 }
