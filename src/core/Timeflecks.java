@@ -72,9 +72,6 @@ public class Timeflecks
 
 		setMainWindow(new MainWindow());
 
-		// TODO Be able to seed ID generator with an ID
-		// TODO be able to get max ID in database from sqliteconnector
-		// TODO
 	}
 
 	public TaskList getTaskList()
@@ -119,7 +116,8 @@ public class Timeflecks
 		this.currentFile = currentFile;
 	}
 
-	public void openDatabaseFile(File newFile) throws SQLException, IOException, ClassNotFoundException
+	public void openDatabaseFile(File newFile) throws SQLException,
+			IOException, ClassNotFoundException
 	{
 		Objects.requireNonNull(newFile);
 		setDBConnector(new SQLiteConnector(newFile, false));
@@ -134,7 +132,8 @@ public class Timeflecks
 		setTaskList(newList);
 	}
 
-	public TaskList loadTaskListFromConnector(SQLiteConnector connector) throws SQLException, IOException, ClassNotFoundException
+	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
+			throws SQLException, IOException, ClassNotFoundException
 	{
 		Objects.requireNonNull(connector);
 		ArrayList<Task> tasksFromFile = connector.getAllTasks();
