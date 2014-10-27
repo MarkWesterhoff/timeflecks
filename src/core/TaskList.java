@@ -23,6 +23,7 @@ public class TaskList
 	{
 		tasks = new ArrayList<Task>();
 		events = new ArrayList<Event>();
+		taskComparator = Task.manualComparator;
 	}
 	
 	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
