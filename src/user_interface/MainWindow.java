@@ -8,6 +8,7 @@ import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -78,15 +79,15 @@ public class MainWindow extends JFrame
 			CalendarPanel p;
 			if (i == 0)
 			{
-				p = new CalendarPanel(true, true, width, height);
+				p = new CalendarPanel(new Date(), true, true, width, height);
 			}
 			else if (i == 6)
 			{
-				p = new CalendarPanel(false, false, width, height);
+				p = new CalendarPanel(new Date(), false, false, width, height);
 			}
 			else
 			{
-				p = new CalendarPanel(false, true, width, height);
+				p = new CalendarPanel(new Date(), false, true, width, height);
 			}
 
 			cpanels.add(p);

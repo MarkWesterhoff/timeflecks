@@ -38,11 +38,6 @@ public class TaskComponent extends JComponent
 		
 		Rectangle frame = this.getBounds();
 
-		// The frame will get updated each time when we do this, so we can just
-		// go off of that.
-		
-		System.out.println(frame);
-
 		// Draw the rectangle first, so the string shows up on top of it
 		g2.setPaint(Color.white);
 		g2.fillRect(frame.x, frame.y, frame.width, frame.height);

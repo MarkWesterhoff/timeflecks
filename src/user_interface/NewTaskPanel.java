@@ -560,6 +560,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public boolean hasEnteredText()
 	{
+		
 		boolean returnBool = false;
 		if (taskNameField.getText() != null
 				&& taskNameField.getText().length() > 0)
@@ -595,6 +596,12 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskDescriptionArea.getText().length() != 0)
 		{
 			returnBool = true;
+		}
+		
+		// We don't want to prompt if they are editing a task
+		if (taskToEdit != null)
+		{
+			returnBool = false;
 		}
 
 		return returnBool;
