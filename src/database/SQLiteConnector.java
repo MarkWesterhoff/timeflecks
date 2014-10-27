@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import core.Task;
@@ -55,33 +54,42 @@ public final class SQLiteConnector
 		}
 	}
 
-	private static final String SQL_DROP_SERIALIZE_TABLE = "DROP TABLE IF EXISTS 'serialized_time_objects'";
+	private static final String SQL_DROP_SERIALIZE_TABLE = 
+			"DROP TABLE IF EXISTS 'serialized_time_objects'";
 
-	private static final String SQL_CREATE_SERIALIZE_TABLE = "CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
+	private static final String SQL_CREATE_SERIALIZE_TABLE = 
+			"CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
 			+ "'id' INT(11) PRIMARY KEY NOT NULL,"
 			+ "'type' CHAR(1) NOT NULL,"
 			+ "'serialized_time_object' BLOB NOT NULL )";
 
-	private static final String SQL_CLEAR_SERIALIZE_TABLE = "DELETE FROM 'serialized_time_objects'";
+	private static final String SQL_CLEAR_SERIALIZE_TABLE = 
+			"DELETE FROM 'serialized_time_objects'";
 
-	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = "INSERT OR REPLACE "
+	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = 
+			"INSERT OR REPLACE "
 			+ "INTO 'serialized_time_objects' (id, type, serialized_time_object) "
 			+ "VALUES (?, ?, ?)";
 
-	private static final String SQL_SELECT_SERIALIZED_TIMEOBJECT = "SELECT serialized_time_object "
+	private static final String SQL_SELECT_SERIALIZED_TIMEOBJECT = 
+			"SELECT serialized_time_object "
 			+ "FROM 'serialized_time_objects' "
 			+ "WHERE id = ? "
 			+ "AND type = ? " + "LIMIT 1";
 
-	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = "DELETE FROM serialized_time_objects "
+	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = 
+			"DELETE FROM serialized_time_objects "
 			+ "WHERE id = ?";
 
-	private static final String SQL_GET_ALL_OBJECTS = "SELECT serialized_time_object "
-			+ "FROM 'serialized_time_objects'" + "WHERE type = ?";
+	private static final String SQL_GET_ALL_OBJECTS = 
+			"SELECT serialized_time_object "
+			+ "FROM 'serialized_time_objects'" 
+			+ "WHERE type = ?";
 
-	private static final String SQL_GET_HIGHEST_ID = "SELECT MAX(id) "
-			+ "FROM 'serialized_time_objects' ";
-
+	private static final String SQL_GET_HIGHEST_ID = 
+			"SELECT MAX(id) "
+			+ "FROM serialized_time_objects";
+	
 	private static final String defaultDatabasePath = "calendar1.db";
 	private static String databasePath = defaultDatabasePath;
 
@@ -412,23 +420,22 @@ public final class SQLiteConnector
 			stmt.setString(1,
 					Character.toString(SerializableTypes.TASK.getValue()));
 			rs = stmt.executeQuery();
-			stmt.close();
+			
+			// Deserialize the objects and add to list of Tasks
+			while (rs.next())
+			{
+				byte[] buf = rs.getBytes(1);
+				Object deserializedObject = ByteUtility.getObject(buf);
+				tasks.add((Task) deserializedObject);
+			}
+			rs.close();
+
+			return tasks;
 		}
 		finally
 		{
 			c.close();
 		}
-
-		// Deserialize the objects and add to list of Tasks
-		while (rs.next())
-		{
-			byte[] buf = rs.getBytes(1);
-			Object deserializedObject = ByteUtility.getObject(buf);
-			tasks.add((Task) deserializedObject);
-		}
-		rs.close();
-
-		return tasks;
 	}
 
 	/**
@@ -454,23 +461,22 @@ public final class SQLiteConnector
 			stmt.setString(1,
 					Character.toString(SerializableTypes.EVENT.getValue()));
 			rs = stmt.executeQuery();
-			stmt.close();
+			
+			// Deserialize the objects and add to list of Events
+			while (rs.next())
+			{
+				byte[] buf = rs.getBytes(1);
+				Object deserializedObject = ByteUtility.getObject(buf);
+				events.add((Event) deserializedObject);
+			}
+			rs.close();
+
+			return events;
 		}
 		finally
 		{
 			c.close();
 		}
-
-		// Deserialize the objects and add to list of Events
-		while (rs.next())
-		{
-			byte[] buf = rs.getBytes(1);
-			Object deserializedObject = ByteUtility.getObject(buf);
-			events.add((Event) deserializedObject);
-		}
-		rs.close();
-
-		return events;
 	}
 
 	/**
@@ -481,29 +487,32 @@ public final class SQLiteConnector
 	 */
 	public long getHighestID() throws SQLException
 	{
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getHighestID()", "Getting highest ID from database");
+		
 		// Query database for maximum id
 		Connection c = this.getConnection();
 		ResultSet rs = null;
 		try
 		{
-			PreparedStatement stmt = c.prepareStatement(SQL_GET_HIGHEST_ID);
-			rs = stmt.executeQuery();
-			stmt.close();
+			Statement stmt = c.createStatement(); 
+			rs = stmt.executeQuery(SQL_GET_HIGHEST_ID);
+			
+			rs.next();
+			
+			// Check for 0 rows in the database
+			long highestId = -1;
+			if (!rs.isAfterLast())
+			{
+				highestId = rs.getLong(1);
+			}
+
+			rs.close();
+			return highestId;
 		}
 		finally
 		{
 			c.close();
 		}
-		rs.next();
-
-		long highestId = -1;
-		// Check for 0 rows in the database
-		if (!rs.isAfterLast())
-		{
-			highestId = rs.getLong(1);
-		}
-
-		rs.close();
-		return highestId;
 	}
 }

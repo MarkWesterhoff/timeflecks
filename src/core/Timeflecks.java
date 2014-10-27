@@ -130,6 +130,8 @@ public class Timeflecks
 
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
 		setTaskList(newList);
+		
+		this.getMainWindow().refresh();
 	}
 
 	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
