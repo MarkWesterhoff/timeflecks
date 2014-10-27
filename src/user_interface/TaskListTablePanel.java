@@ -217,17 +217,42 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		}
 		else if (e.getActionCommand().equals("New Task"))
 		{
-			// TODO
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 					"actionPerformed(ActionEvent)",
 					"New task button pressed. Bringing up NewTaskPanel.");
+			
+			NewTaskPanel p = new NewTaskPanel();
+			p.displayFrame();
+			
+			// After it is done, we need to refresh everything
+			Timeflecks.getSharedApplication().getMainWindow().refresh();
 		}
 		else if (e.getActionCommand().equals("Edit Task"))
 		{
-			// TODO
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 					"actionPerformed(ActionEvent)",
 					"Edit task button pressed. Bringing up EditTaskPanel.");
+			
+			int row = table.getSelectedRow();
+			if (row > -1 && row < table.getRowCount() - 1)
+			{
+				NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
+						.get(row));
+				p.displayFrame();
+				
+				Timeflecks.getSharedApplication().getMainWindow().refresh();
+			}
+			else
+			{
+				// This happens if there are no tasks selected
+				
+				// TODO Grey out the Edit Task Button if there are no tasks selected
+				
+				GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"Selected row is out of bounds for the current table.");
+			}
+			
 		}
 		else
 		{

@@ -1,9 +1,11 @@
 package user_interface;
 
 import java.awt.*;
+import java.util.logging.Level;
 
 import javax.swing.*;
 
+import logging.GlobalLogger;
 import core.Task;
 
 public class CalendarPanel extends JPanel
@@ -133,6 +135,15 @@ public class CalendarPanel extends JPanel
 		}
 
 		// Go through and draw any tasks at the appropriate place
+	}
+	
+	/**
+	 * refreshes the calendar view, re-adds the tasks for that day from the TaskList. 
+	 * Warning: This may be time-intensive for large TaskLists
+	 */
+	public void refresh()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "refresh", "Refresh called.");
 	}
 
 	public static void main(String[] args)

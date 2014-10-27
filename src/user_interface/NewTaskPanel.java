@@ -1,9 +1,7 @@
 package user_interface;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -17,7 +15,6 @@ import com.toedter.calendar.JDateChooser;
 
 import core.Priority;
 import core.Task;
-import core.TaskList;
 import core.Timeflecks;
 
 public class NewTaskPanel extends JFrame implements ActionListener
@@ -59,7 +56,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// Title Label
 
-		//addTitleLabel();
+		// addTitleLabel();
 
 		// Center will be the forms, in a panel with FlowLayout (default, but we
 		// set it for clarity)
@@ -605,8 +602,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public void dismissPane()
 	{
-		this.processWindowEvent(new WindowEvent(this,
-				WindowEvent.WINDOW_CLOSING));
+//		this.processWindowEvent(new WindowEvent(this,
+//				WindowEvent.WINDOW_CLOSING));
+		
+		this.setVisible(false);
+		this.dispose();
 	}
 
 	public void displayFrame()
@@ -620,8 +620,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			this.setTitle("Timeflecks - Edit Task");
 		}
 
-		System.out.println("SAVED THE FRAME");
-
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.pack();
@@ -633,14 +631,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		this.setVisible(true);
 	}
 
-	public static void main(String args[])
-	{
-		Task task1 = new Task("task 1");
-		NewTaskPanel p = new NewTaskPanel(task1);
-
-		NewTaskPanel p1 = new NewTaskPanel();
-
-		p.displayFrame();
-	}
+	
 
 }
