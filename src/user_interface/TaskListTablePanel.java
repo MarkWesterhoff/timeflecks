@@ -152,6 +152,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"refresh()", "Refreshing TaskListTableModel");
+				"refresh()", "Refreshing TaskListTableModel" + this.table);
 		Timeflecks.getSharedApplication().getTaskList().sort();
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
@@ -268,6 +269,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		JFrame frame = new JFrame();
 		TaskListTablePanel tltp = new TaskListTablePanel(
 				new TaskListTableModel());
+// TODO Is this right?
 
 		frame.getContentPane().add(tltp, BorderLayout.CENTER);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
