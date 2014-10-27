@@ -1,5 +1,6 @@
 package user_interface;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -7,8 +8,10 @@ import javax.swing.SwingUtilities;
 
 import core.Timeflecks;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -16,6 +19,9 @@ import logging.GlobalLogger;
 public class MainWindow extends JFrame
 {
 	private static final long serialVersionUID = 1L;
+	
+	private TaskListTablePanel panel;
+	private ArrayList<CalendarPanel> cpanels;
 
 	public MainWindow()
 	{
@@ -30,6 +36,9 @@ public class MainWindow extends JFrame
 				
 				// Set the layout manager
 				setLayout(new FlowLayout());
+				
+				panel = null;
+				setCpanels(new ArrayList<CalendarPanel>());
 
 				addComponents();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "MainWindow",
@@ -51,9 +60,9 @@ public class MainWindow extends JFrame
 		
 		// Add the task list panel
 		TaskListTableModel taskListTableModel = new TaskListTableModel(Timeflecks.getSharedApplication().getTaskList());
-		TaskListTablePanel taskListTablePanel = new TaskListTablePanel(taskListTableModel);
+		panel = new TaskListTablePanel(taskListTableModel);
 		
-		getContentPane().add(taskListTablePanel);
+		getContentPane().add(panel);
 		
 		// Add the calendar
 //		CalendarPanel p = new CalendarPanel(true, true, 100, 1000);
@@ -86,8 +95,8 @@ public class MainWindow extends JFrame
 				p = new CalendarPanel(false, true, width, height);
 			}
 
+			cpanels.add(p);
 			container.add(p);
-
 		}
 		
 		s.setPreferredSize(new Dimension(500, 400));
@@ -104,12 +113,44 @@ public class MainWindow extends JFrame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// setVisible(true);
 	}
+	
+	public void refresh()
+	{
+		// Refresh all calendar panels 
+		// Could also store in the list
+		
+		for(CalendarPanel p : cpanels)
+		{
+			p.refresh();
+		}
+		
+		// Refresh the table
+		if (panel != null)
+		{
+			panel.refresh();
+		}
+		else
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "MainWindow", "refresh", "TaskListTablePanel named \"panel\" was null.");
+		}
+		
+	}
 
 	public static void main(String[] args)
 	{
 		MainWindow window = new MainWindow();
 
 		window.setVisible(true);
+	}
+
+	public ArrayList<CalendarPanel> getCpanels()
+	{
+		return cpanels;
+	}
+
+	public void setCpanels(ArrayList<CalendarPanel> cpanels)
+	{
+		this.cpanels = cpanels;
 	}
 
 }
