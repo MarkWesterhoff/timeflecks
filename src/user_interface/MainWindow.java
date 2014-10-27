@@ -93,7 +93,7 @@ public class MainWindow extends JFrame
 			container.add(p);
 		}
 		
-		s.setPreferredSize(new Dimension(500, 400));
+		s.setPreferredSize(new Dimension(730, 440));
 		
 		getContentPane().add(s);
 
@@ -102,7 +102,7 @@ public class MainWindow extends JFrame
 	public void displayFrame()
 	{
 		// TODO: Remove this
-		setSize(1000, 520);
+		setSize(1230, 520);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -132,16 +132,21 @@ public class MainWindow extends JFrame
 		
 	}
 
-	public static void main(String[] args)
-	{
-		MainWindow window = new MainWindow();
-
-		window.setVisible(true);
-	}
+//	public static void main(String[] args)
+//	{
+//		MainWindow window = new MainWindow();
+//
+//		window.setVisible(true);
+//	}
 
 	public ArrayList<CalendarPanel> getCpanels()
 	{
 		return cpanels;
+	}
+	
+	public TaskListTablePanel getTablePanel()
+	{
+		return panel;
 	}
 
 }
