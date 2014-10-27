@@ -107,6 +107,7 @@ public class TaskListTableModel extends AbstractTableModel
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
+			Timeflecks.getSharedApplication().getMainWindow().refresh();
 			break;
 		case 1:
 			task.setName((String) value);
