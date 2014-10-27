@@ -27,7 +27,7 @@ public class TaskComponent extends JComponent
 		setBorder(BorderFactory.createEmptyBorder());
 //		setBorder(BorderFactory.createLineBorder(Color.black));
 
-		// TODO Preferred size, etc.
+		setPreferredSize(new Dimension(newBounds.width, newBounds.height));
 	}
 
 	public void paintComponent(Graphics g)
