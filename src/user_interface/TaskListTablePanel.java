@@ -208,6 +208,46 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()",
 						"Task in row " + row + " bumped up.");
+				
+				try
+				{
+					Timeflecks.getSharedApplication().getTaskList().getTasks()
+					.get(row).saveToDatabase();
+					Timeflecks.getSharedApplication().getTaskList().getTasks()
+					.get(row - 1).saveToDatabase();
+				}
+				catch (SQLException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"TaskListTablePanel",
+							"actionPerformed",
+							"SQLException caught when saving task to database.\nSQL State:\n"
+									+ a.getSQLState() + "\nMessage:\n"
+									+ a.getMessage());
+
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Database Error. (1603)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (IOException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"TaskListTablePanel",
+							"actionPerformed",
+							"IOException caught when saving task to database.\nMessage:\n"
+									+ a.getLocalizedMessage());
+
+					// Trouble serializing objects
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Object Serialization Error. (1604)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
 		}
@@ -227,6 +267,46 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 						"Task in row " + row + " bumped down.");
 				table.getSelectionModel()
 						.setSelectionInterval(row + 1, row + 1);
+				
+				try
+				{
+					Timeflecks.getSharedApplication().getTaskList().getTasks()
+					.get(row).saveToDatabase();
+					Timeflecks.getSharedApplication().getTaskList().getTasks()
+					.get(row + 1).saveToDatabase();
+				}
+				catch (SQLException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"TaskListTablePanel",
+							"actionPerformed",
+							"SQLException caught when saving task to database.\nSQL State:\n"
+									+ a.getSQLState() + "\nMessage:\n"
+									+ a.getMessage());
+
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Database Error. (1601)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (IOException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"TaskListTablePanel",
+							"actionPerformed",
+							"IOException caught when saving task to database.\nMessage:\n"
+									+ a.getLocalizedMessage());
+
+					// Trouble serializing objects
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Object Serialization Error. (1602)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 		else if (e.getActionCommand().equals("New Task"))

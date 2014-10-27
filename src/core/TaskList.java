@@ -2,15 +2,11 @@ package core;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
 
-//I'm not sure if this should / shouldn't be a singleton...
 public class TaskList
 {
 
@@ -22,9 +18,7 @@ public class TaskList
 
 	public TaskList()
 	{
-		tasks = new ArrayList<Task>();
-		events = new ArrayList<Event>();
-		taskComparator = Task.nameComparator;
+		this(new ArrayList<Task>(), new ArrayList<Event>());
 	}
 	
 	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
@@ -33,6 +27,8 @@ public class TaskList
 		
 		this.tasks = tasks;
 		this.events = events;
+		
+		taskComparator = Task.nameComparator;
 	}
 
 	public ArrayList<Task> getTasks()

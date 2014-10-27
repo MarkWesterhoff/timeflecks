@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
+import core.Timeflecks;
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class MainWindow extends JFrame
 				displayFrame();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
+				
+				Timeflecks.getSharedApplication().getMainWindow().refresh();
 			}
 		});
 	}
@@ -67,51 +71,82 @@ public class MainWindow extends JFrame
 
 	public void addCalendar(boolean weekView)
 	{
-		// CalendarPanel p = new CalendarPanel(true, true, 100, 1000);
-
-		JPanel container = new JPanel();
-
-		FlowLayout panelLayout = new FlowLayout();
-		panelLayout.setHgap(0);
-		panelLayout.setVgap(0);
-		container.setLayout(panelLayout);
-
-		JScrollPane s = new JScrollPane(container);
-
-		int width = 100;
-		int height = 1000;
-
-		Date d = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -1);
-		d = cal.getTime();
-
-		for (int i = 0; i < 7; i++)
+		if (weekView == true)
 		{
-			CalendarPanel p;
-			if (i == 0)
-			{
-				p = new CalendarPanel(d, true, true, width, height);
-			}
-			else if (i == 6)
-			{
-				p = new CalendarPanel(d, false, false, width, height);
-			}
-			else
-			{
-				p = new CalendarPanel(d, false, true, width, height);
-			}
+			// CalendarPanel p = new CalendarPanel(true, true, 100, 1000);
 
-			cal.add(Calendar.DATE, 1);
+			JPanel container = new JPanel();
+
+			FlowLayout panelLayout = new FlowLayout();
+			panelLayout.setHgap(0);
+			panelLayout.setVgap(0);
+			container.setLayout(panelLayout);
+
+			JScrollPane s = new JScrollPane(container);
+
+			int width = 100;
+			int height = 1000;
+
+			Date d = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DATE, -1);
 			d = cal.getTime();
 
+			for (int i = 0; i < 7; i++)
+			{
+				CalendarPanel p;
+				if (i == 0)
+				{
+					p = new CalendarPanel(d, true, true, width, height);
+				}
+				else if (i == 6)
+				{
+					p = new CalendarPanel(d, false, false, width, height);
+				}
+				else
+				{
+					p = new CalendarPanel(d, false, true, width, height);
+				}
+
+				cal.add(Calendar.DATE, 1);
+				d = cal.getTime();
+
+				cpanels.add(p);
+				container.add(p);
+			}
+
+			s.setPreferredSize(new Dimension(730, 440));
+
+			getContentPane().add(s);
+		}
+		else
+		{
+			JPanel container = new JPanel();
+
+			FlowLayout panelLayout = new FlowLayout();
+			panelLayout.setHgap(0);
+			panelLayout.setVgap(0);
+			container.setLayout(panelLayout);
+
+			JScrollPane s = new JScrollPane(container);
+
+			int width = 700;
+			int height = 1000;
+
+			Date d = new Date();
+			Calendar cal = Calendar.getInstance();
+			//cal.add(Calendar.DATE, -1); We want the current day
+			d = cal.getTime();
+			
+			CalendarPanel p = new CalendarPanel(d, true, false, width, height);
+			
 			cpanels.add(p);
 			container.add(p);
+
+			s.setPreferredSize(new Dimension(730, 440));
+
+			getContentPane().add(s);
 		}
-
-		s.setPreferredSize(new Dimension(730, 440));
-
-		getContentPane().add(s);
 	}
 
 	public void displayFrame()

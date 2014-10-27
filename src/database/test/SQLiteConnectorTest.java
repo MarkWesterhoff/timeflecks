@@ -165,6 +165,29 @@ public class SQLiteConnectorTest {
 	}
 	
 	/**
+	 * @throws IOException 
+	 * @throws SQLException 
+	 * 
+	 */
+	@Test
+	public void testGetHighestId() throws SQLException, IOException {
+		// Clear the db before testing
+		Timeflecks.getSharedApplication().setDBConnector(new SQLiteConnector(new File("testGetHighestId.db"), true));
+		
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1a"));
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1b"));
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1c"));
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Event("e1a", new Date(), 0));
+		
+		
+		Task t2 = new Task("t2");
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(t2);
+		
+		long maxId = Timeflecks.getSharedApplication().getDBConnector().getHighestID();
+		assertEquals("Max ID should be equal to highestID", t2.getId(), maxId);
+	}
+	
+	/**
 	 * Stress test to test database saving speed.
 	 * @throws IOException 
 	 * @throws SQLException 

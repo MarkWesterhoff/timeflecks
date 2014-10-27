@@ -81,8 +81,8 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public boolean isCellEditable(int row, int col)
 	{
-		return col == 0 // isCompleted
-				|| col == 1; // name
+		return col == 0; // isCompleted
+				//|| col == 1; // name
 	}
 
 	/**
@@ -111,6 +111,7 @@ public class TaskListTableModel extends AbstractTableModel
 			break;
 		case 1:
 			task.setName((String) value);
+			Timeflecks.getSharedApplication().getMainWindow().refresh();
 			break;
 		}
 		try

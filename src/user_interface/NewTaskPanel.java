@@ -632,7 +632,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			this.setTitle("Timeflecks - Edit Task");
 		}
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		this.pack();
 
