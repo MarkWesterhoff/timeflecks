@@ -144,11 +144,16 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		button.addActionListener(this);
 		return button;
 	}
-
+	
+	/**
+	 * Fires an event to redraw the table.
+	 */
 	public void refresh()
 	{
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+				"refresh()", "Refreshing TaskListTableModel");
 		Timeflecks.getSharedApplication().getTaskList().sort();
-		((AbstractTableModel) table.getModel()).fireTableDataChanged();
+		table.invalidate();
 	}
 
 	// handle changing of SortList
