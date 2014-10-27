@@ -41,8 +41,7 @@ public class Timeflecks
 
 		try
 		{	
-			setCurrentFile(new File("calendar1.db"));
-			openDatabaseFile(getCurrentFile());	
+			openDatabaseFile(new File("calendar1.db"));	
 		}
 		catch (SQLException e)
 		{
@@ -67,13 +66,13 @@ public class Timeflecks
 							"Object Serialization Error. (1601)\nCould not save empty database file.",
 							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
-		catch (Exception e)
+		catch (ClassNotFoundException e)
 		{
 			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
 					"Timeflecks",
-					"Unknown excpetion:" + e.getMessage());
+					"ClassNotFoundException. Could not read objects out from database.");
 		}
-		
+
 		setMainWindow(new MainWindow());
 	}
 
@@ -134,7 +133,10 @@ public class Timeflecks
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
 		setTaskList(newList);
 		
-		this.getMainWindow().refresh();
+		if (this.getMainWindow() != null)
+		{
+			this.getMainWindow().refresh();
+		}
 	}
 
 	public TaskList loadTaskListFromConnector(SQLiteConnector connector)
