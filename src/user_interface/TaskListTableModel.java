@@ -81,8 +81,8 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public boolean isCellEditable(int row, int col)
 	{
-		return col == 0 // isCompleted
-				|| col == 1; // name
+		return col == 0; // isCompleted
+				//|| col == 1; // name
 	}
 
 	/**
