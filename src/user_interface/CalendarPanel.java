@@ -146,21 +146,48 @@ public class CalendarPanel extends JPanel
 		// Go through and draw any tasks at the appropriate place
 		for (Task t : tasksToPaint)
 		{
-//			int firstInset = d.height / 24 - (fontHeight / 2);
-//			
-//			int hourIncrement = d.height / 24;
-//			
-//			Calendar calendar = Calendar.getInstance();
-//			calendar.setTime(t.getStartTime());
-//			int taskHours = calendar.get(Calendar.HOUR_OF_DAY);
-//					
-//			int durationInHours = ((int)t.getDuration() / 1000 / 60 / 60) % 24;
-//			
+			int firstInset = d.height / 24 - (fontHeight / 2);
+			
+			int hourIncrement = d.height / 24;
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(t.getStartTime());
+			double taskHours = (double)calendar.get(Calendar.HOUR_OF_DAY) + (double)calendar.get(Calendar.MINUTE) / 60.0;
+				
+			int durationInHours = ((int)t.getDuration() / 1000 / 60 / 60) % 24;
+			
+			Rectangle frame = new Rectangle(leftInset, firstInset + (int)(taskHours * hourIncrement), d.width - rightInset - leftInset, durationInHours * hourIncrement);
+
+			// Draw the rectangle first, so the string shows up on top of it
+			g.setColor(Color.white);
+			g.fillRect(frame.x, frame.y, frame.width, frame.height);
+			g.setColor(Color.red);
+			g.drawRect(frame.x, frame.y, frame.width, frame.height);
+
+			// Draw the string title of the task
+			FontRenderContext frc2 = g2.getFontRenderContext();
+			int fontHeight2 = (int) g2.getFont().getLineMetrics(t.getName(), frc2)
+					.getHeight();
+
+			// TODO implement wrapping of names
+
+			final int textLeftInset = 2;
+			final int textTopInset = 2 + fontHeight2;
+
+			// TODO This should be changed to draw components within the bounds of
+			// the component and that's it and not require knowledge of its frame,
+			// and then it will be given a place to draw by the calendar.
+
+			// Note that it is our job not to draw outside of our insets...
+			g.drawString(t.getName(), frame.x + getInsets().left + textLeftInset,
+					frame.y + getInsets().top + textTopInset);
+			
+			
 //			TaskComponent tc = new TaskComponent(t, new Rectangle(leftInset, firstInset + taskHours * hourIncrement, d.width - rightInset, durationInHours * hourIncrement));
 //			add(tc);
-			
-			TaskComponent tc = new TaskComponent(t, new Rectangle(1, 1, 100, 200));
-			add(tc);
+//			
+//			TaskComponent tc2 = new TaskComponent(t, new Rectangle(leftInset, 1, 100, 200));
+//			add(tc);
 		}
 	}
 

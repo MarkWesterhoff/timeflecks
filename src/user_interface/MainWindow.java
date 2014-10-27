@@ -103,7 +103,8 @@ public class MainWindow extends JFrame
 	public void displayFrame()
 	{
 		// TODO: Remove this
-		setSize(1230, 520);
+		setSize(1330, 520);
+		setMinimumSize(new Dimension(1330, 520));
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
