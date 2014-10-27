@@ -54,8 +54,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(this);
-
-		JLabel spacer = new JLabel(" ");
+		
+		JLabel spacer = new JLabel("    ");
 
 		JLabel sortLabel = new JLabel("Sort By: ");
 
