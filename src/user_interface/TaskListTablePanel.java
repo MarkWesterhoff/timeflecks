@@ -230,6 +230,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 			
 			int row = table.getSelectedRow();
 			if (row > -1 && row < table.getRowCount() - 1)
+			if (row >= 0 && row < table.getRowCount())
 			{
 				NewTaskPanel p = new NewTaskPanel(Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row));

@@ -605,6 +605,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 //		this.processWindowEvent(new WindowEvent(this,
 //				WindowEvent.WINDOW_CLOSING));
 		
+		// After it is done, we need to refresh everything
+		// Dismissing a newTaskPanel causes a refresh
+		Timeflecks.getSharedApplication().getMainWindow().refresh();
+		
 		this.setVisible(false);
 		this.dispose();
 	}

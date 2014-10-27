@@ -26,19 +26,18 @@ public class MainWindow extends JFrame
 	public MainWindow()
 	{
 		super();
+		
+		panel = null;
+		setCpanels(new ArrayList<CalendarPanel>());
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-
 				setTitle("Timeflecks");
 				
 				// Set the layout manager
 				setLayout(new FlowLayout());
-				
-				panel = null;
-				setCpanels(new ArrayList<CalendarPanel>());
 
 				addComponents();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "MainWindow",
@@ -49,7 +48,6 @@ public class MainWindow extends JFrame
 						"Displaying frame");
 			}
 		});
-
 	}
 
 	public void addComponents()
@@ -108,7 +106,7 @@ public class MainWindow extends JFrame
 	public void displayFrame()
 	{
 		// TODO: Remove this
-		setSize(1000, 400);
+		setSize(1000, 520);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// setVisible(true);
@@ -127,6 +125,8 @@ public class MainWindow extends JFrame
 		// Refresh the table
 		if (panel != null)
 		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "refresh", "About to refresh panel " + panel);
+
 			panel.refresh();
 		}
 		else
