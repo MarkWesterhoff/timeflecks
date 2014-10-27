@@ -1,6 +1,5 @@
 package user_interface;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -8,7 +7,6 @@ import javax.swing.SwingUtilities;
 
 import core.Timeflecks;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
@@ -28,7 +26,7 @@ public class MainWindow extends JFrame
 		super();
 		
 		panel = null;
-		setCpanels(new ArrayList<CalendarPanel>());
+		cpanels = new ArrayList<CalendarPanel>();
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -109,7 +107,7 @@ public class MainWindow extends JFrame
 		setSize(1000, 520);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// setVisible(true);
+		setVisible(true);
 	}
 	
 	public void refresh()
@@ -146,11 +144,6 @@ public class MainWindow extends JFrame
 	public ArrayList<CalendarPanel> getCpanels()
 	{
 		return cpanels;
-	}
-
-	public void setCpanels(ArrayList<CalendarPanel> cpanels)
-	{
-		this.cpanels = cpanels;
 	}
 
 }
