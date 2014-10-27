@@ -61,6 +61,12 @@ public class MainWindow extends JFrame
 		getContentPane().add(panel);
 
 		// Add the calendar
+		addCalendar(true);
+
+	}
+
+	public void addCalendar(boolean weekView)
+	{
 		// CalendarPanel p = new CalendarPanel(true, true, 100, 1000);
 
 		JPanel container = new JPanel();
@@ -106,7 +112,6 @@ public class MainWindow extends JFrame
 		s.setPreferredSize(new Dimension(730, 440));
 
 		getContentPane().add(s);
-
 	}
 
 	public void displayFrame()
