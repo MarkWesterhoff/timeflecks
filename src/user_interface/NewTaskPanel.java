@@ -196,9 +196,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			// NOTE: Days go right off the end
 
-			hourModel = new SpinnerNumberModel(durationSecs, 0, 23, 1);
+			hourModel = new SpinnerNumberModel(durationHours, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(durationMins, 0, 59, 1);
-			secondModel = new SpinnerNumberModel(durationHours, 0, 59, 1);
+			secondModel = new SpinnerNumberModel(durationSecs, 0, 59, 1);
 		}
 		else
 		{
