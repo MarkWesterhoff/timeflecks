@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -27,6 +28,9 @@ public class TaskList
 	}
 	
 	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
+		Objects.requireNonNull(tasks);
+		Objects.requireNonNull(events);
+		
 		this.tasks = tasks;
 		this.events = events;
 	}
@@ -43,16 +47,20 @@ public class TaskList
 
 	public void setTasks(ArrayList<Task> tasks)
 	{
+		Objects.requireNonNull(tasks);
 		this.tasks = tasks;
 	}
 
 	public void setEvents(ArrayList<Event> events)
 	{
+		Objects.requireNonNull(events);
 		this.events = events;
 	}
 
 	public void addEvent(Event e)
 	{
+		Objects.requireNonNull(e);
+		
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.addEvent(e)",
 				"Adding new event with id " + e.getId() + " to event list");
@@ -61,6 +69,7 @@ public class TaskList
 
 	public void addTask(Task t)
 	{
+		Objects.requireNonNull(t);
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.addTask(e)",
 				"Adding new task with id " + t.getId() + " to task list");
@@ -71,6 +80,8 @@ public class TaskList
 
 	public void sortTasks(Comparator<Task> taskComp)
 	{
+		Objects.requireNonNull(taskComp);
+		
 		Collections.sort(tasks, taskComp);
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.sortTasks()", "Sorting task list");
