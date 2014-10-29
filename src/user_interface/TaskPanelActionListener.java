@@ -85,7 +85,7 @@ public class TaskPanelActionListener implements ActionListener
 				{
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"actionPerformed", "1603");
-				}
+				}	
 			}
 		}
 		else if (e.getActionCommand().equals("Move Down"))
@@ -204,5 +204,4 @@ public class TaskPanelActionListener implements ActionListener
 		}
 
 	}
-
 }
