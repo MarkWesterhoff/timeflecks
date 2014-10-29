@@ -42,10 +42,10 @@ public class TaskPanelActionListener implements ActionListener
 			int row = mainPanel.getTable().getSelectedRow();
 			if (row > 0)
 			{
-				long originalOrdering = Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).getOrdering();
-				long newOrdering = Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row - 1).getOrdering();
+				long originalOrdering = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row).getOrdering();
+				long newOrdering = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row - 1).getOrdering();
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row).setOrdering(newOrdering);
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
@@ -103,10 +103,10 @@ public class TaskPanelActionListener implements ActionListener
 			int row = mainPanel.getTable().getSelectedRow();
 			if (row > -1 && row < mainPanel.getTable().getRowCount() - 1)
 			{
-				long originalOrdering = Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).getOrdering();
-				long newOrdering = Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row + 1).getOrdering();
+				long originalOrdering = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row).getOrdering();
+				long newOrdering = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row + 1).getOrdering();
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row).setOrdering(newOrdering);
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
