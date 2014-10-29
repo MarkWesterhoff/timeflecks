@@ -40,7 +40,6 @@ public class TaskPanelActionListener implements ActionListener
 		NewTaskPanel p = new NewTaskPanel();
 		p.displayFrame();
 	}
-
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
@@ -133,7 +132,6 @@ public class TaskPanelActionListener implements ActionListener
 		else if (e.getActionCommand().equals("Edit Task"))
 		{
 			editSelectedTask(mainPanel);
-
 		}
 		else if (e.getActionCommand().equals("Delete Task"))
 		{
