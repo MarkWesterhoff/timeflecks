@@ -20,15 +20,16 @@ public class TaskList
 	{
 		this(new ArrayList<Task>(), new ArrayList<Event>());
 	}
-	
-	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events) {
+
+	public TaskList(ArrayList<Task> tasks, ArrayList<Event> events)
+	{
 		Objects.requireNonNull(tasks);
 		Objects.requireNonNull(events);
-		
+
 		this.tasks = tasks;
 		this.events = events;
-		
-		taskComparator = Task.nameComparator;
+
+		taskComparator = Task.manualComparator;
 	}
 
 	public ArrayList<Task> getTasks()
@@ -56,7 +57,7 @@ public class TaskList
 	public void addEvent(Event e)
 	{
 		Objects.requireNonNull(e);
-		
+
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.addEvent(e)",
 				"Adding new event with id " + e.getId() + " to event list");
@@ -77,7 +78,7 @@ public class TaskList
 	public void sortTasks(Comparator<Task> taskComp)
 	{
 		Objects.requireNonNull(taskComp);
-		
+
 		Collections.sort(tasks, taskComp);
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.sortTasks()", "Sorting task list");

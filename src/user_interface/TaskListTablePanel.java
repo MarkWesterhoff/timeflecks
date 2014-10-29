@@ -48,8 +48,8 @@ public class TaskListTablePanel extends JPanel
 		// Combobox for Sorting
 		// construct the JComboBox
 		comboMap = new LinkedHashMap<String, Comparator<Task>>();
-		comboMap.put("Name", Task.nameComparator);
 		comboMap.put("Manual", Task.manualComparator);
+		comboMap.put("Name", Task.nameComparator);
 		comboMap.put("Due Date", Task.dueDateComparator);
 		comboMap.put("Priority", Task.priorityComparator);
 		JComboBox<String> sortList = new JComboBox<String>(comboMap.keySet()
@@ -153,7 +153,7 @@ public class TaskListTablePanel extends JPanel
 					buttonName + " icon could not be loaded");
 		}
 		button.setActionCommand(buttonName);
-		button.setEnabled(false);
+		button.setEnabled(true);
 		button.addActionListener(al);
 		return button;
 	}
