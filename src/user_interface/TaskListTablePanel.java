@@ -1,12 +1,8 @@
 package user_interface;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -18,7 +14,7 @@ import logging.GlobalLogger;
 import core.Task;
 import core.Timeflecks;
 
-public class TaskListTablePanel extends JPanel implements ActionListener
+public class TaskListTablePanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 
@@ -40,6 +36,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	{
 		super();
 
+		ActionListener al = new TaskPanelActionListener(this);
+
 		Objects.requireNonNull(tableModel);
 
 		setLayout(new BorderLayout());
@@ -57,7 +55,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		JComboBox<String> sortList = new JComboBox<String>(comboMap.keySet()
 				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
-		sortList.addActionListener(this);
+		sortList.addActionListener(al);
 
 		JLabel spacer = new JLabel("    ");
 
@@ -74,8 +72,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		sortSet.add(spacer);
 
 		// Up and down bump buttons
-		upButton = createIconedButton("resources/up.png", "Move Up");
-		downButton = createIconedButton("resources/down.png", "Move Down");
+		upButton = createIconedButton("resources/up.png", "Move Up", al);
+		downButton = createIconedButton("resources/down.png", "Move Down", al);
 
 		// Goes with buttons
 		sortSet.add(upButton);
@@ -92,9 +90,9 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		editTaskButton.setActionCommand("Edit Task");
 		deleteTaskButton.setActionCommand("Delete Task");
 
-		newTaskButton.addActionListener(this);
-		editTaskButton.addActionListener(this);
-		deleteTaskButton.addActionListener(this);
+		newTaskButton.addActionListener(al);
+		editTaskButton.addActionListener(al);
+		deleteTaskButton.addActionListener(al);
 
 		JPanel newButtonPanel = new JPanel();
 
@@ -135,7 +133,8 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 
 	}
 
-	private JButton createIconedButton(String iconPath, String buttonName)
+	private JButton createIconedButton(String iconPath, String buttonName,
+			ActionListener al)
 	{
 		ImageIcon buttonIcon = new ImageIcon(iconPath);
 		JButton button;
@@ -155,7 +154,7 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		}
 		button.setActionCommand(buttonName);
 		button.setEnabled(false);
-		button.addActionListener(this);
+		button.addActionListener(al);
 		return button;
 	}
 
@@ -170,263 +169,10 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
 
-	// handle changing of SortList
-	public void actionPerformed(ActionEvent e)
+	public void setBumpButtonsVisibility(boolean visibility)
 	{
-		if (e.getActionCommand().equals("dropdownsort"))
-		{
-
-			// TODO Resolve this warning
-			JComboBox<String> box = (JComboBox<String>) (e.getSource());
-			String switchOn = (String) box.getSelectedItem();
-			Timeflecks.getSharedApplication().getTaskList()
-					.setTaskComparator(comboMap.get(switchOn));
-			refresh();
-			if (switchOn == "Manual")
-			{
-				upButton.setEnabled(true);
-				downButton.setEnabled(true);
-			}
-			else
-			{
-				upButton.setEnabled(false);
-				downButton.setEnabled(false);
-			}
-
-		}
-		else if (e.getActionCommand().equals("Move Up"))
-		{
-
-			int row = table.getSelectedRow();
-			if (row > 0)
-			{
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).setOrdering(row - 1);
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row - 1).setOrdering(row);
-				refresh();
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-						"actionPerformed()",
-						"Task in row " + row + " bumped up.");
-				
-				try
-				{
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row).saveToDatabase();
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row - 1).saveToDatabase();
-				}
-				catch (SQLException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"SQLException caught when saving task to database.\nSQL State:\n"
-									+ a.getSQLState() + "\nMessage:\n"
-									+ a.getMessage());
-
-					JOptionPane
-							.showMessageDialog(
-									this,
-									"Database Error. (1603)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
-				catch (IOException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"IOException caught when saving task to database.\nMessage:\n"
-									+ a.getLocalizedMessage());
-
-					// Trouble serializing objects
-					JOptionPane
-							.showMessageDialog(
-									this,
-									"Object Serialization Error. (1604)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			table.getSelectionModel().setSelectionInterval(row - 1, row - 1);
-		}
-		else if (e.getActionCommand().equals("Move Down"))
-		{
-
-			int row = table.getSelectedRow();
-			if (row > -1 && row < table.getRowCount() - 1)
-			{
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).setOrdering(row + 1);
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row + 1).setOrdering(row);
-				refresh();
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-						"actionPerformed()",
-						"Task in row " + row + " bumped down.");
-				table.getSelectionModel()
-						.setSelectionInterval(row + 1, row + 1);
-				
-				try
-				{
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row).saveToDatabase();
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row + 1).saveToDatabase();
-				}
-				catch (SQLException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"SQLException caught when saving task to database.\nSQL State:\n"
-									+ a.getSQLState() + "\nMessage:\n"
-									+ a.getMessage());
-
-					JOptionPane
-							.showMessageDialog(
-									this,
-									"Database Error. (1601)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
-				catch (IOException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"IOException caught when saving task to database.\nMessage:\n"
-									+ a.getLocalizedMessage());
-
-					// Trouble serializing objects
-					JOptionPane
-							.showMessageDialog(
-									this,
-									"Object Serialization Error. (1602)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		}
-		else if (e.getActionCommand().equals("New Task"))
-		{
-			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-					"actionPerformed(ActionEvent)",
-					"New task button pressed. Bringing up NewTaskPanel.");
-
-			NewTaskPanel p = new NewTaskPanel();
-			p.displayFrame();
-		}
-		else if (e.getActionCommand().equals("Edit Task"))
-		{
-			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-					"actionPerformed(ActionEvent)",
-					"Edit task button pressed. Bringing up EditTaskPanel.");
-
-			int row = table.getSelectedRow();
-			if (row >= 0 && row < table.getRowCount())
-			{
-				NewTaskPanel p = new NewTaskPanel(Timeflecks
-						.getSharedApplication().getTaskList().getTasks()
-						.get(row));
-				p.displayFrame();
-			}
-			else
-			{
-				// This happens if there are no tasks selected
-
-				// TODO Grey out the Edit Task Button if there are no tasks
-				// selected
-
-				GlobalLogger.getLogger().logp(Level.WARNING,
-						"TaskListTablePanel", "actionPerformed(ActionEvent)",
-						"Selected row is out of bounds for the current table.");
-			}
-
-		}
-		else if (e.getActionCommand().equals("Delete Task"))
-		{
-			int row = table.getSelectedRow();
-			if (row >= 0 && row < table.getRowCount())
-			{
-				GlobalLogger
-						.getLogger()
-						.logp(Level.INFO, "TaskListTablePanel",
-								"actionPerformed(ActionEvent)",
-								"Delete task button pressed. Deleting currently selected task.");
-
-				// We need to prompt the user to see if they want to
-				// delete the task.
-				Object[] options = { "Delete Task", "Cancel" };
-				int reply = JOptionPane.showOptionDialog(this,
-						"Are you sure you wish to delete this task?",
-						"Confirm Delete", JOptionPane.DEFAULT_OPTION,
-						JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-
-				if (reply == JOptionPane.YES_OPTION)
-				{
-					// The user selected to delete the Task
-					GlobalLogger.getLogger().logp(Level.INFO,
-							"TaskListTablePanel", "performSaveAsCommand",
-							"User elected to overwrite existing file.");
-
-					Task t = Timeflecks.getSharedApplication().getTaskList()
-							.getTasks().remove(row);
-					try
-					{
-						Timeflecks.getSharedApplication().getDBConnector()
-								.delete(t.getId());
-					}
-					catch (SQLException a)
-					{
-						GlobalLogger.getLogger().logp(
-								Level.WARNING,
-								"TaskListTablePanel",
-								"actionPerformed()",
-								"SQLException caught when deletingd task from database.\nSQL State:\n"
-										+ a.getSQLState() + "\nMessage:\n"
-										+ a.getMessage());
-
-						JOptionPane
-								.showMessageDialog(
-										Timeflecks.getSharedApplication()
-												.getMainWindow(),
-										"Database Error. (1102)\nYour task was not deleted. Please try again, or check your database file.",
-										"Database Error",
-										JOptionPane.ERROR_MESSAGE);
-					}
-					Timeflecks.getSharedApplication().getMainWindow().refresh();
-				}
-				else
-				{
-					// User selected to not delete task
-					GlobalLogger
-							.getLogger()
-							.logp(Level.INFO, "TaskListTablePanel",
-									"performSaveAsCommand",
-									"User declined to overwrite file, prompting for new file choice.");
-				}
-			}
-			else
-			{
-				// This happens if there are no tasks selected
-
-				// TODO Gray out the Delete Task Button if there are no tasks
-				// selected
-
-				GlobalLogger.getLogger().logp(Level.WARNING,
-						"TaskListTablePanel", "actionPerformed(ActionEvent)",
-						"Selected row is out of bounds for the current table.");
-			}
-
-		}
-		else
-		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
-					"actionPerformed()",
-					"Action command " + e.getActionCommand() + " not found");
-		}
+		upButton.setEnabled(visibility);
+		downButton.setEnabled(visibility);
 	}
 
 	public JTable getTable()
@@ -434,23 +180,9 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 		return table;
 	}
 
-	public static void main(String[] args)
+	public LinkedHashMap<String, Comparator<Task>> getComboMap()
 	{
-		Timeflecks.getSharedApplication().getTaskList()
-				.addTask(new Task("task1"));
-		Task task2 = new Task("task2");
-		task2.setCompleted(true);
-		Timeflecks.getSharedApplication().getTaskList().addTask(task2);
-
-		JFrame frame = new JFrame();
-		TaskListTablePanel tltp = new TaskListTablePanel(
-				new TaskListTableModel());
-		// TODO Is this right?
-
-		frame.getContentPane().add(tltp, BorderLayout.CENTER);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
+		return comboMap;
 	}
 
 }
