@@ -13,11 +13,16 @@ import logging.GlobalLogger;
 public class ExceptionHandler
 {
 
+<<<<<<< HEAD
 	public static void handleDatabaseSaveException(Exception e, Object origin,
 			String originFunction, String ID)
 	{
 		if (e instanceof IOException)
 		{
+=======
+	public static void handleDatabaseSaveException(Exception e, Object origin, String originFunction, String ID) {
+		if(e instanceof IOException) {
+>>>>>>> Creation of exception-handling static class
 			GlobalLogger.getLogger().logp(
 					Level.WARNING,
 					origin.getClass().getName(),
@@ -29,6 +34,7 @@ public class ExceptionHandler
 			JOptionPane
 					.showMessageDialog(
 							Timeflecks.getSharedApplication().getMainWindow(),
+<<<<<<< HEAD
 							"Object Serialization Error. ("
 									+ ID
 									+ ")\nYour task was not saved. Please try again, or check your database file.",
@@ -37,6 +43,12 @@ public class ExceptionHandler
 		}
 		else if (e instanceof SQLException)
 		{
+=======
+							"Object Serialization Error. (" + ID + ")\nYour task was not saved. Please try again, or check your database file.",
+							"Database Error", JOptionPane.ERROR_MESSAGE);
+			
+		} else if(e instanceof SQLException) {
+>>>>>>> Creation of exception-handling static class
 			GlobalLogger.getLogger().logp(
 					Level.WARNING,
 					origin.getClass().getName(),
@@ -48,6 +60,7 @@ public class ExceptionHandler
 			JOptionPane
 					.showMessageDialog(
 							Timeflecks.getSharedApplication().getMainWindow(),
+<<<<<<< HEAD
 							"Database Error. ("
 									+ ID
 									+ ")\nYour task was not saved. Please try again, or check your database file.",
@@ -74,6 +87,9 @@ public class ExceptionHandler
 							"Database Error. ("
 									+ ID
 									+ ")\nYour task was not deleted. Please try again, or check your database file.",
+=======
+							"Database Error. ("+ ID + ")\nYour task was not saved. Please try again, or check your database file.",
+>>>>>>> Creation of exception-handling static class
 							"Database Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
