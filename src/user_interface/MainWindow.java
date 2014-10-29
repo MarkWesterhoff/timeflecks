@@ -46,7 +46,7 @@ public class MainWindow extends JFrame
 				displayFrame();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
-				
+
 				Timeflecks.getSharedApplication().getMainWindow().refresh();
 			}
 		});
@@ -65,32 +65,42 @@ public class MainWindow extends JFrame
 		getContentPane().add(panel);
 
 		// Add the calendar
-		addCalendar(true);
+		addCalendar(true, new Date());
 
 	}
 
-	public void addCalendar(boolean weekView)
+	/**
+	 * Adds the calendar panel to the MainWindow starting from date. The week
+	 * view will start with the selected date as the leftmost panel, the single
+	 * day view will just use that date.
+	 * 
+	 * @param weekView
+	 *            Whether to use week view or not. If not, it will use the day
+	 *            view.
+	 * @param date
+	 *            The date to use as the basis for the calendar.
+	 */
+	public void addCalendar(boolean weekView, Date date)
 	{
+		JPanel container = new JPanel();
+
+		FlowLayout panelLayout = new FlowLayout();
+		panelLayout.setHgap(0);
+		panelLayout.setVgap(0);
+		container.setLayout(panelLayout);
+
+		JScrollPane s = new JScrollPane(container);
+
 		if (weekView == true)
 		{
-			// CalendarPanel p = new CalendarPanel(true, true, 100, 1000);
-
-			JPanel container = new JPanel();
-
-			FlowLayout panelLayout = new FlowLayout();
-			panelLayout.setHgap(0);
-			panelLayout.setVgap(0);
-			container.setLayout(panelLayout);
-
-			JScrollPane s = new JScrollPane(container);
-
 			int width = 100;
 			int height = 1000;
 
-			Date d = new Date();
+			Date d = date;
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, -1);
-			d = cal.getTime();
+			cal.setTime(d);
+			//cal.add(Calendar.DATE, -1);
+			//d = cal.getTime();
 
 			for (int i = 0; i < 7; i++)
 			{
@@ -114,39 +124,21 @@ public class MainWindow extends JFrame
 				cpanels.add(p);
 				container.add(p);
 			}
-
-			s.setPreferredSize(new Dimension(730, 440));
-
-			getContentPane().add(s);
 		}
 		else
 		{
-			JPanel container = new JPanel();
-
-			FlowLayout panelLayout = new FlowLayout();
-			panelLayout.setHgap(0);
-			panelLayout.setVgap(0);
-			container.setLayout(panelLayout);
-
-			JScrollPane s = new JScrollPane(container);
-
 			int width = 700;
 			int height = 1000;
 
-			Date d = new Date();
-			Calendar cal = Calendar.getInstance();
-			//cal.add(Calendar.DATE, -1); We want the current day
-			d = cal.getTime();
-			
-			CalendarPanel p = new CalendarPanel(d, true, false, width, height);
-			
+			CalendarPanel p = new CalendarPanel(date, true, false, width, height);
+
 			cpanels.add(p);
 			container.add(p);
-
-			s.setPreferredSize(new Dimension(730, 440));
-
-			getContentPane().add(s);
 		}
+		
+		s.setPreferredSize(new Dimension(730, 440));
+		
+		getContentPane().add(s);
 	}
 
 	public void displayFrame()
