@@ -20,25 +20,26 @@ public class TaskPanelActionListener implements ActionListener
 	{
 		this.mainPanel = mainPanel;
 	}
-	
-	public static void editSelectedTask(TaskListTablePanel mainPanel) {
+
+	public static void editSelectedTask(TaskListTablePanel mainPanel)
+	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"editSelectedTask()",
-				"Bringing up EditTaskPanel.");
+				"editSelectedTask()", "Bringing up EditTaskPanel.");
 		Task selectedTask = mainPanel.getSelectedTask();
-		if(selectedTask != null) {
+		if (selectedTask != null)
+		{
 			NewTaskPanel p = new NewTaskPanel(selectedTask);
 			p.displayFrame();
 		}
 	}
-	
-	public static void addNewTask() {
+
+	public static void addNewTask()
+	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"addNewTask()",
-				"Bringing up NewTaskPanel.");
+				"addNewTask()", "Bringing up NewTaskPanel.");
 		NewTaskPanel p = new NewTaskPanel();
 		p.displayFrame();
-		}
+	}
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -69,8 +70,8 @@ public class TaskPanelActionListener implements ActionListener
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row - 1).setOrdering(originalOrdering);
 				mainPanel.refresh();
-				GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
-						"actionPerformed()",
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "actionPerformed()",
 						"Task in row " + row + " bumped up.");
 				mainPanel.getTable().getSelectionModel()
 						.setSelectionInterval(row - 1, row - 1);
@@ -81,10 +82,11 @@ public class TaskPanelActionListener implements ActionListener
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
 							.get(row - 1).saveToDatabase();
 				}
-				catch (Exception ex) {
-					ExceptionHandler.handleDatabaseSaveException(ex, this, "actionPerformed", "1603");
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseSaveException(ex, this,
+							"actionPerformed", "1603");
 				}
-				
 
 			}
 		}
@@ -116,16 +118,17 @@ public class TaskPanelActionListener implements ActionListener
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
 							.get(row + 1).saveToDatabase();
 				}
-				catch (Exception ex) {
-					ExceptionHandler.handleDatabaseSaveException(ex, this, "actionPerformed", "1605");
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseSaveException(ex, this,
+							"actionPerformed", "1605");
 				}
 			}
 		}
 		else if (e.getActionCommand().equals("New Task"))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-					"actionPerformed(ActionEvent)",
-					"New task button pressed.");
+					"actionPerformed(ActionEvent)", "New task button pressed.");
 			addNewTask();
 		}
 		else if (e.getActionCommand().equals("Edit Task"))
@@ -168,7 +171,8 @@ public class TaskPanelActionListener implements ActionListener
 					}
 					catch (Exception ex)
 					{
-						ExceptionHandler.handleDatabaseDeleteException(ex,this,"actionPerformed()","1102");
+						ExceptionHandler.handleDatabaseDeleteException(ex,
+								this, "actionPerformed()", "1102");
 					}
 					Timeflecks.getSharedApplication().getMainWindow().refresh();
 				}
