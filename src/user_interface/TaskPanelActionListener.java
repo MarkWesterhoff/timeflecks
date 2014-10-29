@@ -51,7 +51,7 @@ public class TaskPanelActionListener implements ActionListener
 				Timeflecks.getSharedApplication().getTaskList().getTasks()
 						.get(row - 1).setOrdering(originalOrdering);
 				mainPanel.refresh();
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+				GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 						"actionPerformed()",
 						"Task in row " + row + " bumped up.");
 				mainPanel.getTable().getSelectionModel()
@@ -63,38 +63,10 @@ public class TaskPanelActionListener implements ActionListener
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
 							.get(row - 1).saveToDatabase();
 				}
-				catch (SQLException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"SQLException caught when saving task to database.\nSQL State:\n"
-									+ a.getSQLState() + "\nMessage:\n"
-									+ a.getMessage());
-
-					JOptionPane
-							.showMessageDialog(
-									mainPanel,
-									"Database Error. (1603)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
+				catch (Exception ex) {
+					ExceptionHandler.handleDatabaseSaveException(ex, this, "actionPerformed", "1603");
 				}
-				catch (IOException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"IOException caught when saving task to database.\nMessage:\n"
-									+ a.getLocalizedMessage());
-
-					// Trouble serializing objects
-					JOptionPane
-							.showMessageDialog(
-									mainPanel,
-									"Object Serialization Error. (1604)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
+				
 			}
 		}
 		else if (e.getActionCommand().equals("Move Down"))
@@ -125,37 +97,8 @@ public class TaskPanelActionListener implements ActionListener
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
 							.get(row + 1).saveToDatabase();
 				}
-				catch (SQLException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"SQLException caught when saving task to database.\nSQL State:\n"
-									+ a.getSQLState() + "\nMessage:\n"
-									+ a.getMessage());
-
-					JOptionPane
-							.showMessageDialog(
-									mainPanel,
-									"Database Error. (1601)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
-				}
-				catch (IOException a)
-				{
-					GlobalLogger.getLogger().logp(
-							Level.WARNING,
-							"TaskListTablePanel",
-							"actionPerformed",
-							"IOException caught when saving task to database.\nMessage:\n"
-									+ a.getLocalizedMessage());
-
-					// Trouble serializing objects
-					JOptionPane
-							.showMessageDialog(
-									mainPanel,
-									"Object Serialization Error. (1602)\nYour task was not saved. Please try again, or check your database file.",
-									"Database Error", JOptionPane.ERROR_MESSAGE);
+				catch (Exception ex) {
+					ExceptionHandler.handleDatabaseSaveException(ex, this, "actionPerformed", "1605");
 				}
 			}
 		}
@@ -228,13 +171,13 @@ public class TaskPanelActionListener implements ActionListener
 						Timeflecks.getSharedApplication().getDBConnector()
 								.delete(t.getId());
 					}
-					catch (SQLException a)
+					catch (SQLException a) //TODO
 					{
 						GlobalLogger.getLogger().logp(
 								Level.WARNING,
 								"TaskListTablePanel",
 								"actionPerformed()",
-								"SQLException caught when deletingd task from database.\nSQL State:\n"
+								"SQLException caught when deleting task from database.\nSQL State:\n"
 										+ a.getSQLState() + "\nMessage:\n"
 										+ a.getMessage());
 
