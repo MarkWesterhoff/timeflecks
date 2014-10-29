@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.swing.JComboBox;
@@ -20,8 +19,6 @@ public class TaskPanelActionListener implements ActionListener
 	{
 		this.mainPanel = mainPanel;
 	}
-	
-
 
 	public static void editSelectedTask(TaskListTablePanel mainPanel)
 	{
