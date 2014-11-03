@@ -13,8 +13,11 @@ import logging.GlobalLogger;
 public class ExceptionHandler
 {
 
-	public static void handleDatabaseSaveException(Exception e, Object origin, String originFunction, String ID) {
-		if(e instanceof IOException) {
+	public static void handleDatabaseSaveException(Exception e, Object origin,
+			String originFunction, String ID)
+	{
+		if (e instanceof IOException)
+		{
 			GlobalLogger.getLogger().logp(
 					Level.WARNING,
 					origin.getClass().getName(),
