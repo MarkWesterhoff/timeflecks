@@ -1,6 +1,5 @@
 package user_interface;
 
-
 import java.util.logging.Level;
 
 import javax.swing.table.AbstractTableModel;
