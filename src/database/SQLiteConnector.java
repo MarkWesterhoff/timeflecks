@@ -18,26 +18,6 @@ import logging.GlobalLogger;
 import utility.ByteUtility;
 import utility.FileUtility;
 
-/**
- * Represents the types of objects that can be saved to this database.
- */
-enum SerializableTypes
-{
-	TASK('t'), EVENT('e');
-
-	private final char type;
-
-	SerializableTypes(char t)
-	{
-		this.type = t;
-	}
-
-	public char getValue()
-	{
-		return type;
-	}
-}
-
 public final class SQLiteConnector
 {
 	// Load JDBC database connector class
@@ -225,7 +205,7 @@ public final class SQLiteConnector
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Task)",
 				"Serializing and saving Task \"" + task.getName() + "\"");
 
-		this.save(task.getId(), SerializableTypes.TASK.getValue(),
+		this.save(task.getId(), task.getType().getValue(),
 				ByteUtility.getBytes(task));
 	}
 
@@ -239,6 +219,7 @@ public final class SQLiteConnector
 	 * @throws IOException
 	 *             when there is a problem serializing the Event to bytes
 	 */
+	
 	public void serializeAndSave(Event event) throws SQLException, IOException
 	{
 		Objects.requireNonNull(event);
@@ -246,11 +227,12 @@ public final class SQLiteConnector
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Event)",
 				"Serializing and saving Event \"" + event.getName() + "\"");
 
-		this.save(event.getId(), SerializableTypes.EVENT.getValue(),
+		this.save(event.getId(), event.getType().getValue(),
 				ByteUtility.getBytes(event));
 	}
 
 	/**
+	 * Saves the serialized object (byte array) to the database.
 	 * 
 	 * @param id
 	 *            the id of the object to save
@@ -316,7 +298,7 @@ public final class SQLiteConnector
 					.prepareStatement(SQL_SELECT_SERIALIZED_TIMEOBJECT);
 			stmt.setLong(1, id);
 			stmt.setString(2,
-					Character.toString(SerializableTypes.TASK.getValue()));
+					Character.toString(SerializableType.TASK.getValue()));
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 
@@ -361,7 +343,7 @@ public final class SQLiteConnector
 					.prepareStatement(SQL_SELECT_SERIALIZED_TIMEOBJECT);
 			stmt.setLong(1, id);
 			stmt.setString(2,
-					Character.toString(SerializableTypes.EVENT.getValue()));
+					Character.toString(SerializableType.EVENT.getValue()));
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 
@@ -406,7 +388,75 @@ public final class SQLiteConnector
 			c.close();
 		}
 	}
+	
+	/**
+	 * Saves all DatabaseSerializable Objects to the database. Faster than calling serializeAndSave()
+	 * on each individual Object. Does not commit transaction until all have
+	 * been written to the database (and thus if an exception occurs, none will
+	 * be committed).  
+	 * 
+	 * @param tasks
+	 *            the ArrayList of Tasks to save
+	 * @throws SQLException
+	 * @throws IOException 
+	 */
+	public void serializeAndSave(
+			ArrayList<? extends DatabaseSerializable> dbObjects)
+			throws SQLException, IOException
+	{
+		Objects.requireNonNull(dbObjects);
 
+		GlobalLogger.getLogger().logp(
+				Level.INFO,
+				"SQLiteConnector",
+				"serializeAndSave(ArrayList<Task>)",
+				"Saving " + dbObjects.size()
+						+ " DatabaseSerializable Objects to database.");
+
+		Connection c = this.getConnection();
+		try
+		{
+			PreparedStatement stmt = c
+					.prepareStatement(SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT);
+			c.setAutoCommit(false);
+
+			int commitNumber = 0;
+
+			for (DatabaseSerializable dbObj : dbObjects)
+			{
+				stmt.setLong(1, dbObj.getId());
+				stmt.setString(2,
+						Character.toString(dbObj.getType().getValue()));
+				stmt.setBytes(3, ByteUtility.getBytes(dbObj));
+				stmt.addBatch();
+
+				commitNumber++;
+				if (commitNumber >= 100)
+				{
+					c.commit();
+					commitNumber = 0;
+				}
+			}
+
+			stmt.executeBatch();
+			c.commit();
+			stmt.close();
+		}
+		catch (SQLException e)
+		{
+			// Need to rollback the transaction if it failed
+			if (c != null)
+			{
+				c.rollback();
+				throw e;
+			}
+		}
+		finally
+		{
+			c.close();
+		}
+	}
+	
 	/**
 	 * Gets all serialized tasks from the database, deserializes them, and
 	 * returns them.
@@ -419,6 +469,9 @@ public final class SQLiteConnector
 	public ArrayList<Task> getAllTasks() throws SQLException,
 			ClassNotFoundException, IOException
 	{
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getAllTasks()", "Getting all tasks");
+		
 		ArrayList<Task> tasks = new ArrayList<Task>();
 
 		// Get all Tasks from the database
@@ -428,7 +481,7 @@ public final class SQLiteConnector
 		{
 			PreparedStatement stmt = c.prepareStatement(SQL_GET_ALL_OBJECTS);
 			stmt.setString(1,
-					Character.toString(SerializableTypes.TASK.getValue()));
+					Character.toString(SerializableType.TASK.getValue()));
 			rs = stmt.executeQuery();
 			
 			// Deserialize the objects and add to list of Tasks
@@ -460,6 +513,9 @@ public final class SQLiteConnector
 	public ArrayList<Event> getAllEvents() throws SQLException,
 			ClassNotFoundException, IOException
 	{
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getAllEvents()", "Getting all events");
+		
 		ArrayList<Event> events = new ArrayList<Event>();
 
 		// Get all Events from the database
@@ -469,7 +525,7 @@ public final class SQLiteConnector
 		{
 			PreparedStatement stmt = c.prepareStatement(SQL_GET_ALL_OBJECTS);
 			stmt.setString(1,
-					Character.toString(SerializableTypes.EVENT.getValue()));
+					Character.toString(SerializableType.EVENT.getValue()));
 			rs = stmt.executeQuery();
 			
 			// Deserialize the objects and add to list of Events
@@ -488,7 +544,7 @@ public final class SQLiteConnector
 			c.close();
 		}
 	}
-
+	
 	/**
 	 * Gets the highest ID used in the database and returns it.
 	 * 

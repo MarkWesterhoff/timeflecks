@@ -1,7 +1,6 @@
 package core;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,6 +8,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import database.DatabaseSerializable;
+import database.SerializableType;
 import logging.GlobalLogger;
 
 /**
@@ -17,7 +18,7 @@ import logging.GlobalLogger;
  * 
  */
 
-public class Task implements Scheduleable, Serializable
+public class Task implements Scheduleable, DatabaseSerializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -273,5 +274,11 @@ public class Task implements Scheduleable, Serializable
 				"Saving " + this.name + " to database.");
 		
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
+	}
+	
+	@Override
+	public SerializableType getType()
+	{
+		return SerializableType.TASK;
 	}
 }

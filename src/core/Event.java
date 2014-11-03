@@ -1,12 +1,13 @@
 package core;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import database.DatabaseSerializable;
+import database.SerializableType;
 import logging.GlobalLogger;
 
 /**
@@ -14,7 +15,7 @@ import logging.GlobalLogger;
  * Represents an event on the calendar
  * 
  */
-public class Event implements Scheduleable, Serializable
+public class Event implements Scheduleable, DatabaseSerializable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -118,5 +119,11 @@ public class Event implements Scheduleable, Serializable
 				+ this.name + " to database.");
 		
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
+	}
+
+	@Override
+	public SerializableType getType()
+	{
+		return SerializableType.EVENT;
 	}
 }

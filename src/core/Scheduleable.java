@@ -10,10 +10,8 @@ import java.util.Date;
  */
 public interface Scheduleable
 {
-	
 	public String getName();
 	public Date getStartTime();
 	public Date getEndTime();
 	public long getDuration();
-	public long getId();
 }

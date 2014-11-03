@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
+import database.DatabaseSerializable;
 import logging.GlobalLogger;
 
 public class TaskList
@@ -101,15 +102,12 @@ public class TaskList
 		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
 				"core.TaskList.saveAllTasksAndEvents",
 				"saving all tasks and events to database");
-		for (Task t : tasks)
-		{
-			t.saveToDatabase();
-		}
+		
+		Timeflecks.getSharedApplication().getDBConnector()
+				.serializeAndSave(this.tasks);
 
-		for (Event e : events)
-		{
-			e.saveToDatabase();
-		}
+		Timeflecks.getSharedApplication().getDBConnector()
+		.serializeAndSave(this.events);
 	}
 
 	public void setTaskComparator(Comparator<Task> taskComparator)

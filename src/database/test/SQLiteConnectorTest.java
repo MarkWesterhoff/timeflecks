@@ -29,8 +29,11 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testConstructor() throws SQLException, IOException, ClassNotFoundException {
-		ArrayList<File> files = new ArrayList<File>();
-		 
+		// Make new clean database
+		new File("testConstructor.db").delete();
+		Timeflecks.getSharedApplication().setDBConnector(new SQLiteConnector(new File("testConstructor.db"), true));
+		
+		ArrayList<File> files = new ArrayList<File>(); 
 		files.add(new File("testSwitchDatabase1.db"));
 		files.add(new File("testSwitchDatabase2.db"));
 		files.add(new File("testSwitchDatabase3.db"));
@@ -78,6 +81,9 @@ public class SQLiteConnectorTest {
 		for (File f : files) {
 			Files.delete(f.toPath());
 		}
+		
+		// Clean up
+		new File("testConstructor.db").delete();
 	}
 	
 	/**
@@ -91,6 +97,10 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testSaveAndLoad() throws SQLException, IOException, ClassNotFoundException {
+		// Make new clean database
+		new File("testSaveAndLoad.db").delete();
+		Timeflecks.getSharedApplication().setDBConnector(new SQLiteConnector(new File("testSaveAndLoad.db"), true));
+		
 		Task task = new Task("task1");
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
 		
@@ -132,7 +142,8 @@ public class SQLiteConnectorTest {
 		
 		// Negative tests
 		
-		
+		// Clean up
+		new File("testSaveAndLoad.db").delete();
 	}
 	
 	/**
@@ -144,6 +155,10 @@ public class SQLiteConnectorTest {
 	 */
 	@Test
 	public void testDelete() throws SQLException, IOException, ClassNotFoundException {
+		// Make new clean database
+		new File("testDelete.db").delete();
+		Timeflecks.getSharedApplication().setDBConnector(new SQLiteConnector(new File("testDelete.db"), true));
+		
 		Task task = new Task("task1");
 		Task task2 = new Task("task2");
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
@@ -162,6 +177,9 @@ public class SQLiteConnectorTest {
 		catch (SQLException s) {
 			// expected
 		}
+		
+		// Clean up
+		new File("testDelete.db").delete();
 	}
 	
 	/**
@@ -172,6 +190,7 @@ public class SQLiteConnectorTest {
 	@Test
 	public void testGetHighestId() throws SQLException, IOException {
 		// Clear the db before testing
+		new File("testGetHighestId.db").delete();
 		Timeflecks.getSharedApplication().setDBConnector(new SQLiteConnector(new File("testGetHighestId.db"), true));
 		
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1a"));
@@ -185,19 +204,32 @@ public class SQLiteConnectorTest {
 		
 		long maxId = Timeflecks.getSharedApplication().getDBConnector().getHighestID();
 		assertEquals("Max ID should be equal to highestID", t2.getId(), maxId);
+		
+		// Clean up
+		new File("testGetHighestId.db").delete();
 	}
 	
 	/**
 	 * Stress test to test database saving speed.
+	 * 
 	 * @throws IOException 
 	 * @throws SQLException 
+	 * @throws ClassNotFoundException 
 	 */
 	@Ignore
 	@Test
-	public void stressTestSerialization() throws SQLException, IOException {
-		int numTasks = 100;
+	public void stressTestSerialization() throws SQLException, IOException, ClassNotFoundException {
+		// Make new database
+		new File("stressTestSerialization.db").delete();
+		Timeflecks.getSharedApplication().openDatabaseFile(
+				new File("stressTestSerialization.db"));
 		
-		for(int i = 0; i < numTasks/2; ++i) {
+		//Initialize everything
+		new Task("asdf").saveToDatabase();
+		
+		int numTasks = 1000;
+		
+		for(int i = 0; i < numTasks; ++i) {
 			Task t = new Task("task" + Integer.toString(i));
 			t.setDescription("Description of the task.");
 			t.setDueDate(new Date());
@@ -207,9 +239,7 @@ public class SQLiteConnectorTest {
 			t.addTag("tag4");
 			t.setStartTime(new Date());
 			Timeflecks.getSharedApplication().getTaskList().addTask(t);
-		}
-		
-		for(int i = 0; i < numTasks/2; ++i) {
+			
 			Event e = new Event("event" + Integer.toString(i), new Date(), 100);
 			e.setDescription("Description of the event.");
 			Timeflecks.getSharedApplication().getTaskList().addEvent(e);
@@ -217,13 +247,28 @@ public class SQLiteConnectorTest {
 		
 		// Time saving of all tasks
 		long time = System.currentTimeMillis();
-		
 		Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
-		
 		time = System.currentTimeMillis() - time;
+		
+		// Time retrieving of all tasks
+		long time2 = System.currentTimeMillis();
+		Timeflecks.getSharedApplication()
+				.getDBConnector().getAllTasks();
+		Timeflecks.getSharedApplication()
+				.getDBConnector().getAllEvents();
+		time2 = System.currentTimeMillis() - time2;
+		
 		System.out.println("Time to save all Objects: " 
 					+ Float.toString((float)time/1000));
 		System.out.println("Objects saved per second: " 
-					+ Float.toString(numTasks/((float)time/1000)));
+					+ Float.toString(numTasks*2/((float)time/1000)));
+		
+		System.out.println("Time to retrieve all Objects: " 
+					+ Float.toString((float)time2/1000));
+		System.out.println("Objects retreived per second: " 
+					+ Float.toString(numTasks*2/((float)time2/1000)));
+		
+		// Clean up and delete file
+		new File("stressTestSerialization.db").delete();
 	}
 }

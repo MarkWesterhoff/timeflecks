@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Objects;
 
 public class ByteUtility {
@@ -15,16 +16,17 @@ public class ByteUtility {
 	 * @return the array of bytes representing the serialized object
 	 * @throws IOException when there is a problem serializing the object
 	 */
-	public static byte[] getBytes(Object obj) throws IOException {
+	public static byte[] getBytes(Serializable obj) throws IOException {
 	    Objects.requireNonNull(obj);
 	    
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	    ObjectOutputStream oos = new ObjectOutputStream(bos);
+	    
 	    oos.writeObject(obj);
 	    oos.flush();
-	    oos.close();
-	    bos.close();
 	    byte[] data = bos.toByteArray();
+	    
+	    oos.close();
 	    return data;
 	}
 	
