@@ -172,86 +172,12 @@ public class CalendarPanel extends JPanel
 			Rectangle frame = new Rectangle(leftInset, firstInset
 					+ (int) (taskHours * hourIncrement), d.width - rightInset
 					- leftInset, (int) (durationInHours * hourIncrement));
-
-			// Draw the rectangle first, so the string shows up on top of it
-			if (t.isCompleted())
-			{
-				g.setColor(Color.getHSBColor(0f, 0f, .94f));
-			}
-			else
-			{
-				g.setColor(Color.white);
-			}
-			g.fillRect(frame.x, frame.y, frame.width, frame.height);
-			g.setColor(Color.black);
-			g.drawRect(frame.x, frame.y, frame.width, frame.height);
-
-			// NOTE That if it doesn't show up, make sure the duration isn't
-			// zero
-
-			// Draw the string title of the task
-			FontRenderContext frc2 = g2.getFontRenderContext();
-			int fontHeight2 = (int) g2.getFont()
-					.getLineMetrics(t.getName(), frc2).getHeight();
-
-			final int textLeftInset = 2;
-			final int textTopInset = 2 + fontHeight2;
-
-			// TODO This should be changed to draw components within the bounds
-			// of
-			// the component and that's it and not require knowledge of its
-			// frame,
-			// and then it will be given a place to draw by the calendar.
-
-			this.drawString(g, t.getName(), frame.x + getInsets().left
-					+ textLeftInset, frame.y + getInsets().top + textTopInset,
-					frame.width);
-
-			// Note that it is our job not to draw outside of our insets...
-			// g.drawString(t.getName(), frame.x + getInsets().left
-			// + textLeftInset, frame.y + getInsets().top + textTopInset);
-
-			// TaskComponent tc = new TaskComponent(t, new Rectangle(leftInset,
-			// firstInset + taskHours * hourIncrement, d.width - rightInset,
-			// durationInHours * hourIncrement));
-			// add(tc);
-			//
-			// TaskComponent tc2 = new TaskComponent(t, new Rectangle(leftInset,
-			// 1, 100, 200));
-			// add(tc);
+			
+			TaskComponent tc = new TaskComponent(t, frame);
+			tc.paint(g);
 		}
 	}
-
-	public void drawString(Graphics g, String s, int x, int y, int width)
-	{
-		FontMetrics fm = g.getFontMetrics();
-
-		int lineHeight = fm.getHeight();
-
-		int curX = x;
-		int curY = y;
-
-		String[] words = s.split(" ");
-
-		for (String word : words)
-		{
-			// Find out the width of the word.
-			int wordWidth = fm.stringWidth(word + " ");
-
-			// If text exceeds the width, then move to next line.
-			if (curX + wordWidth >= x + width)
-			{
-				curY += lineHeight;
-				curX = x;
-			}
-
-			g.drawString(word, curX, curY);
-
-			// Move over to the right for next word.
-			curX += wordWidth;
-		}
-	}
-
+	
 	/**
 	 * refreshes the calendar view, re-adds the tasks for that day from the
 	 * TaskList. Warning: This may be time-intensive for large TaskLists

@@ -5,6 +5,7 @@ import java.awt.font.FontRenderContext;
 
 import javax.swing.*;
 
+import utility.GUIUtility;
 import core.Task;
 
 public class TaskComponent extends JComponent
@@ -16,13 +17,14 @@ public class TaskComponent extends JComponent
 	private static final long serialVersionUID = 1L;
 
 	private Task task;
+	private Rectangle frame;
 
 	public TaskComponent(Task taskToDraw, Rectangle newBounds)
 	{
 		super();
 
 		task = taskToDraw;
-		this.setBounds(newBounds);
+		frame = newBounds;
 
 		setBorder(BorderFactory.createEmptyBorder());
 		// setBorder(BorderFactory.createLineBorder(Color.black));
@@ -30,69 +32,50 @@ public class TaskComponent extends JComponent
 		setPreferredSize(new Dimension(newBounds.width, newBounds.height));
 	}
 
-	public void paintComponent(Graphics g)
+	/**
+	 * Paint the TaskComponent in the specified graphics G
+	 * 
+	 * @param g The graphics in which to paint the TaskComponent
+	 */
+	public void paint(Graphics g)
 	{
 		super.paintComponent(g);
+		
+		// Draw the rectangle first, so the string shows up on top of it
+		if (task.isCompleted())
+		{
+			g.setColor(Color.getHSBColor(0f, 0f, .94f));
+		}
+		else
+		{
+			g.setColor(Color.white);
+		}
+		g.fillRect(frame.x, frame.y, frame.width, frame.height);
+		g.setColor(Color.black);
+		g.drawRect(frame.x, frame.y, frame.width, frame.height);
 
+		// NOTE That if it doesn't show up, make sure the duration isn't
+		// zero
+		
 		Graphics2D g2 = (Graphics2D) g;
 
-		Rectangle frame = this.getBounds();
-
-		// Draw the rectangle first, so the string shows up on top of it
-		g2.setPaint(Color.white);
-		g2.fillRect(frame.x, frame.y, frame.width, frame.height);
-		g2.setPaint(Color.red);
-		g2.drawRect(frame.x, frame.y, frame.width, frame.height);
-
 		// Draw the string title of the task
-		FontRenderContext frc = g2.getFontRenderContext();
-		int fontHeight = (int) g2.getFont().getLineMetrics(task.getName(), frc)
+		FontRenderContext frc2 = g2.getFontRenderContext();
+		int fontHeight2 = (int) g2.getFont().getLineMetrics(task.getName(), frc2)
 				.getHeight();
 
-		// TODO implement wrapping of names
+		final int textLeftInset = 2;
+		final int textTopInset = 2 + fontHeight2;
 
-		final int leftInset = 2;
-		final int topInset = 2 + fontHeight;
-
-		// TODO This should be changed to draw components within the bounds of
-		// the component and that's it and not require knowledge of its frame,
+		// TODO This should be changed to draw components within the bounds
+		// of
+		// the component and that's it and not require knowledge of its
+		// frame,
 		// and then it will be given a place to draw by the calendar.
 
-		// Note that it is our job not to draw outside of our insets...
-		g2.drawString(task.getName(), frame.x + getInsets().left + leftInset,
-				frame.y + getInsets().top + topInset);
+		GUIUtility.drawString(g, task.getName(), frame.x + getInsets().left
+				+ textLeftInset, frame.y + getInsets().top + textTopInset,
+				frame.width);
+
 	}
-
-	public static void main(String[] args)
-	{
-		try
-		{
-			Task t = new Task("New Task Blah Blah Blah");
-			TaskComponent p = new TaskComponent(t,
-					new Rectangle(2, 2, 100, 100));
-			JPanel panel = new JPanel();
-			panel.add(p);
-			panel.setPreferredSize(new Dimension(400, 400));
-			JFrame newFrame = new JFrame("Task Component Test");
-
-			newFrame.getContentPane().add(p);
-
-			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-			newFrame.pack();
-
-			newFrame.setSize(400, 400);
-
-			newFrame.setAutoRequestFocus(true);
-			newFrame.setResizable(true);
-
-			newFrame.setVisible(true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to " + e);
-		}
-	}
-
 }
