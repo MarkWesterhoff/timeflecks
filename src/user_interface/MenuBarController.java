@@ -9,8 +9,9 @@ import java.util.logging.Level;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import utility.FileUtility;
 
 import core.Timeflecks;
 
@@ -87,31 +88,8 @@ public class MenuBarController implements ActionListener
 			{
 				Timeflecks.getSharedApplication().getTaskList()
 						.saveAllTasksAndEvents();
-			}
-			catch (SQLException e)
-			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Open command generated SQLException. Showing dialog.");
-
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"Database Error. (1300)\nYour tasks were not saved. Please try again, or check your database file.",
-								"Database Error", JOptionPane.ERROR_MESSAGE);
-			}
-			catch (IOException e)
-			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Open command generated IOException. Showing dialog.");
-
-				// Trouble serializing objects
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"Object Serialization Error. (1301)\nYour tasks were not saved. Please try again, or check your database file.",
-								"Database Error", JOptionPane.ERROR_MESSAGE);
+			} catch(Exception e) {
+				ExceptionHandler.handleDatabaseSaveException(e, this, "performOpenCommand", "1300");
 			}
 
 			// Make sure it is a different .db file
@@ -147,7 +125,7 @@ public class MenuBarController implements ActionListener
 			try
 			{
 				Timeflecks.getSharedApplication()
-						.openDatabaseFile(selectedFile);
+						.openDatabaseFile(selectedFile);  // Shouldn't this be handled here? (return success or failure?)
 			}
 			catch (SQLException e)
 			{
@@ -229,7 +207,7 @@ public class MenuBarController implements ActionListener
 				File selectedFile = fileChooser.getSelectedFile();
 				// TODO Make sure the user is warned if the file exists and is
 				// not the same file
-				if (fileExistsAndIsNotSame(selectedFile))
+				if (FileUtility.fileExistsAndIsNotSame(selectedFile))
 				{
 					// We need to prompt the user to see if they want to
 					// overwrite the file.
@@ -335,37 +313,7 @@ public class MenuBarController implements ActionListener
 				"No Help Available", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/**
-	 * Checks against the existence of the file (same file is ok).
-	 * 
-	 * @param newFile
-	 *            The file to check
-	 * @return True if there is a problem. False if there is no problem
-	 */
-	public boolean fileExistsAndIsNotSame(File newFile)
-	{
-		if (newFile.exists())
-		{
-			// The file exists
-			if (Timeflecks.getSharedApplication().getCurrentFile()
-					.equals(newFile))
-			{
-				return false;
-			}
-			else
-			{
-				// If it exists and is not the same, then we have an error, and
-				// need
-				// to prompt the user.
-				return true;
-			}
 
-		}
-		else
-		{
-			return false;
-		}
-	}
 	
 	
 	
