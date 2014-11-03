@@ -20,6 +20,40 @@ public class TaskPanelActionListener implements ActionListener
 	{
 		this.mainPanel = mainPanel;
 	}
+	
+	public static void editSelectedTask(TaskListTablePanel mainPanel) {
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+				"editSelectedTask()",
+				"Bringing up EditTaskPanel.");
+
+		int row = mainPanel.getTable().getSelectedRow();
+		if (row >= 0 && row < mainPanel.getTable().getRowCount())
+		{
+			NewTaskPanel p = new NewTaskPanel(Timeflecks
+					.getSharedApplication().getTaskList().getTasks()
+					.get(row));
+			p.displayFrame();
+		}
+		else
+		{
+			// This happens if there are no tasks selected
+
+			// TODO Grey out the Edit Task Button if there are no tasks
+			// selected
+
+			GlobalLogger.getLogger().logp(Level.WARNING,
+					"TaskListTablePanel", "actionPerformed(ActionEvent)",
+					"Selected row is out of bounds for the current table.");
+		}
+	}
+	
+	public static void addNewTask() {
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+				"addNewTask()",
+				"Bringing up NewTaskPanel.");
+		NewTaskPanel p = new NewTaskPanel();
+		p.displayFrame();
+		}
 
 	public static void editSelectedTask(TaskListTablePanel mainPanel)
 	{
@@ -126,12 +160,21 @@ public class TaskPanelActionListener implements ActionListener
 		else if (e.getActionCommand().equals("New Task"))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+<<<<<<< HEAD
 					"actionPerformed(ActionEvent)", "New task button pressed.");
+=======
+					"actionPerformed(ActionEvent)",
+					"New task button pressed.");
+>>>>>>> Separate MenuBar Controller and View
 			addNewTask();
 		}
 		else if (e.getActionCommand().equals("Edit Task"))
 		{
 			editSelectedTask(mainPanel);
+<<<<<<< HEAD
+=======
+
+>>>>>>> Separate MenuBar Controller and View
 		}
 		else if (e.getActionCommand().equals("Delete Task"))
 		{
