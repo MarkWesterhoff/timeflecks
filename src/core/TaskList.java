@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
-import database.DatabaseSerializable;
 import logging.GlobalLogger;
 
 public class TaskList

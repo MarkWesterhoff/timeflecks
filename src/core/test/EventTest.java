@@ -9,7 +9,6 @@ import java.util.GregorianCalendar;
 import org.junit.Test;
 
 import core.Event;
-import core.Task;
 
 public class EventTest
 {
