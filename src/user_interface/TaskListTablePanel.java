@@ -174,6 +174,26 @@ public class TaskListTablePanel extends JPanel
 		upButton.setEnabled(visibility);
 		downButton.setEnabled(visibility);
 	}
+	
+	public Task getSelectedTask() {
+		int row = table.getSelectedRow();
+		if (row >= 0 && row < table.getRowCount())
+		{
+			return Timeflecks.getSharedApplication().getTaskList().getTasks().get(row);
+		}
+		else
+		{
+			// This happens if there are no tasks selected
+
+			// TODO Grey out the Edit Task Button if there are no tasks
+			// selected
+
+			GlobalLogger.getLogger().logp(Level.WARNING,
+					"TaskListTablePanel", "getSelectedTask()",
+					"Selected row is out of bounds for the current table.");
+			return null;
+		}
+	}
 
 	public JTable getTable()
 	{

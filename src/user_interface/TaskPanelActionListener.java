@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -26,25 +25,10 @@ public class TaskPanelActionListener implements ActionListener
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"editSelectedTask()",
 				"Bringing up EditTaskPanel.");
-
-		int row = mainPanel.getTable().getSelectedRow();
-		if (row >= 0 && row < mainPanel.getTable().getRowCount())
-		{
-			NewTaskPanel p = new NewTaskPanel(Timeflecks
-					.getSharedApplication().getTaskList().getTasks()
-					.get(row));
+		Task selectedTask = mainPanel.getSelectedTask();
+		if(selectedTask != null) {
+			NewTaskPanel p = new NewTaskPanel(selectedTask);
 			p.displayFrame();
-		}
-		else
-		{
-			// This happens if there are no tasks selected
-
-			// TODO Grey out the Edit Task Button if there are no tasks
-			// selected
-
-			GlobalLogger.getLogger().logp(Level.WARNING,
-					"TaskListTablePanel", "actionPerformed(ActionEvent)",
-					"Selected row is out of bounds for the current table.");
 		}
 	}
 	
@@ -181,23 +165,9 @@ public class TaskPanelActionListener implements ActionListener
 						Timeflecks.getSharedApplication().getDBConnector()
 								.delete(t.getId());
 					}
-					catch (SQLException a) //TODO
+					catch (Exception ex)
 					{
-						GlobalLogger.getLogger().logp(
-								Level.WARNING,
-								"TaskListTablePanel",
-								"actionPerformed()",
-								"SQLException caught when deleting task from database.\nSQL State:\n"
-										+ a.getSQLState() + "\nMessage:\n"
-										+ a.getMessage());
-
-						JOptionPane
-								.showMessageDialog(
-										Timeflecks.getSharedApplication()
-												.getMainWindow(),
-										"Database Error. (1102)\nYour task was not deleted. Please try again, or check your database file.",
-										"Database Error",
-										JOptionPane.ERROR_MESSAGE);
+						ExceptionHandler.handleDatabaseDeleteException(ex,this,"actionPerformed()","1102");
 					}
 					Timeflecks.getSharedApplication().getMainWindow().refresh();
 				}
