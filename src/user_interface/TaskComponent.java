@@ -72,10 +72,8 @@ public class TaskComponent extends JComponent
 		// the component and that's it and not require knowledge of its
 		// frame,
 		// and then it will be given a place to draw by the calendar.
-
 		GUIUtility.drawString(g, task.getName(), frame.x + getInsets().left
 				+ textLeftInset, frame.y + getInsets().top + textTopInset,
 				frame.width);
-
 	}
 }
