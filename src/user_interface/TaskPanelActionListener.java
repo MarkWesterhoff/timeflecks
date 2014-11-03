@@ -167,8 +167,12 @@ public class TaskPanelActionListener implements ActionListener
 					}
 					catch (Exception ex)
 					{
+<<<<<<< HEAD
 						ExceptionHandler.handleDatabaseDeleteException(ex,
 								this, "actionPerformed()", "1102");
+=======
+						ExceptionHandler.handleDatabaseDeleteException(ex,this,"actionPerformed()","1102");
+>>>>>>> Add getSelectedTask() function and add more exception cases
 					}
 					Timeflecks.getSharedApplication().getMainWindow().refresh();
 				}
