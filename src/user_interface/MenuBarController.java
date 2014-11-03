@@ -91,7 +91,6 @@ public class MenuBarController implements ActionListener
 						.saveAllTasksAndEvents();
 			} catch(Exception e) {
 				ExceptionHandler.handleDatabaseSaveException(e, this, "performOpenCommand", "1300");
-
 			}
 
 			// Make sure it is a different .db file
@@ -209,7 +208,6 @@ public class MenuBarController implements ActionListener
 				File selectedFile = fileChooser.getSelectedFile();
 				// TODO Make sure the user is warned if the file exists and is
 				// not the same file
-
 				if (FileUtility.fileExistsAndIsNotSame(selectedFile))
 				{
 					// We need to prompt the user to see if they want to
