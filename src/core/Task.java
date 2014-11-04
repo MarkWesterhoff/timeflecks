@@ -1,5 +1,9 @@
 package core;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ import logging.GlobalLogger;
  * 
  */
 
-public class Task implements Scheduleable, DatabaseSerializable
+public class Task implements Scheduleable, DatabaseSerializable, Transferable
 {
 	private static final long serialVersionUID = 1L;
 
@@ -280,5 +284,39 @@ public class Task implements Scheduleable, DatabaseSerializable
 	public SerializableType getType()
 	{
 		return SerializableType.TASK;
+	}
+	
+	/*
+	 * Static declaration of the Task DataFlavor
+	 * Allows the task to be transferred by reference
+	 */
+	public static DataFlavor createFlavor(){
+		  try {
+		    return new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType + ";class=" + Task.class.getCanonicalName());
+		  }
+		 catch (  ClassNotFoundException e) {
+		    throw new RuntimeException(e);
+		  }
+	}
+	
+	/*
+	 * Functions that allow it to be dragged & dropped
+	 */
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException, IOException {
+		// TODO Auto-generated method stub
+		return this;
+	}
+	
+	public DataFlavor[] getTransferDataFlavors() {
+		// TODO Auto-generated method stub
+		DataFlavor[] dfs = new DataFlavor[1];
+		dfs[0] = createFlavor();
+		return dfs;
+	}
+
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }
