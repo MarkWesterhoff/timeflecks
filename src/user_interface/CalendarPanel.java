@@ -1,6 +1,8 @@
 package user_interface;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import core.Task;
 import core.Timeflecks;
 import logging.GlobalLogger;
 
-public class CalendarPanel extends JPanel
+public class CalendarPanel extends JPanel implements MouseListener
 {
 	private boolean drawTimes;
 	private boolean drawRightSideLine;
@@ -47,6 +49,8 @@ public class CalendarPanel extends JPanel
 		// TODO keep this from breaking if you make it too small (down in the
 		// math)
 		this.setMinimumSize(new Dimension(width, height));
+		
+		addMouseListener(this);
 	}
 
 	public void paintComponent(Graphics g)
@@ -253,5 +257,52 @@ public class CalendarPanel extends JPanel
 	{
 		this.date = date;
 	}
+	
+	public Date getTime(Point p){
+		Dimension d = this.getSize();
+		System.out.println("Dim:"+d.toString());
+		//location of first inset
+		Date d1 = (Date) date.clone();
+		int hourBlock = d.height / 24;
+		int insetFromTop = d.height / 24;
+		d1.setHours((p.y - insetFromTop) / hourBlock);
+		d1.setMinutes(((p.y - insetFromTop) % hourBlock) * 60 / hourBlock);
+		d1.setSeconds(0);
+		
+		return d1;
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(e.getPoint().toString());
+		Date d = getTime(e.getPoint());
+		System.out.println(d.toString());
+	}
 
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
 }

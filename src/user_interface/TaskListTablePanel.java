@@ -3,6 +3,11 @@ package user_interface;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -14,7 +19,7 @@ import logging.GlobalLogger;
 import core.Task;
 import core.Timeflecks;
 
-public class TaskListTablePanel extends JPanel
+public class TaskListTablePanel extends JPanel implements ActionListener, MouseListener
 {
 	private static final long serialVersionUID = 1L;
 
@@ -129,6 +134,10 @@ public class TaskListTablePanel extends JPanel
 		JScrollPane scroll = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(false);
+		table.setDragEnabled(true);
+		table.setDropMode(DropMode.INSERT_ROWS);
+		table.setTransferHandler(new TaskListTransferHandler(table));
+		table.addMouseListener(this);
 		add(scroll, BorderLayout.CENTER);
 
 	}
@@ -204,5 +213,41 @@ public class TaskListTablePanel extends JPanel
 	{
 		return comboMap;
 	}
+	
+	
+	/*
+	 * Handles a double click in the task list
+	 */
+	public void mouseClicked(MouseEvent e) {
+	    if (e.getClickCount() == 2) {
+	      JTable target = (JTable)e.getSource();
+	      int row = target.getSelectedRow();
+	      int column = target.getSelectedColumn();
+	      // do some action if appropriate column
+	      NewTaskPanel p = new NewTaskPanel(Timeflecks
+					.getSharedApplication().getTaskList().getTasks()
+					.get(row));
+			p.displayFrame();
+	    }
+	  }
+	
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 }
