@@ -48,17 +48,17 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 				displayFrame();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
-				
+
 				// When it is created, the main window will register itself as a
 				// listener for TimeflecksEvents
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(Timeflecks.getSharedApplication().getMainWindow());
-				
-				Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
+						Timeflecks.getSharedApplication().getMainWindow());
+
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.GENERAL_REFRESH);
 			}
 		});
 
-		
-		
 	}
 
 	public void addComponents()
@@ -106,7 +106,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 					showWeekView = true;
 				}
 
-				Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
 			}
 		});
 
@@ -126,7 +127,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 					showWeekView = false;
 				}
 
-				Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
 			}
 		});
 

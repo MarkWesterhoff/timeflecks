@@ -39,7 +39,7 @@ public class Timeflecks
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
-		
+
 		taskList = new TaskList();
 
 		try
@@ -76,7 +76,7 @@ public class Timeflecks
 					.logp(Level.WARNING, "Timeflecks", "Timeflecks",
 							"ClassNotFoundException. Could not read objects out from database.");
 		}
-		
+
 		setMainWindow(new MainWindow());
 	}
 
@@ -182,7 +182,8 @@ public class Timeflecks
 		if (eventManager == null)
 		{
 			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
-					"registerForTimeflecksEvents", "ERROR: eventManager was null.");
+					"registerForTimeflecksEvents",
+					"ERROR: eventManager was null.");
 		}
 		eventManager.addListener(t);
 	}
@@ -194,7 +195,7 @@ public class Timeflecks
 			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
 					"deregister", "ERROR: eventManager was null.");
 		}
-		
+
 		eventManager.removeListener(t);
 	}
 
@@ -205,7 +206,7 @@ public class Timeflecks
 			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
 					"postNotification", "ERROR: eventManager was null.");
 		}
-		
+
 		eventManager.postEvent(e);
 	}
 
