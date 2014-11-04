@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import logging.GlobalLogger;
 import core.Task;
 import core.Timeflecks;
+import core.TimeflecksEvent;
 
 public class TaskListTableModel extends AbstractTableModel
 {
@@ -102,11 +103,11 @@ public class TaskListTableModel extends AbstractTableModel
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
-			Timeflecks.getSharedApplication().getMainWindow().refresh();
+			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		case 1:
 			task.setName((String) value);
-			Timeflecks.getSharedApplication().getMainWindow().refresh();
+			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		}
 		try

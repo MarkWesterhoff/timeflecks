@@ -16,6 +16,7 @@ import com.toedter.calendar.JDateChooser;
 import core.Priority;
 import core.Task;
 import core.Timeflecks;
+import core.TimeflecksEvent;
 
 public class NewTaskPanel extends JFrame implements ActionListener
 {
@@ -586,7 +587,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// After it is done, we need to refresh everything
 		// Dismissing a newTaskPanel causes a refresh
-		Timeflecks.getSharedApplication().getMainWindow().refresh();
+		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);
 		this.dispose();

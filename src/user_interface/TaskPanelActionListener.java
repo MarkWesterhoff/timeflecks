@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import logging.GlobalLogger;
 import core.Task;
 import core.Timeflecks;
+import core.TimeflecksEvent;
 
 public class TaskPanelActionListener implements ActionListener
 {
@@ -39,6 +40,7 @@ public class TaskPanelActionListener implements ActionListener
 		NewTaskPanel p = new NewTaskPanel();
 		p.displayFrame();
 	}
+
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
@@ -84,7 +86,7 @@ public class TaskPanelActionListener implements ActionListener
 				{
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"actionPerformed", "1603");
-				}	
+				}
 			}
 		}
 		else if (e.getActionCommand().equals("Move Down"))
@@ -170,7 +172,8 @@ public class TaskPanelActionListener implements ActionListener
 						ExceptionHandler.handleDatabaseDeleteException(ex,
 								this, "actionPerformed()", "1102");
 					}
-					Timeflecks.getSharedApplication().getMainWindow().refresh();
+					Timeflecks.getSharedApplication().postNotification(
+							TimeflecksEvent.GENERAL_REFRESH);
 				}
 				else
 				{

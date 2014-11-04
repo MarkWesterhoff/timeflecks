@@ -34,9 +34,12 @@ public class Timeflecks
 	private IDGenerator idGenerator;
 	private File currentFile;
 	private MainWindow mainWindow;
+	private TimeflecksEventManager eventManager;
 
 	public Timeflecks()
 	{
+		eventManager = new TimeflecksEventManager();
+		
 		taskList = new TaskList();
 
 		try
@@ -73,7 +76,7 @@ public class Timeflecks
 					.logp(Level.WARNING, "Timeflecks", "Timeflecks",
 							"ClassNotFoundException. Could not read objects out from database.");
 		}
-
+		
 		setMainWindow(new MainWindow());
 	}
 
@@ -170,6 +173,40 @@ public class Timeflecks
 	public void setMainWindow(MainWindow mainWindow)
 	{
 		this.mainWindow = mainWindow;
+	}
+
+	// Now anyone can register to receive the timeflecks events, and anyone at
+	// all can post simply by getting the shared application.
+	public void registerForTimeflecksEvents(TimeflecksEventResponder t)
+	{
+		if (eventManager == null)
+		{
+			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
+					"registerForTimeflecksEvents", "ERROR: eventManager was null.");
+		}
+		eventManager.addListener(t);
+	}
+
+	public void deregister(TimeflecksEventResponder t)
+	{
+		if (eventManager == null)
+		{
+			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
+					"deregister", "ERROR: eventManager was null.");
+		}
+		
+		eventManager.removeListener(t);
+	}
+
+	public void postNotification(TimeflecksEvent e)
+	{
+		if (eventManager == null)
+		{
+			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
+					"postNotification", "ERROR: eventManager was null.");
+		}
+		
+		eventManager.postEvent(e);
 	}
 
 	public static void main(String[] args)
