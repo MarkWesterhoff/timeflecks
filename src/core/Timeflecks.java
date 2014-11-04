@@ -40,8 +40,8 @@ public class Timeflecks
 		taskList = new TaskList();
 
 		try
-		{	
-			openDatabaseFile(new File("calendar1.db"));	
+		{
+			openDatabaseFile(new File("calendar1.db"));
 		}
 		catch (SQLException e)
 		{
@@ -68,9 +68,10 @@ public class Timeflecks
 		}
 		catch (ClassNotFoundException e)
 		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
-					"Timeflecks",
-					"ClassNotFoundException. Could not read objects out from database.");
+			GlobalLogger
+					.getLogger()
+					.logp(Level.WARNING, "Timeflecks", "Timeflecks",
+							"ClassNotFoundException. Could not read objects out from database.");
 		}
 
 		setMainWindow(new MainWindow());
@@ -132,7 +133,7 @@ public class Timeflecks
 
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
 		setTaskList(newList);
-		
+
 		if (this.getMainWindow() != null)
 		{
 			this.getMainWindow().refresh();

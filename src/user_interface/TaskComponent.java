@@ -35,12 +35,13 @@ public class TaskComponent extends JComponent
 	/**
 	 * Paint the TaskComponent in the specified graphics G
 	 * 
-	 * @param g The graphics in which to paint the TaskComponent
+	 * @param g
+	 *            The graphics in which to paint the TaskComponent
 	 */
 	public void paint(Graphics g)
 	{
 		super.paintComponent(g);
-		
+
 		// Draw the rectangle first, so the string shows up on top of it
 		if (task.isCompleted())
 		{
@@ -56,13 +57,13 @@ public class TaskComponent extends JComponent
 
 		// NOTE That if it doesn't show up, make sure the duration isn't
 		// zero
-		
+
 		Graphics2D g2 = (Graphics2D) g;
 
 		// Draw the string title of the task
 		FontRenderContext frc2 = g2.getFontRenderContext();
-		int fontHeight2 = (int) g2.getFont().getLineMetrics(task.getName(), frc2)
-				.getHeight();
+		int fontHeight2 = (int) g2.getFont()
+				.getLineMetrics(task.getName(), frc2).getHeight();
 
 		final int textLeftInset = 2;
 		final int textTopInset = 2 + fontHeight2;

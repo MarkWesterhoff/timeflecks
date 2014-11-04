@@ -99,8 +99,8 @@ public class MainWindow extends JFrame
 			Date d = date;
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(d);
-			//cal.add(Calendar.DATE, -1);
-			//d = cal.getTime();
+			// cal.add(Calendar.DATE, -1);
+			// d = cal.getTime();
 
 			for (int i = 0; i < 7; i++)
 			{
@@ -130,14 +130,15 @@ public class MainWindow extends JFrame
 			int width = 700;
 			int height = 1000;
 
-			CalendarPanel p = new CalendarPanel(date, true, false, width, height);
+			CalendarPanel p = new CalendarPanel(date, true, false, width,
+					height);
 
 			cpanels.add(p);
 			container.add(p);
 		}
-		
+
 		s.setPreferredSize(new Dimension(730, 440));
-		
+
 		getContentPane().add(s);
 	}
 

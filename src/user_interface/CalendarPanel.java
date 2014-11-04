@@ -167,17 +167,17 @@ public class CalendarPanel extends JPanel
 			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
 					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
 
-			double durationInHours = ( t.getDuration() / 1000.0 / 60.0 / 60.0 ) % 24.0;
+			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
 
 			Rectangle frame = new Rectangle(leftInset, firstInset
 					+ (int) (taskHours * hourIncrement), d.width - rightInset
 					- leftInset, (int) (durationInHours * hourIncrement));
-			
+
 			TaskComponent tc = new TaskComponent(t, frame);
 			tc.paint(g);
 		}
 	}
-	
+
 	/**
 	 * refreshes the calendar view, re-adds the tasks for that day from the
 	 * TaskList. Warning: This may be time-intensive for large TaskLists
