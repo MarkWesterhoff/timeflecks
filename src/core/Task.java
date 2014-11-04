@@ -276,7 +276,6 @@ public class Task implements Scheduleable, DatabaseSerializable
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
 	}
 	
-	@Override
 	public SerializableType getType()
 	{
 		return SerializableType.TASK;

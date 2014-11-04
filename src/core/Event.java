@@ -121,7 +121,6 @@ public class Event implements Scheduleable, DatabaseSerializable
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
 	}
 
-	@Override
 	public SerializableType getType()
 	{
 		return SerializableType.EVENT;
