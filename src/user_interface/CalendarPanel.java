@@ -27,6 +27,21 @@ public class CalendarPanel extends JPanel
 	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates a CalendarPanel, which is ready to draw on a given graphics
+	 * context. This is a single day view.
+	 * 
+	 * @param date
+	 *            The date that this CalendarPanel is to represent.
+	 * @param drawTimes
+	 *            Whether or not to draw the times on the left of the panel.
+	 * @param drawRightSideLine
+	 *            Whether or not to draw the line on the right hand side.
+	 * @param width
+	 *            The preferred width for this component
+	 * @param height
+	 *            The preferred height for this component
+	 */
 	public CalendarPanel(Date date, boolean drawTimes,
 			boolean drawRightSideLine, int width, int height)
 	{
@@ -49,6 +64,12 @@ public class CalendarPanel extends JPanel
 		this.setMinimumSize(new Dimension(width, height));
 	}
 
+	/**
+	 * Paint the component on the specified graphics context.
+	 * 
+	 * @param g
+	 *            The graphics context on which to draw the CalendarPanel
+	 */
 	public void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
@@ -179,7 +200,7 @@ public class CalendarPanel extends JPanel
 	}
 
 	/**
-	 * refreshes the calendar view, re-adds the tasks for that day from the
+	 * Refreshes the calendar view, re-adds the tasks for that day from the
 	 * TaskList. Warning: This may be time-intensive for large TaskLists
 	 */
 	public void refresh()
@@ -215,6 +236,15 @@ public class CalendarPanel extends JPanel
 		// this.revalidate();
 	}
 
+	/**
+	 * Utility function to determine if two dates fall upon the same day.
+	 * 
+	 * @param firstDate
+	 *            The first date to compare
+	 * @param secondDate
+	 *            The second date to compare
+	 * @return true if the two dates are on the same day, false otherwise.
+	 */
 	public boolean sameDay(Date firstDate, Date secondDate)
 	{
 		if (firstDate == null || secondDate == null)
@@ -234,21 +264,43 @@ public class CalendarPanel extends JPanel
 		return same;
 	}
 
+	/**
+	 * Getter for the tasksToPaint list.
+	 * 
+	 * @return the tasksToPaint list
+	 */
 	public ArrayList<Task> getTasksToPaint()
 	{
 		return tasksToPaint;
 	}
 
+	/**
+	 * Setter for the tasksToPaint list.
+	 * 
+	 * @param tasksToPaint
+	 *            The list of tasks to paint that should be set as tasksToPaint.
+	 */
 	public void setTasksToPaint(ArrayList<Task> tasksToPaint)
 	{
 		this.tasksToPaint = tasksToPaint;
 	}
 
+	/**
+	 * Getter for the date for the CalendarPanel.
+	 * 
+	 * @return The date for the CalendarPanel
+	 */
 	public Date getDate()
 	{
 		return date;
 	}
 
+	/**
+	 * Setter for the date for the CalendarPanel.
+	 * 
+	 * @param date
+	 *            The date to be set in the CalendarPanel
+	 */
 	public void setDate(Date date)
 	{
 		this.date = date;
