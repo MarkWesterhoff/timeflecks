@@ -127,7 +127,6 @@ public class MenuBarController implements ActionListener
 			{
 				Timeflecks.getSharedApplication()
 						.openDatabaseFile(selectedFile);  // Shouldn't this be handled here? (return success or failure?)
-
 			}
 			catch (SQLException e)
 			{
