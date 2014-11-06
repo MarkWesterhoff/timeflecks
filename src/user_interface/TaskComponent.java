@@ -19,6 +19,15 @@ public class TaskComponent extends JComponent
 	private Task task;
 	private Rectangle frame;
 
+	/**
+	 * Create a new task component with a current task that is being drawn and
+	 * the frame that it will be painted with.
+	 * 
+	 * @param taskToDraw
+	 *            The task that will be represented by this TaskComponent
+	 * @param newBounds
+	 *            The frame for this TaskComponent
+	 */
 	public TaskComponent(Task taskToDraw, Rectangle newBounds)
 	{
 		super();
@@ -69,10 +78,8 @@ public class TaskComponent extends JComponent
 		final int textTopInset = 2 + fontHeight2;
 
 		// TODO This should be changed to draw components within the bounds
-		// of
-		// the component and that's it and not require knowledge of its
-		// frame,
-		// and then it will be given a place to draw by the calendar.
+		// of the component and that's it and not require knowledge of its
+		// frame, and then it will be given a place to draw by the calendar.
 		GUIUtility.drawString(g, task.getName(), frame.x + getInsets().left
 				+ textLeftInset, frame.y + getInsets().top + textTopInset,
 				frame.width);
