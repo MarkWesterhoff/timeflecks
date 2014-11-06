@@ -212,6 +212,9 @@ public class Timeflecks
 
 	public static void main(String[] args)
 	{
+		// This variable is not used. Simply creating the application is
+		// sufficient to run the application.
+		@SuppressWarnings("unused")
 		Timeflecks application = Timeflecks.getSharedApplication();
 	}
 

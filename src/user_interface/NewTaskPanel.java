@@ -2,8 +2,6 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -13,10 +11,7 @@ import logging.GlobalLogger;
 
 import com.toedter.calendar.JDateChooser;
 
-import core.Priority;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
 public class NewTaskPanel extends JFrame implements ActionListener
 {
@@ -427,7 +422,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				// String time = days + ":" + hours % 24 + ":" + minutes %
 				// 60 + ":" + seconds % 60;
 
-				// Allow you to zero out the duration if you're editing a task that already exists
+				// Allow you to zero out the duration if you're editing a task
+				// that already exists
 				if (duration != 0 || taskToEdit != null)
 				{
 					task.setDuration(duration);
@@ -474,8 +470,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 							"actionPerformed", "Saved task to database.");
 				}
-				catch (Exception ex) {
-					ExceptionHandler.handleDatabaseSaveException(ex, this, "ActionPerformed", "1302");
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseSaveException(ex, this,
+							"ActionPerformed", "1302");
 				}
 
 				dismissPane();
@@ -587,7 +585,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// After it is done, we need to refresh everything
 		// Dismissing a newTaskPanel causes a refresh
-		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);
 		this.dispose();

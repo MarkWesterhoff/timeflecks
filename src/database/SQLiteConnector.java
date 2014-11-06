@@ -34,45 +34,38 @@ public final class SQLiteConnector
 		}
 	}
 
-	private static final String SQL_DROP_SERIALIZE_TABLE = 
-			"DROP TABLE IF EXISTS 'serialized_time_objects'";
+	private static final String SQL_DROP_SERIALIZE_TABLE = "DROP TABLE IF EXISTS 'serialized_time_objects'";
 
-	private static final String SQL_CREATE_SERIALIZE_TABLE = 
-			"CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
+	private static final String SQL_CREATE_SERIALIZE_TABLE = "CREATE TABLE IF NOT EXISTS 'serialized_time_objects' ("
 			+ "'id' INT(11) PRIMARY KEY NOT NULL,"
 			+ "'type' CHAR(1) NOT NULL,"
 			+ "'serialized_time_object' BLOB NOT NULL )";
 
-	private static final String SQL_CLEAR_SERIALIZE_TABLE = 
-			"DELETE FROM 'serialized_time_objects'";
+	// This is intentionally not used.
+	@SuppressWarnings("unused")
+	private static final String SQL_CLEAR_SERIALIZE_TABLE = "DELETE FROM 'serialized_time_objects'";
 
-	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = 
-			"INSERT OR REPLACE "
+	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = "INSERT OR REPLACE "
 			+ "INTO 'serialized_time_objects' (id, type, serialized_time_object) "
 			+ "VALUES (?, ?, ?)";
 
-	private static final String SQL_SELECT_SERIALIZED_TIMEOBJECT = 
-			"SELECT serialized_time_object "
+	private static final String SQL_SELECT_SERIALIZED_TIMEOBJECT = "SELECT serialized_time_object "
 			+ "FROM 'serialized_time_objects' "
 			+ "WHERE id = ? "
 			+ "AND type = ? " + "LIMIT 1";
 
-	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = 
-			"DELETE FROM serialized_time_objects "
+	private static final String SQL_DELETE_SERIALIZED_TIMEOBJECT = "DELETE FROM serialized_time_objects "
 			+ "WHERE id = ?";
 
-	private static final String SQL_GET_ALL_OBJECTS = 
-			"SELECT serialized_time_object "
-			+ "FROM 'serialized_time_objects'" 
-			+ "WHERE type = ?";
+	private static final String SQL_GET_ALL_OBJECTS = "SELECT serialized_time_object "
+			+ "FROM 'serialized_time_objects'" + "WHERE type = ?";
 
-	private static final String SQL_GET_HIGHEST_ID = 
-			"SELECT MAX(id) "
+	private static final String SQL_GET_HIGHEST_ID = "SELECT MAX(id) "
 			+ "FROM serialized_time_objects";
-	
+
 	private static final String defaultDatabasePath = "calendar1.db";
 	private static String databasePath = defaultDatabasePath;
-	
+
 	/**
 	 * Get the current database path. May be either absolute or relative path.
 	 * 
@@ -99,8 +92,10 @@ public final class SQLiteConnector
 	 * Constructor for SQLiteConnector. Connects to the database and creates the
 	 * table for storing TimeObjects. Deletes all rows from the table.
 	 * 
-	 * @param databaseFile the database file to save to
-	 * @param clearDatabase true if SQLiteConnector should clear the database
+	 * @param databaseFile
+	 *            the database file to save to
+	 * @param clearDatabase
+	 *            true if SQLiteConnector should clear the database
 	 * @throws SQLException
 	 * @throws IOException
 	 */
@@ -130,19 +125,14 @@ public final class SQLiteConnector
 			Statement stmt = c.createStatement();
 			if (clearDatabase)
 			{
-				GlobalLogger.getLogger().logp(
-						Level.INFO,
-						"SQLiteConnector",
+				GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
 						"SQLiteConnector()",
 						"Dropping serialized_objects table");
 				stmt.execute(SQL_DROP_SERIALIZE_TABLE);
 			}
 
-			GlobalLogger.getLogger().logp(
-					Level.INFO,
-					"SQLiteConnector",
-					"SQLiteConnector()",
-					"Creating serialized_objects table");
+			GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+					"SQLiteConnector()", "Creating serialized_objects table");
 			stmt.execute(SQL_CREATE_SERIALIZE_TABLE);
 			stmt.close();
 		}
@@ -161,7 +151,8 @@ public final class SQLiteConnector
 	 */
 	private Connection getConnection() throws SQLException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "getConnection",
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getConnection",
 				"Establishing conenction with database " + databasePath);
 		String connectionString = "jdbc:sqlite:" + databasePath;
 		return DriverManager.getConnection(connectionString);
@@ -170,9 +161,12 @@ public final class SQLiteConnector
 	/**
 	 * Drops the table for serializing objects, if it exists.
 	 * 
+	 * This method is not used. This is intetional.
+	 * 
 	 * @throws SQLException
 	 *             when there is a problem dropping the table
 	 */
+	@SuppressWarnings("unused")
 	private void dropSerializeTable() throws SQLException
 	{
 		Connection c = this.getConnection();
@@ -202,7 +196,8 @@ public final class SQLiteConnector
 	{
 		Objects.requireNonNull(task);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Task)",
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"serializeAndSave(Task)",
 				"Serializing and saving Task \"" + task.getName() + "\"");
 
 		this.save(task.getId(), task.getType().getValue(),
@@ -219,12 +214,13 @@ public final class SQLiteConnector
 	 * @throws IOException
 	 *             when there is a problem serializing the Event to bytes
 	 */
-	
+
 	public void serializeAndSave(Event event) throws SQLException, IOException
 	{
 		Objects.requireNonNull(event);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "serializeAndSave(Event)",
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"serializeAndSave(Event)",
 				"Serializing and saving Event \"" + event.getName() + "\"");
 
 		this.save(event.getId(), event.getType().getValue(),
@@ -248,7 +244,10 @@ public final class SQLiteConnector
 	{
 		Objects.requireNonNull(serializedObject);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "save",
+		GlobalLogger.getLogger().logp(
+				Level.INFO,
+				"SQLiteConnector",
+				"save",
 				"Saving object with id = " + Long.toString(id) + " and type = "
 						+ Character.toString(type));
 
@@ -288,7 +287,8 @@ public final class SQLiteConnector
 	public Task getSerializedTask(long id) throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "getSerializedTask",
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getSerializedTask",
 				"Getting and deserializing Task with id " + Long.toString(id));
 
 		Connection c = this.getConnection();
@@ -333,7 +333,8 @@ public final class SQLiteConnector
 	public Event getSerializedEvent(long id) throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "getSerializedEvent",
+		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+				"getSerializedEvent",
 				"Getting and deserializing Event with id " + Long.toString(id));
 
 		Connection c = this.getConnection();
@@ -388,17 +389,17 @@ public final class SQLiteConnector
 			c.close();
 		}
 	}
-	
+
 	/**
-	 * Saves all DatabaseSerializable Objects to the database. Faster than calling serializeAndSave()
-	 * on each individual Object. Does not commit transaction until all have
-	 * been written to the database (and thus if an exception occurs, none will
-	 * be committed).  
+	 * Saves all DatabaseSerializable Objects to the database. Faster than
+	 * calling serializeAndSave() on each individual Object. Does not commit
+	 * transaction until all have been written to the database (and thus if an
+	 * exception occurs, none will be committed).
 	 * 
 	 * @param tasks
 	 *            the ArrayList of Tasks to save
 	 * @throws SQLException
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void serializeAndSave(
 			ArrayList<? extends DatabaseSerializable> dbObjects)
@@ -456,7 +457,7 @@ public final class SQLiteConnector
 			c.close();
 		}
 	}
-	
+
 	/**
 	 * Gets all serialized tasks from the database, deserializes them, and
 	 * returns them.
@@ -471,7 +472,7 @@ public final class SQLiteConnector
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
 				"getAllTasks()", "Getting all tasks");
-		
+
 		ArrayList<Task> tasks = new ArrayList<Task>();
 
 		// Get all Tasks from the database
@@ -483,7 +484,7 @@ public final class SQLiteConnector
 			stmt.setString(1,
 					Character.toString(SerializableType.TASK.getValue()));
 			rs = stmt.executeQuery();
-			
+
 			// Deserialize the objects and add to list of Tasks
 			while (rs.next())
 			{
@@ -515,7 +516,7 @@ public final class SQLiteConnector
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
 				"getAllEvents()", "Getting all events");
-		
+
 		ArrayList<Event> events = new ArrayList<Event>();
 
 		// Get all Events from the database
@@ -527,7 +528,7 @@ public final class SQLiteConnector
 			stmt.setString(1,
 					Character.toString(SerializableType.EVENT.getValue()));
 			rs = stmt.executeQuery();
-			
+
 			// Deserialize the objects and add to list of Events
 			while (rs.next())
 			{
@@ -544,7 +545,7 @@ public final class SQLiteConnector
 			c.close();
 		}
 	}
-	
+
 	/**
 	 * Gets the highest ID used in the database and returns it.
 	 * 
@@ -555,17 +556,17 @@ public final class SQLiteConnector
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
 				"getHighestID()", "Getting highest ID from database");
-		
+
 		// Query database for maximum id
 		Connection c = this.getConnection();
 		ResultSet rs = null;
 		try
 		{
-			Statement stmt = c.createStatement(); 
+			Statement stmt = c.createStatement();
 			rs = stmt.executeQuery(SQL_GET_HIGHEST_ID);
-			
+
 			rs.next();
-			
+
 			// Check for 0 rows in the database
 			long highestId = -1;
 			if (!rs.isAfterLast())

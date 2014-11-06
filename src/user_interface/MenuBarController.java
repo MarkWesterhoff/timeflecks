@@ -11,12 +11,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import utility.FileUtility;
-
-import javax.swing.JTable;
-import core.Timeflecks;
-
 import logging.GlobalLogger;
+import utility.FileUtility;
+import core.Timeflecks;
 
 public class MenuBarController implements ActionListener
 {

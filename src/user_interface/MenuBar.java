@@ -1,17 +1,15 @@
 package user_interface;
 
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.logging.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 import logging.GlobalLogger;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import core.Timeflecks;
 
 public class MenuBar extends JMenuBar
 {
@@ -33,15 +31,17 @@ public class MenuBar extends JMenuBar
 		MenuBarController mb = new MenuBarController(this);
 		createAndAddFileMenu(mb);
 
-		// TODO Add back in the edit menu if we want one
 		createAndAddEditMenu(mb);
 
+		// TODO Add back in the help menu if we want one
 		// createAndAddHelpMenu(mb);
-
 	}
 
 	/**
-	 * Creates the file menu for the menu bar
+	 * Creates the file menu for the menu bar.
+	 * 
+	 * @param mb
+	 *            The action listener to use for this menu.
 	 */
 	private void createAndAddFileMenu(MenuBarController mb)
 	{
@@ -102,7 +102,10 @@ public class MenuBar extends JMenuBar
 	}
 
 	/**
-	 * Creates the edit menu for the menu bar
+	 * Creates the edit menu for the menu bar.
+	 * 
+	 * @param mb
+	 *            The action listener to use for this menu.
 	 */
 	private void createAndAddEditMenu(MenuBarController mb)
 	{
@@ -142,8 +145,14 @@ public class MenuBar extends JMenuBar
 	}
 
 	/**
-	 * Creates the help menu for the menu bar
+	 * Creates the help menu for the menu bar. Note that this method is not
+	 * used. This is intentional.
+	 * 
+	 * @param mb
+	 *            The menu bar controller to reference. This will be the action
+	 *            listener for the menu bar.
 	 */
+	@SuppressWarnings("unused")
 	private void createAndAddHelpMenu(MenuBarController mb)
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
