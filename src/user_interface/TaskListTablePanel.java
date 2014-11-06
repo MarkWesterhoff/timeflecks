@@ -1,7 +1,6 @@
 package user_interface;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -175,7 +174,6 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
 		{
-
 			// TODO Resolve this warning
 			JComboBox<String> box = (JComboBox<String>) (e.getSource());
 			String switchOn = (String) box.getSelectedItem();
@@ -208,13 +206,13 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()",
 						"Task in row " + row + " bumped up.");
-				
+
 				try
 				{
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row).saveToDatabase();
+							.get(row).saveToDatabase();
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row - 1).saveToDatabase();
+							.get(row - 1).saveToDatabase();
 				}
 				catch (SQLException a)
 				{
@@ -267,13 +265,13 @@ public class TaskListTablePanel extends JPanel implements ActionListener
 						"Task in row " + row + " bumped down.");
 				table.getSelectionModel()
 						.setSelectionInterval(row + 1, row + 1);
-				
+
 				try
 				{
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row).saveToDatabase();
+							.get(row).saveToDatabase();
 					Timeflecks.getSharedApplication().getTaskList().getTasks()
-					.get(row + 1).saveToDatabase();
+							.get(row + 1).saveToDatabase();
 				}
 				catch (SQLException a)
 				{

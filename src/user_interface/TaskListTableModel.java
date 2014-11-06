@@ -2,7 +2,6 @@ package user_interface;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
@@ -10,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
 import core.Task;
-import core.TaskList;
 import core.Timeflecks;
 
 public class TaskListTableModel extends AbstractTableModel

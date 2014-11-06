@@ -33,9 +33,9 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 		createAndAddFileMenu();
 
-		// TODO Add back in the edit menu if we want one
 		createAndAddEditMenu();
 
+		// TODO Add back in the help menu if we want one
 		// createAndAddHelpMenu();
 
 	}
@@ -143,7 +143,11 @@ public class MenuBar extends JMenuBar implements ActionListener
 
 	/**
 	 * Creates the help menu for the menu bar
+	 * 
+	 * Note that this is currently unused, so we suppress those warnings. This
+	 * is intentional.
 	 */
+	@SuppressWarnings("unused")
 	private void createAndAddHelpMenu()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",

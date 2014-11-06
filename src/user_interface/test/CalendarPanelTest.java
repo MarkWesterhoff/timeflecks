@@ -12,11 +12,6 @@ import user_interface.CalendarPanel;
 public class CalendarPanelTest
 {
 
-	/**
-	 * Auto generated default serial version UID
-	 */
-	private static final long serialVersionUID = 1L;
-
 	@Test
 	public void testCalendarPanel()
 	{
