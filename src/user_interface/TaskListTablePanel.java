@@ -1,7 +1,9 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -212,6 +214,38 @@ public class TaskListTablePanel extends JPanel implements ActionListener, MouseL
 	public LinkedHashMap<String, Comparator<Task>> getComboMap()
 	{
 		return comboMap;
+	}
+	
+	
+	/*
+	 * Handles a double click in the task list
+	 */
+	public void mouseClicked(MouseEvent e) {
+	    if (e.getClickCount() == 2) {
+	      JTable target = (JTable)e.getSource();
+	      int row = target.getSelectedRow();
+	      int column = target.getSelectedColumn();
+	      // do some action if appropriate column
+	      NewTaskPanel p = new NewTaskPanel(Timeflecks
+					.getSharedApplication().getTaskList().getTasks()
+					.get(row));
+			p.displayFrame();
+	    }
+	  }
+	
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
