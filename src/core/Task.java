@@ -52,6 +52,21 @@ public class Task implements Scheduleable, DatabaseSerializable
 		priority = Priority.NO_PRIORITY_SELECTED;
 		tags = new ArrayList<String>();
 	}
+	
+	public Task(Task t) {
+		Objects.requireNonNull(t);
+		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
+		setOrdering(id);
+		//TODO: Research copy constructors in Java (why isn't this a thing...?)
+		this.name = t.name;
+		this.completed = t.completed;
+		this.description = t.description;
+		this.priority = t.priority;
+		this.duration = t.duration;
+		this.description = t.description;
+		tags = new ArrayList<String>();
+
+	}
 
 	/*
 	 * A bunch of getters and setters, as well as a couple of additional
