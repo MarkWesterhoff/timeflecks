@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import utility.StringUtility;
+
 import database.DatabaseSerializable;
 import database.SerializableType;
 import logging.GlobalLogger;
@@ -177,6 +179,10 @@ public class Task implements Scheduleable, DatabaseSerializable
 	public ArrayList<String> getTags()
 	{
 		return tags;
+	}
+	
+	public String getTagsAsString() {
+		return StringUtility.join(tags, ';');
 	}
 
 	public void setTags(ArrayList<String> tags)

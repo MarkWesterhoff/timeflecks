@@ -2,6 +2,10 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -21,8 +25,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
 			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
-			taskDescriptionLabel;
-	private JTextField taskNameField;
+			taskDescriptionLabel, tagListLabel;
+	private JTextField taskNameField,tagListField;
 	private JDateChooser startDateChooser, dueDateChooser;
 	private SpinnerModel hourModel, minuteModel, secondModel;
 	private JComboBox<String> taskPriorityComboBox;
@@ -45,7 +49,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 365));
+		this.getContentPane().setPreferredSize(new Dimension(350, 400));
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Beginning interface setup");
@@ -290,6 +294,28 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Added priority drop down");
 
+		// TAGS -- start with semicolon separation
+		tagListLabel = new JLabel("Tags");
+		
+		gc.gridy++;
+		gc.insets = labelInsets;
+		
+		centerPanel.add(tagListLabel, gc);
+		
+		tagListField = new JTextField(30);
+		tagListLabel.setLabelFor(tagListField); // Accessibility
+
+		if (taskToEdit != null)
+		{
+			tagListField.setText(taskToEdit.getTagsAsString());
+		}
+
+		gc.gridy++;
+		gc.insets = fieldInsets;
+
+		centerPanel.add(tagListField, gc);
+
+		
 		// Description
 		taskDescriptionLabel = new JLabel("Description");
 
@@ -443,6 +469,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					{
 						task.setPriority(Priority.LOW_PRIORITY);
 					}
+				}
+				
+				if(tagListField.getText().length() != 0) {
+					String[] tags = tagListField.getText().split(";");
+					task.setTags(new ArrayList<String>(Arrays.asList(tags)));
 				}
 
 				if (taskDescriptionArea.getText().length() != 0)
