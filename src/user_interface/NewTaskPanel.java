@@ -2,8 +2,6 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -32,6 +30,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 	private SpinnerModel hourModel, minuteModel, secondModel;
 	private JComboBox<String> taskPriorityComboBox;
 	private JTextArea taskDescriptionArea;
+	private JLabel recurrenceLabel;
+	private JDateChooser recurrenceEndDateChooser;
+	private JComboBox<String> repeatComboBox;
 
 	private JButton saveButton, cancelButton;
 
@@ -294,6 +295,95 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Added priority drop down");
+		
+		// Recurrence support
+		
+		recurrenceLabel = new JLabel("Repeat");
+
+		gc.gridy++;
+		gc.insets = labelInsets;
+
+		centerPanel.add(recurrenceLabel, gc);
+
+		repeatComboBox = new JComboBox<String>();
+		repeatComboBox.addItem("Don't Repeat");
+		repeatComboBox.addItem("Every Day Until");
+		repeatComboBox.addItem("Every Week Until");
+		repeatComboBox.addItem("Every Month Until");
+
+//		if (taskToEdit != null)
+//		{
+//			if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
+//			{
+//				taskPriorityComboBox.setSelectedItem("High");
+//			}
+//			else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
+//			{
+//				taskPriorityComboBox.setSelectedItem("Medium");
+//			}
+//			else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
+//			{
+//				taskPriorityComboBox.setSelectedItem("Low");
+//			}
+//			else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
+//			{
+//				taskPriorityComboBox.setSelectedItem("Not Set");
+//			}
+//		}
+
+		recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
+
+//		gc.gridy++;
+//		gc.insets = fieldInsets;
+//
+//		centerPanel.add(repeatComboBox, gc);
+
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+				"NewTaskPanel", "Added recurrence drop down");
+		
+		JPanel recurrencePanel = new JPanel();
+		recurrencePanel.setLayout(panelLayout);
+
+		recurrencePanel.add(repeatComboBox);
+		recurrencePanel.add(new JLabel("  "));
+		
+		recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
+
+		recurrenceEndDateChooser.setMinimumSize(new Dimension(120, startDateChooser
+				.getMinimumSize().height));
+		recurrenceEndDateChooser.setPreferredSize(new Dimension(120, startDateChooser
+				.getPreferredSize().height));
+
+		recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
+		
+		
+		recurrencePanel.add(recurrenceEndDateChooser);
+		
+		// SET TIME TO 11:59PM
+
+		// We can't ever have one that already has a recurrence set up
+//		if (taskToEdit != null)
+//		{
+//			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
+//					"MM/dd/yyyy hh:mm:ss a");
+//		}
+//		else
+//		{ }
+//		
+//		recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+//
+//		recurrenceEndDateChooser.setMinimumSize(new Dimension(175, startDateChooser
+//				.getMinimumSize().height));
+//		recurrenceEndDateChooser.setPreferredSize(new Dimension(330, startDateChooser
+//				.getPreferredSize().height));
+//
+//		recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
+
+		gc.gridy++;
+		gc.insets = fieldInsets;
+
+		centerPanel.add(recurrencePanel, gc);
+
 
 		// Description
 		taskDescriptionLabel = new JLabel("Description");
