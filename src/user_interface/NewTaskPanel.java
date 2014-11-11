@@ -472,7 +472,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				}
 				
 				if(tagListField.getText().length() != 0) {
-					String[] tags = tagListField.getText().split(";");
+					String[] tags = tagListField.getText().split(",");
 					task.setTags(new ArrayList<String>(Arrays.asList(tags)));
 				}
 

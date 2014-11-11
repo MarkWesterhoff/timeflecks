@@ -182,7 +182,7 @@ public class Task implements Scheduleable, DatabaseSerializable
 	}
 	
 	public String getTagsAsString() {
-		return StringUtility.join(tags, ';');
+		return StringUtility.join(tags, ',');
 	}
 
 	public void setTags(ArrayList<String> tags)
