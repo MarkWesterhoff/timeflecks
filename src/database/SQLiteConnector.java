@@ -161,7 +161,7 @@ public final class SQLiteConnector
 	/**
 	 * Drops the table for serializing objects, if it exists.
 	 * 
-	 * This method is not used. This is intetional.
+	 * This method is not used. This is intentional.
 	 * 
 	 * @throws SQLException
 	 *             when there is a problem dropping the table
