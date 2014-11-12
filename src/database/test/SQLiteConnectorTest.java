@@ -104,7 +104,7 @@ public class SQLiteConnectorTest {
 		Task task = new Task("task1");
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(task);
 		
-		Event event = new Event("event1", new Date(), 1);
+		Event event = new Event("event1", new Date(), new Date());
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(event);
 		
 		// Positive tests for Task
@@ -196,7 +196,7 @@ public class SQLiteConnectorTest {
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1a"));
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1b"));
 		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Task("t1c"));
-		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Event("e1a", new Date(), 0));
+		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(new Event("e1a", new Date(), new Date()));
 		
 		
 		Task t2 = new Task("t2");
@@ -240,7 +240,7 @@ public class SQLiteConnectorTest {
 			t.setStartTime(new Date());
 			Timeflecks.getSharedApplication().getTaskList().addTask(t);
 			
-			Event e = new Event("event" + Integer.toString(i), new Date(), 100);
+			Event e = new Event("event" + Integer.toString(i), new Date(), new Date());
 			e.setDescription("Description of the event.");
 			Timeflecks.getSharedApplication().getTaskList().addEvent(e);
 		}

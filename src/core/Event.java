@@ -21,16 +21,11 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	private String name;
 	private Date startTime;
+	private Date endTime;
 	private String description;
 	private final long id;
 
-	/*
-	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
-	 * takes a <code>long</code>, so math can be done. In milliseconds.
-	 */
-	private long duration;
-
-	public Event(String name, Date startTime, long duration)
+	public Event(String name, Date startTime, Date endTime)
 	{
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(startTime);
@@ -38,7 +33,7 @@ public class Event implements Scheduleable, DatabaseSerializable
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		this.startTime = startTime;
-		this.duration = duration;
+		this.endTime = endTime;
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event()",
 				"Creating event " + this.name + " with id " + id);
 	}
@@ -83,7 +78,7 @@ public class Event implements Scheduleable, DatabaseSerializable
 	 */
 	public Date getEndTime()
 	{
-		return new Date(startTime.getTime() + duration);
+		return endTime;
 	}
 
 	public String getDescription()
@@ -98,12 +93,12 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	public long getDuration()
 	{
-		return duration;
+		return endTime.getTime()-startTime.getTime();
 	}
 
-	public void setDuration(long duration)
-	{
-		this.duration = duration;
+	
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	/**
