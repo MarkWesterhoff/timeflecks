@@ -92,7 +92,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		dayButton.addActionListener(new ActionListener()
 		{
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				if (dayButton.isSelected())
@@ -113,7 +112,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		weekButton.addActionListener(new ActionListener()
 		{
-			@Override
 			public void actionPerformed(ActionEvent e)
 			{
 				if (weekButton.isSelected())
@@ -301,7 +299,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
 	}
 
-	@Override
 	public void eventPosted(TimeflecksEvent t)
 	{
 		if (t.equals(TimeflecksEvent.GENERAL_REFRESH))
