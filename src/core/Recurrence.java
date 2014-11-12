@@ -10,8 +10,10 @@ import logging.GlobalLogger;
 public abstract class Recurrence
 {
 	ArrayList<Task> tasks;
-	//ASSUMES PROTOTYPE DATE FOLLOWS PATTERN
+
+	// ASSUMES PROTOTYPE DATE FOLLOWS PATTERN
 	public Recurrence(Task protoTask, Date toDate)
+			throws IllegalArgumentException
 	{
 		tasks = new ArrayList<Task>();
 		if (protoTask.getDueDate() == null)
@@ -22,22 +24,32 @@ public abstract class Recurrence
 		Task currentTask = protoTask;
 		while (currentTask.getDueDate().compareTo(toDate) <= 0)
 		{
-			Timeflecks.getSharedApplication().getTaskList()
-					.addTask(currentTask);
 			tasks.add(currentTask);
 			Task nextTask = new Task(currentTask);
+
+			// Move forward both the start time and the due date, if applicable
+			if (currentTask.getStartTime() != null)
+			{
+				nextTask.setStartTime(getNextTime(currentTask.getStartTime()));
+			}
 			nextTask.setDueDate(getNextTime(currentTask.getDueDate()));
-			GlobalLogger.getLogger().logp(Level.INFO,"core.Recurrence",
-					"Recurrence(Task, Date)","created new task with" +
-							" due date " + nextTask.getDueDate().toString());
+
+			GlobalLogger.getLogger().logp(
+					Level.INFO,
+					"core.Recurrence",
+					"Recurrence(Task, Date)",
+					"created new task with" + " due date "
+							+ nextTask.getDueDate().toString());
+
 			currentTask = nextTask;
 		}
 	}
 
 	// DOES NOT RETURN NULL
 	public abstract Date getNextTime(Date fromDate);
-	
-	public ArrayList<Task> getTasks() {
+
+	public ArrayList<Task> getTasks()
+	{
 		return tasks;
 	}
 }
