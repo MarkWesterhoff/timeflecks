@@ -2,6 +2,8 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -11,10 +13,7 @@ import logging.GlobalLogger;
 
 import com.toedter.calendar.JDateChooser;
 
-import core.Priority;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
 public class NewTaskPanel extends JFrame implements ActionListener
 {
@@ -295,95 +294,103 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Added priority drop down");
-		
+
 		// Recurrence support
-		
-		recurrenceLabel = new JLabel("Repeat");
 
-		gc.gridy++;
-		gc.insets = labelInsets;
+		if (taskToEdit == null)
+		{
+			recurrenceLabel = new JLabel("Repeat");
 
-		centerPanel.add(recurrenceLabel, gc);
+			gc.gridy++;
+			gc.insets = labelInsets;
 
-		repeatComboBox = new JComboBox<String>();
-		repeatComboBox.addItem("Don't Repeat");
-		repeatComboBox.addItem("Every Day Until");
-		repeatComboBox.addItem("Every Week Until");
-		repeatComboBox.addItem("Every Month Until");
+			centerPanel.add(recurrenceLabel, gc);
 
-//		if (taskToEdit != null)
-//		{
-//			if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
-//			{
-//				taskPriorityComboBox.setSelectedItem("High");
-//			}
-//			else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
-//			{
-//				taskPriorityComboBox.setSelectedItem("Medium");
-//			}
-//			else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
-//			{
-//				taskPriorityComboBox.setSelectedItem("Low");
-//			}
-//			else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
-//			{
-//				taskPriorityComboBox.setSelectedItem("Not Set");
-//			}
-//		}
+			repeatComboBox = new JComboBox<String>();
+			repeatComboBox.addItem("Don't Repeat");
+			repeatComboBox.addItem("Daily Until");
+			repeatComboBox.addItem("Weekly Until");
+			repeatComboBox.addItem("Every Weekday Until");
+			repeatComboBox.addItem("Monthly Until");
 
-		recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
+			// if (taskToEdit != null)
+			// {
+			// if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
+			// {
+			// taskPriorityComboBox.setSelectedItem("High");
+			// }
+			// else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
+			// {
+			// taskPriorityComboBox.setSelectedItem("Medium");
+			// }
+			// else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
+			// {
+			// taskPriorityComboBox.setSelectedItem("Low");
+			// }
+			// else if (taskToEdit.getPriority() ==
+			// Priority.NO_PRIORITY_SELECTED)
+			// {
+			// taskPriorityComboBox.setSelectedItem("Not Set");
+			// }
+			// }
 
-//		gc.gridy++;
-//		gc.insets = fieldInsets;
-//
-//		centerPanel.add(repeatComboBox, gc);
+			recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-				"NewTaskPanel", "Added recurrence drop down");
-		
-		JPanel recurrencePanel = new JPanel();
-		recurrencePanel.setLayout(panelLayout);
+			// gc.gridy++;
+			// gc.insets = fieldInsets;
+			//
+			// centerPanel.add(repeatComboBox, gc);
 
-		recurrencePanel.add(repeatComboBox);
-		recurrencePanel.add(new JLabel("  "));
-		
-		recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
+			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+					"NewTaskPanel", "Added recurrence drop down");
 
-		recurrenceEndDateChooser.setMinimumSize(new Dimension(120, startDateChooser
-				.getMinimumSize().height));
-		recurrenceEndDateChooser.setPreferredSize(new Dimension(120, startDateChooser
-				.getPreferredSize().height));
+			JPanel recurrencePanel = new JPanel();
+			recurrencePanel.setLayout(panelLayout);
 
-		recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
-		
-		
-		recurrencePanel.add(recurrenceEndDateChooser);
-		
-		// SET TIME TO 11:59PM
+			recurrencePanel.add(repeatComboBox);
+			recurrencePanel.add(new JLabel("  "));
 
-		// We can't ever have one that already has a recurrence set up
-//		if (taskToEdit != null)
-//		{
-//			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
-//					"MM/dd/yyyy hh:mm:ss a");
-//		}
-//		else
-//		{ }
-//		
-//		recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
-//
-//		recurrenceEndDateChooser.setMinimumSize(new Dimension(175, startDateChooser
-//				.getMinimumSize().height));
-//		recurrenceEndDateChooser.setPreferredSize(new Dimension(330, startDateChooser
-//				.getPreferredSize().height));
-//
-//		recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
+			recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
 
-		gc.gridy++;
-		gc.insets = fieldInsets;
+			recurrenceEndDateChooser.setMinimumSize(new Dimension(120,
+					startDateChooser.getMinimumSize().height));
+			recurrenceEndDateChooser.setPreferredSize(new Dimension(120,
+					startDateChooser.getPreferredSize().height));
 
-		centerPanel.add(recurrencePanel, gc);
+			recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
 
+			recurrencePanel.add(recurrenceEndDateChooser);
+
+			// TODO SET TIME TO 11:59PM
+
+			// We can't ever have one that already has a recurrence set up
+			// if (taskToEdit != null)
+			// {
+			// startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
+			// "MM/dd/yyyy hh:mm:ss a");
+			// }
+			// else
+			// { }
+			//
+			// recurrenceEndDateChooser = new JDateChooser(null,
+			// "MM/dd/yyyy hh:mm:ss a");
+			//
+			// recurrenceEndDateChooser.setMinimumSize(new Dimension(175,
+			// startDateChooser
+			// .getMinimumSize().height));
+			// recurrenceEndDateChooser.setPreferredSize(new Dimension(330,
+			// startDateChooser
+			// .getPreferredSize().height));
+			//
+			// recurrenceLabel.setLabelFor(recurrenceEndDateChooser); //
+			// Accessibility
+
+			gc.gridy++;
+			gc.insets = fieldInsets;
+
+			centerPanel.add(recurrencePanel, gc);
+
+		}
 
 		// Description
 		taskDescriptionLabel = new JLabel("Description");
@@ -517,7 +524,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				// String time = days + ":" + hours % 24 + ":" + minutes %
 				// 60 + ":" + seconds % 60;
 
-				// Allow you to zero out the duration if you're editing a task that already exists
+				// Allow you to zero out the duration if you're editing a task
+				// that already exists
 				if (duration != 0 || taskToEdit != null)
 				{
 					task.setDuration(duration);
@@ -544,30 +552,134 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					task.setDescription(taskDescriptionArea.getText());
 				}
 
+				// Now the task is all set up, let's add however many tasks we
+				// need to.
+
+				ArrayList<Task> tasks = new ArrayList<Task>();
+
+				if (repeatComboBox.getSelectedIndex() != 0)
+				{
+					Date endDate = recurrenceEndDateChooser.getDate();
+
+					if (endDate != null)
+					{
+						Recurrence r;
+
+						try
+						{
+							if (repeatComboBox.getSelectedIndex() == 1)
+							{
+								r = new DailyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 2)
+							{
+								r = new WeeklyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 3)
+							{
+								r = new WeekDayRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 4)
+							{
+								r = new MonthlyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+						}
+						catch (IllegalArgumentException e1)
+						{
+							// If the task did not have a due date, then we need
+							// to put the user back to be editing.
+
+							GlobalLogger
+									.getLogger()
+									.logp(Level.WARNING,
+											"NewTaskPanel",
+											"actionPerformed",
+											"IllegalArgumentException for repeating task. Likely no due date set. Prompting user.\nException Message: "
+													+ e1.getMessage());
+
+							JOptionPane
+									.showMessageDialog(
+											this,
+											"You must specify an due date for a repeating task.",
+											"Due Date Required",
+											JOptionPane.WARNING_MESSAGE);
+
+							// Now we just return the user to editing
+							return;
+						}
+
+						// Tasks are all created. Now we just need to add them
+						// to the list
+
+					}
+					else
+					{
+						// We require an end date for the recurrence, so we
+						// will have an error here and alert the user
+
+						GlobalLogger
+								.getLogger()
+								.logp(Level.WARNING, "NewTaskPanel",
+										"actionPerformed",
+										"No end date specified for recurrence. Prompting user.");
+
+						JOptionPane
+								.showMessageDialog(
+										this,
+										"You must specify an end date for a repeating task.",
+										"End Date Required",
+										JOptionPane.WARNING_MESSAGE);
+
+						// Now we just return the user to editing
+						return;
+					}
+				}
+				else
+				{
+					tasks.add(task);
+				}
+
+				// Regardless of the repeating selection, we just add everything
+				// in the list.
+
 				// Actually create the task and add it to the list
 				if (taskToEdit == null)
 				{
-					// If it already existed, we don't want to add it
-					Timeflecks.getSharedApplication().getTaskList()
-							.addTask(task);
+					for (Task t : tasks)
+					{
+						// If it already existed, we don't want to add it
+						Timeflecks.getSharedApplication().getTaskList()
+								.addTask(t);
 
-					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-							"actionPerformed",
-							"Added task to TaskList.\n" + task);
+						GlobalLogger.getLogger().logp(Level.INFO,
+								"NewTaskPanel", "actionPerformed",
+								"Added task to TaskList.\n" + t);
+					}
 				}
 
 				try
 				{
-					// Update the task.
-					task.saveToDatabase();
+					for (Task t : tasks)
+					{
+						// Update the task.
+						t.saveToDatabase();
 
-					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-							"actionPerformed", "Saved task to database.");
+						GlobalLogger.getLogger().logp(Level.INFO,
+								"NewTaskPanel", "actionPerformed",
+								"Saved task to database.\n" + t);
+					}
 				}
-				catch (Exception ex) {
-					ExceptionHandler.handleDatabaseSaveException(ex, this, "ActionPerformed", "1302");
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseSaveException(ex, this,
+							"ActionPerformed", "1302");
 				}
 
+				// We're done with this pane, let's get rid of it now
 				dismissPane();
 			}
 		}
@@ -623,7 +735,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public boolean hasEnteredText()
 	{
-
 		boolean returnBool = false;
 		if (taskNameField.getText() != null
 				&& taskNameField.getText().length() > 0)
@@ -656,6 +767,18 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			returnBool = true;
 		}
 
+		// If we are editing, this could be null
+		if (repeatComboBox != null)
+		{
+			if (repeatComboBox.getSelectedIndex() != 0)
+			{
+				returnBool = true;
+			}
+		}
+
+		// Note that we don't need to check the date, because that won't show up
+		// unless repeatComboBox has a different selection
+
 		if (taskDescriptionArea.getText().length() != 0)
 		{
 			returnBool = true;
@@ -677,7 +800,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// After it is done, we need to refresh everything
 		// Dismissing a newTaskPanel causes a refresh
-		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);
 		this.dispose();
