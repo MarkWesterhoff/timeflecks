@@ -16,7 +16,6 @@ import com.toedter.calendar.JDateChooser;
 import core.Priority;
 import core.Task;
 import core.Timeflecks;
-import core.TimeflecksEvent;
 
 public class NewTaskPanel extends JFrame implements ActionListener
 {
@@ -474,8 +473,37 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 							"actionPerformed", "Saved task to database.");
 				}
-				catch (Exception ex) {
-					ExceptionHandler.handleDatabaseSaveException(ex, this, "ActionPerformed", "1302");
+				catch (SQLException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"NewTaskPanel",
+							"actionPerformed",
+							"SQLException caught when saving task to database.\nSQL State:\n"
+									+ a.getSQLState() + "\nMessage:\n"
+									+ a.getMessage());
+
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Database Error. (1302)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
+				}
+				catch (IOException a)
+				{
+					GlobalLogger.getLogger().logp(
+							Level.WARNING,
+							"NewTaskPanel",
+							"actionPerformed",
+							"IOException caught when saving task to database.\nMessage:\n"
+									+ a.getLocalizedMessage());
+
+					// Trouble serializing objects
+					JOptionPane
+							.showMessageDialog(
+									this,
+									"Object Serialization Error. (1303)\nYour task was not saved. Please try again, or check your database file.",
+									"Database Error", JOptionPane.ERROR_MESSAGE);
 				}
 
 				dismissPane();
@@ -587,7 +615,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// After it is done, we need to refresh everything
 		// Dismissing a newTaskPanel causes a refresh
-		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+		Timeflecks.getSharedApplication().getMainWindow().refresh();
 
 		this.setVisible(false);
 		this.dispose();

@@ -7,6 +7,7 @@ import java.awt.datatransfer.Transferable;
 import java.util.Date;
 import java.util.logging.Level;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.TransferHandler;
@@ -29,16 +30,21 @@ public class CalendarPanelTransferHandler extends TransferHandler{
 	 * Simple checks
 	 */
 	public boolean canImport(TransferHandler.TransferSupport info) {
+		System.out.println("Woohoo");
         // we only import Strings will need to also handle tasks / task components
 		DataFlavor taskFlavor = Task.createFlavor();
 		if(!info.isDrop()){
 			return false;
 		}
-		/*
-        if (!info.isDataFlavorSupported(DataFlavor.stringFlavor) && !info.isDataFlavorSupported(taskFlavor)) {
+		//might also need to check for taskcomponent flavor
+        if (!info.isDataFlavorSupported(taskFlavor)) {
             return false;
         }
-        */
+        
+        /* doesnt seem to do anything with custom components */
+        info.setShowDropLocation(true);
+        //Point mouseLoc = calendar.getMousePosition();
+        //Task t = (Task)info.getTransferable().getTransferData(Task.createFlavor());
         
         return true;
     }
@@ -69,5 +75,24 @@ public class CalendarPanelTransferHandler extends TransferHandler{
         } 
         catch (Exception e) { return false; }
         return true;
+    }
+    
+    /*
+     * Handles the action for data being transferred
+     * Doesn't matter for dragging onto the Calendar Panel
+     * Needs to be move for when the task list itself can be reordered
+     */
+    public int getSourceActions(JComponent c) {
+        return MOVE;
+    }
+    
+    /*
+     * Returns a transferable task object to be transferred via Drag-n-Drop
+     */
+    protected Transferable createTransferable(JComponent c) {
+    	DataFlavor taskFlavor = Task.createFlavor(); 
+        Task t = ((TaskComponent)c).getTask();
+        System.out.println(t.getName());
+        return t;
     }
 }

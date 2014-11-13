@@ -1,8 +1,19 @@
 package user_interface;
 
 import java.awt.*;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
+import java.awt.dnd.DropTarget;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,19 +22,23 @@ import java.util.Date;
 import java.util.logging.Level;
 
 import javax.swing.*;
+import javax.swing.TransferHandler.DropLocation;
 
 import core.Task;
 import core.Timeflecks;
 import logging.GlobalLogger;
 
-public class CalendarPanel extends JPanel implements MouseListener
+public class CalendarPanel extends JPanel implements MouseListener, MouseMotionListener
 {
 	private boolean drawTimes;
 	private boolean drawRightSideLine;
 
 	private Date date;
 	private ArrayList<Task> tasksToPaint;
-
+	private Task draggedTask;
+	
+	private DragSource ds;
+	
 	/**
 	 * Auto generated default serial version UID
 	 */
@@ -38,6 +53,7 @@ public class CalendarPanel extends JPanel implements MouseListener
 		this.drawRightSideLine = drawRightSideLine;
 
 		this.setDate(date);
+		draggedTask = new Task("Temp");
 		setTasksToPaint(new ArrayList<Task>());
 		refresh();
 
@@ -50,7 +66,16 @@ public class CalendarPanel extends JPanel implements MouseListener
 		// math)
 		this.setMinimumSize(new Dimension(width, height));
 		
+		this.setTransferHandler(new CalendarPanelTransferHandler(this));
+		this.setDropTarget(new DropTarget());
 		addMouseListener(this);
+		
+		//ds = new DragSource();
+		//ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+		//ds.addDragSourceListener(this);
+		draggedTask = null;
+		
+		
 	}
 
 	public void paintComponent(Graphics g)
@@ -158,30 +183,42 @@ public class CalendarPanel extends JPanel implements MouseListener
 			g.drawLine(d.width - 4, d.height / 24 / 2, d.width - 4, d.height
 					- d.height / 24 / 2);
 		}
-
+		
+		int firstInset = d.height / 24 - (fontHeight / 2);
+		int hourIncrement = d.height / 24;
+		Calendar calendar;
+		double taskHours, durationInHours;
+		Rectangle frame;
 		// Go through and draw any tasks at the appropriate place
 		for (Task t : tasksToPaint)
 		{
-			int firstInset = d.height / 24 - (fontHeight / 2);
-
-			int hourIncrement = d.height / 24;
-
-			Calendar calendar = Calendar.getInstance();
+			calendar = Calendar.getInstance();
 			calendar.setTime(t.getStartTime());
-			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+			taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
 					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
 
-			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
+			durationInHours = ( t.getDuration() / 1000.0 / 60.0 / 60.0 ) % 24.0;
 
-			Rectangle frame = new Rectangle(leftInset, firstInset
+			frame = new Rectangle(leftInset, firstInset
 					+ (int) (taskHours * hourIncrement), d.width - rightInset
 					- leftInset, (int) (durationInHours * hourIncrement));
-
+			
 			TaskComponent tc = new TaskComponent(t, frame);
+			add(tc);
+			tc.addMouseListener(this);
+			tc.addMouseMotionListener(this);
 			tc.paint(g);
 		}
+		
+		
+		/*DropLocation loc= this.getDropLocation();
+		this.getTransferHandler().
+		if (loc == null) {
+			return;
+		}
+		renderPrettyIndicatorAt(loc);*/
 	}
-
+	
 	/**
 	 * refreshes the calendar view, re-adds the tasks for that day from the
 	 * TaskList. Warning: This may be time-intensive for large TaskLists
@@ -210,7 +247,8 @@ public class CalendarPanel extends JPanel implements MouseListener
 				}
 			}
 		}
-
+		
+		
 		// Now we have the list of tasks to paint, we want to make sure that
 		// they are painted in paintComponent.
 
@@ -236,6 +274,66 @@ public class CalendarPanel extends JPanel implements MouseListener
 				&& c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
 
 		return same;
+	}
+
+	public static void main(String[] args)
+	{
+		try
+		{
+			JFrame newFrame = new JFrame("Calendar Test");
+			JPanel container = new JPanel();
+
+			FlowLayout panelLayout = new FlowLayout();
+			panelLayout.setHgap(0);
+			panelLayout.setVgap(0);
+			container.setLayout(panelLayout);
+
+			JScrollPane s = new JScrollPane(container);
+
+			int width = 150;
+			int height = 1000;
+
+			for (int i = 0; i < 7; i++)
+			{
+				CalendarPanel p;
+				if (i == 0)
+				{
+					p = new CalendarPanel(new Date(), true, true, width, height);
+				}
+				else if (i == 6)
+				{
+					p = new CalendarPanel(new Date(), false, false, width,
+							height);
+				}
+				else
+				{
+					p = new CalendarPanel(new Date(), false, true, width,
+							height);
+				}
+
+				container.add(p);
+
+			}
+
+			// container.setSize(400,400);
+
+			newFrame.getContentPane().add(s);
+
+			newFrame.pack();
+
+			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+			newFrame.setSize(400, 400);
+			newFrame.setAutoRequestFocus(true);
+			newFrame.setResizable(true);
+
+			newFrame.setVisible(true);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Unable to " + e);
+		}
 	}
 
 	public ArrayList<Task> getTasksToPaint()
@@ -273,36 +371,113 @@ public class CalendarPanel extends JPanel implements MouseListener
 	}
 	
 	public void mouseClicked(MouseEvent e) {
+		if (e.getClickCount() == 2 && e.getSource() instanceof TaskComponent){
+			TaskComponent c = (TaskComponent)e.getSource();
+			NewTaskPanel p = new NewTaskPanel(c.getTask());
+			p.displayFrame();
+		}
 		// TODO Auto-generated method stub
-		System.out.println(e.getPoint().toString());
-		Date d = getTime(e.getPoint());
-		System.out.println(d.toString());
+		//System.out.println(e.getPoint().toString());
+		//Date d = getTime(e.getPoint());
+		//System.out.println(d.toString());
+		//System.out.println(e.getComponent().getClass().getCanonicalName());
+		//System.out.println(e.getSource().getClass().getCanonicalName());
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+		//System.out.println("ENTERED: " + e.getSource().getClass().getCanonicalName());
 		// TODO Auto-generated method stub
-		
+		//System.out.println("Entered!");
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		//System.out.println("Exited!");
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		//.out.println("PRESSED: " + e.getSource().getClass().getCanonicalName());
 		
+		
+		// TODO Auto-generated method stub
+		//System.out.println("Pressed!");
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		//if (e.getComponent() instanceof TaskComponent){
+			//this.getTransferHandler().exportAsDrag((JComponent)e.getComponent(), (InputEvent)e, DnDConstants.ACTION_MOVE);
+			//ds.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
+		//}
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		if (arg0.getSource() instanceof TaskComponent){
+			System.out.println("Starting a mofo drag!!");
+			this.getTransferHandler().exportAsDrag((JComponent)arg0.getSource(), arg0, DnDConstants.ACTION_MOVE);
+		}
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 	
-	
+	/*
+	@Override
+	public void dragGestureRecognized(DragGestureEvent arg0) {
+		// TODO Auto-generated method stub
+		
+		//ds.startDrag(arg0, DragSource.DefaultMoveDrop, this, this);
+		//CalendarPanel parent = (CalendarPanel)this.getParent();
+		//MouseListener lis = new MouseListener;
+		//parent.getTransferHandler().ex
+		//parent.getTransferHandler().exportAsDrag(this, , DnDConstants.ACTION_MOVE);
+		//System.out.println("PARENT" +this.getParent().getClass().getCanonicalName());
+		System.out.println("Drag noticed");
+		///System.out.println("Origin: "+arg0.getDragOrigin().toString());
+
+		//System.out.println(MouseInfo.getPointerInfo().getLocation().toString());
+		//pressed = true;
+		//entered = true;
+	}
+
+	@Override
+	public void dragDropEnd(DragSourceDropEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dragEnter(DragSourceDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dragExit(DragSourceEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dragOver(DragSourceDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dropActionChanged(DragSourceDragEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}*/
+
 	
 }

@@ -1,37 +1,39 @@
 package user_interface;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import core.Task;
+import core.Timeflecks;
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 
-import javax.swing.*;
-
 import logging.GlobalLogger;
-import core.Timeflecks;
-import core.TimeflecksEvent;
-import core.TimeflecksEventResponder;
 
-public class MainWindow extends JFrame implements TimeflecksEventResponder
+public class MainWindow extends JFrame
 {
 	private static final long serialVersionUID = 1L;
 
 	private TaskListTablePanel panel;
 	private ArrayList<CalendarPanel> cpanels;
-	private JScrollPane scrollPane;
-
-	private boolean showWeekView;
-
+	private Task DraggedTask;
+	
 	public MainWindow()
 	{
 		super();
 
 		panel = null;
 		cpanels = new ArrayList<CalendarPanel>();
-		scrollPane = null;
-		showWeekView = true;
-
+		DraggedTask = null;
+		
+		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -49,16 +51,9 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
 
-				// When it is created, the main window will register itself as a
-				// listener for TimeflecksEvents
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
-						Timeflecks.getSharedApplication().getMainWindow());
-
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.GENERAL_REFRESH);
+				Timeflecks.getSharedApplication().getMainWindow().refresh();
 			}
 		});
-
 	}
 
 	public void addComponents()
@@ -73,81 +68,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		getContentPane().add(panel);
 
-		JPanel calendarControlButtons = new JPanel();
-		calendarControlButtons.setLayout(new BorderLayout());
-
-		final JToggleButton dayButton = new JToggleButton("Day");
-		final JToggleButton weekButton = new JToggleButton("Week");
-
-		if (showWeekView)
-		{
-			dayButton.setSelected(false);
-			weekButton.setSelected(true);
-		}
-		else
-		{
-			dayButton.setSelected(true);
-			weekButton.setSelected(false);
-		}
-
-		dayButton.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (dayButton.isSelected())
-				{
-					weekButton.setSelected(false);
-					showWeekView = false;
-				}
-				else
-				{
-					weekButton.setSelected(true);
-					showWeekView = true;
-				}
-
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
-			}
-		});
-
-		weekButton.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (weekButton.isSelected())
-				{
-					dayButton.setSelected(false);
-					showWeekView = true;
-				}
-				else
-				{
-					dayButton.setSelected(true);
-					showWeekView = false;
-				}
-
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
-			}
-		});
-
-		JPanel dayWeekPanel = new JPanel();
-		FlowLayout panelLayout = new FlowLayout();
-		panelLayout.setHgap(0);
-		panelLayout.setVgap(0);
-		dayWeekPanel.setLayout(panelLayout);
-
-		dayWeekPanel.add(dayButton);
-		dayWeekPanel.add(weekButton);
-
-		calendarControlButtons.add(dayWeekPanel, BorderLayout.WEST);
-
-		getContentPane().add(calendarControlButtons);
-
-		// TODO Fix for showing the correct date
 		// Add the calendar
-		addCalendar(showWeekView, new Date());
+		addCalendar(true, new Date());
 
 	}
 
@@ -171,7 +93,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		panelLayout.setVgap(0);
 		container.setLayout(panelLayout);
 
-		scrollPane = new JScrollPane(container);
+		JScrollPane s = new JScrollPane(container);
 
 		if (weekView == true)
 		{
@@ -181,8 +103,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			Date d = date;
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(d);
-			// cal.add(Calendar.DATE, -1);
-			// d = cal.getTime();
+			//cal.add(Calendar.DATE, -1);
+			//d = cal.getTime();
 
 			for (int i = 0; i < 7; i++)
 			{
@@ -212,16 +134,15 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			int width = 700;
 			int height = 1000;
 
-			CalendarPanel p = new CalendarPanel(date, true, false, width,
-					height);
+			CalendarPanel p = new CalendarPanel(date, true, false, width, height);
 
 			cpanels.add(p);
 			container.add(p);
 		}
-
-		scrollPane.setPreferredSize(new Dimension(730, 440));
-
-		getContentPane().add(scrollPane);
+		
+		s.setPreferredSize(new Dimension(730, 440));
+		
+		getContentPane().add(s);
 	}
 
 	public void displayFrame()
@@ -229,8 +150,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		// TODO: Remove this
 		setSize(1330, 520);
 		setMinimumSize(new Dimension(1330, 520));
-
-		pack();
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -262,6 +181,13 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	}
 
+	// public static void main(String[] args)
+	// {
+	// MainWindow window = new MainWindow();
+	//
+	// window.setVisible(true);
+	// }
+
 	public ArrayList<CalendarPanel> getCpanels()
 	{
 		return cpanels;
@@ -272,68 +198,4 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		return panel;
 	}
 
-	public boolean isShowingWeekView()
-	{
-		return showWeekView;
-	}
-
-	public void switchViewToShowWeekView(boolean showWeekView)
-	{
-		this.showWeekView = showWeekView;
-
-		for (CalendarPanel p : cpanels)
-		{
-			scrollPane.getViewport().remove(p);
-		}
-
-		this.getContentPane().remove(scrollPane);
-
-		cpanels.clear();
-		scrollPane = null;
-
-		// TODO Fix for showing the current date
-		addCalendar(showWeekView, new Date());
-
-		// We need to revalidate and repaint the entire new main window, not
-		// just the panels as we usually do with refresh.
-
-		Timeflecks.getSharedApplication().postNotification(
-				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
-	}
-
-	@Override
-	public void eventPosted(TimeflecksEvent t)
-	{
-		if (t.equals(TimeflecksEvent.GENERAL_REFRESH))
-		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
-					"eventPosted",
-					"MainWindow responding to general refresh event.");
-			this.refresh();
-
-		}
-		else if (t.equals(TimeflecksEvent.EVERYTHING_NEEDS_REFRESH))
-		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
-					"eventPosted",
-					"MainWindow responding to everything needs refresh event.");
-			this.revalidate();
-			this.repaint();
-			this.refresh();
-		}
-		else if (t.equals(TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED))
-		{
-			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
-					"eventPosted",
-					"MainWindow responding to day week view switched event.");
-			this.switchViewToShowWeekView(showWeekView);
-		}
-		else
-		{
-			GlobalLogger
-					.getLogger()
-					.logp(Level.WARNING, "MainWindow", "eventPosted",
-							"MainWindow responding to unknown event. No action will be taken");
-		}
-	}
 }
