@@ -1,11 +1,11 @@
 package core;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Managers the filtering if lists of Tasks. 
+ * Managers the filtering of lists of Tasks.
  * 
  * @author Andrew
  * 
@@ -24,13 +24,13 @@ public class TaskFilterManager
 	 *            the method that defines which Tasks are included
 	 * @return the list of filtered Tasks
 	 */
-	static <E> List<Task> getFilteredTasks(final List<Task> tasks,
-			final List<E> filterItems, final FilterComparator<E> filterMethod)
+	public static <E> ArrayList<Task> getFilteredTasks(final List<Task> tasks,
+			final Iterable<E> filterItems, final FilterComparator<E> filterMethod)
 	{
 		Objects.requireNonNull(tasks);
 		Objects.requireNonNull(filterItems);
 
-		List<Task> filteredTasks = new LinkedList<Task>();
+		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 
 		for (Task task : tasks)
 		{
