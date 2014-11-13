@@ -16,13 +16,19 @@ public abstract class Recurrence
 			throws IllegalArgumentException
 	{
 		tasks = new ArrayList<Task>();
-		if (protoTask.getDueDate() == null)
+		if (protoTask.getDueDate() == null && protoTask.getStartTime() == null)
 		{
 			throw new IllegalArgumentException(
-					"prototype tasks should have a set due date");
+					"prototype tasks should have a set start date or due date");
 		}
 		Task currentTask = protoTask;
-		while (currentTask.getDueDate().compareTo(toDate) <= 0)
+
+		// Advance based upon whichever one is present. If both are present,
+		// then we will advance until both of them are past the end time.
+		while ((currentTask.getDueDate() != null && currentTask.getDueDate()
+				.compareTo(toDate) <= 0)
+				|| (currentTask.getStartTime() != null && currentTask
+						.getStartTime().compareTo(toDate) <= 0))
 		{
 			tasks.add(currentTask);
 			Task nextTask = new Task(currentTask);
@@ -32,14 +38,16 @@ public abstract class Recurrence
 			{
 				nextTask.setStartTime(getNextTime(currentTask.getStartTime()));
 			}
-			nextTask.setDueDate(getNextTime(currentTask.getDueDate()));
+			if (currentTask.getDueDate() != null)
+			{
+				nextTask.setDueDate(getNextTime(currentTask.getDueDate()));
+			}
 
 			GlobalLogger.getLogger().logp(
 					Level.INFO,
 					"core.Recurrence",
 					"Recurrence(Task, Date)",
-					"created new task with" + " due date "
-							+ nextTask.getDueDate().toString());
+					"created new task: " + nextTask.getId());
 
 			currentTask = nextTask;
 		}

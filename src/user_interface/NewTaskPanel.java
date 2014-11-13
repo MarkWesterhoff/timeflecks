@@ -50,7 +50,20 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 365));
+		
+		// Set the size of the panel. Note one is setting content pane and one is setting frame.
+		
+		if (taskToEdit != null)
+		{
+			// Smaller pane
+			this.getContentPane().setPreferredSize(new Dimension(350, 365));
+			this.setMinimumSize(new Dimension(380, 400));
+		}
+		else
+		{
+			this.getContentPane().setPreferredSize(new Dimension(350, 425));
+			this.setMinimumSize(new Dimension(380, 455));
+		}
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Beginning interface setup");
@@ -598,14 +611,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 									.logp(Level.WARNING,
 											"NewTaskPanel",
 											"actionPerformed",
-											"IllegalArgumentException for repeating task. Likely no due date set. Prompting user.\nException Message: "
+											"IllegalArgumentException for repeating task. Likely no due/start date set. Prompting user.\nException Message: "
 													+ e1.getMessage());
 
 							JOptionPane
 									.showMessageDialog(
 											this,
-											"You must specify an due date for a repeating task.",
-											"Due Date Required",
+											"You must specify either a start date or a due date for a repeating task.",
+											"Start or Due Date Required",
 											JOptionPane.WARNING_MESSAGE);
 
 							// Now we just return the user to editing
@@ -640,6 +653,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				}
 				else
 				{
+					// We add the task to the list of tasks, since we are just
+					// going to save that later.
 					tasks.add(task);
 				}
 
@@ -824,7 +839,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		this.setAutoRequestFocus(true);
 		this.setResizable(true);
-		this.setMinimumSize(new Dimension(380, 400));
 
 		this.setVisible(true);
 	}
