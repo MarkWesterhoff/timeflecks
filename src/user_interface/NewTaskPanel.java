@@ -3,6 +3,7 @@ package user_interface;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 
@@ -50,9 +51,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		
-		// Set the size of the panel. Note one is setting content pane and one is setting frame.
-		
+
+		// Set the size of the panel. Note one is setting content pane and one
+		// is setting frame.
+
 		if (taskToEdit != null)
 		{
 			// Smaller pane
@@ -326,33 +328,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			repeatComboBox.addItem("Every Weekday Until");
 			repeatComboBox.addItem("Monthly Until");
 
-			// if (taskToEdit != null)
-			// {
-			// if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
-			// {
-			// taskPriorityComboBox.setSelectedItem("High");
-			// }
-			// else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
-			// {
-			// taskPriorityComboBox.setSelectedItem("Medium");
-			// }
-			// else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
-			// {
-			// taskPriorityComboBox.setSelectedItem("Low");
-			// }
-			// else if (taskToEdit.getPriority() ==
-			// Priority.NO_PRIORITY_SELECTED)
-			// {
-			// taskPriorityComboBox.setSelectedItem("Not Set");
-			// }
-			// }
-
 			recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
-
-			// gc.gridy++;
-			// gc.insets = fieldInsets;
-			//
-			// centerPanel.add(repeatComboBox, gc);
 
 			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 					"NewTaskPanel", "Added recurrence drop down");
@@ -374,35 +350,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			recurrencePanel.add(recurrenceEndDateChooser);
 
-			// TODO SET TIME TO 11:59PM
-
-			// We can't ever have one that already has a recurrence set up
-			// if (taskToEdit != null)
-			// {
-			// startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
-			// "MM/dd/yyyy hh:mm:ss a");
-			// }
-			// else
-			// { }
-			//
-			// recurrenceEndDateChooser = new JDateChooser(null,
-			// "MM/dd/yyyy hh:mm:ss a");
-			//
-			// recurrenceEndDateChooser.setMinimumSize(new Dimension(175,
-			// startDateChooser
-			// .getMinimumSize().height));
-			// recurrenceEndDateChooser.setPreferredSize(new Dimension(330,
-			// startDateChooser
-			// .getPreferredSize().height));
-			//
-			// recurrenceLabel.setLabelFor(recurrenceEndDateChooser); //
-			// Accessibility
-
 			gc.gridy++;
 			gc.insets = fieldInsets;
 
 			centerPanel.add(recurrencePanel, gc);
-
 		}
 
 		// Description
@@ -572,7 +523,16 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 				if (repeatComboBox.getSelectedIndex() != 0)
 				{
-					Date endDate = recurrenceEndDateChooser.getDate();
+					// Set the time on the date to 11:59:59 PM so that it will
+					// recur until the end of that date set.
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(recurrenceEndDateChooser.getDate());
+
+					calendar.set(Calendar.HOUR_OF_DAY, 23);
+					calendar.set(Calendar.MINUTE, 59);
+					calendar.set(Calendar.SECOND, 59);
+
+					Date endDate = calendar.getTime();
 
 					if (endDate != null)
 					{
