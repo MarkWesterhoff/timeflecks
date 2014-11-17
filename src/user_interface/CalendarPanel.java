@@ -162,9 +162,13 @@ public class CalendarPanel extends JPanel
 
 		String dayOfWeek = new SimpleDateFormat("EEEE").format(this.getDate());
 		String date = new SimpleDateFormat("MM/dd/yyyy").format(this.getDate());
-
-		g.drawString(dayOfWeek, 2, fontHeight);
-		g.drawString(date, 2, 2 * fontHeight);
+		
+		FontMetrics fm = g.getFontMetrics();
+		int dayWidth = fm.stringWidth(dayOfWeek);
+		int dateWidth = fm.stringWidth(date);
+		
+		g.drawString(dayOfWeek, (int)(d.getWidth() / 2.0 - (dayWidth / 2.0)), fontHeight);
+		g.drawString(date, (int)(d.getWidth() / 2.0 - (dateWidth / 2.0)), 2 * fontHeight);
 
 		// ---------------------------------------------------------------------------------
 
