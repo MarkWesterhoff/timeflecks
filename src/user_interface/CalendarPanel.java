@@ -237,7 +237,6 @@ public class CalendarPanel extends JPanel
 				{
 					// They are on the same day
 					itemsToPaint.add(t);
-					System.out.println("ADDED EVENT TO PAINT");
 				}
 			}
 		}
