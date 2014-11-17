@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
-
 import database.DatabaseSerializable;
 import database.SerializableType;
 import logging.GlobalLogger;
@@ -29,7 +28,7 @@ public class Event implements Scheduleable, DatabaseSerializable
 	{
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(startTime);
-		
+
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		this.startTime = startTime;
@@ -93,11 +92,11 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	public long getDuration()
 	{
-		return endTime.getTime()-startTime.getTime();
+		return endTime.getTime() - startTime.getTime();
 	}
 
-	
-	public void setEndTime(Date endTime) {
+	public void setEndTime(Date endTime)
+	{
 		this.endTime = endTime;
 	}
 
@@ -109,15 +108,52 @@ public class Event implements Scheduleable, DatabaseSerializable
 	 * @throws IOException
 	 *             when there is a problem with serialization
 	 */
-	public void saveToDatabase() throws SQLException, IOException {
-		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event.saveToDatabase()", "Saving " 
-				+ this.name + " to database.");
-		
-		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
+	public void saveToDatabase() throws SQLException, IOException
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Event",
+				"core.Event.saveToDatabase()",
+				"Saving " + this.name + " to database.");
+
+		Timeflecks.getSharedApplication().getDBConnector()
+				.serializeAndSave(this);
 	}
 
 	public SerializableType getType()
 	{
 		return SerializableType.EVENT;
+	}
+
+	/**
+	 * Note: All events should return true for this value. If they aren't going
+	 * to, they will print a warning through log level WARNING.
+	 * 
+	 * @return whether the object has assigned a start time and end time.
+	 */
+	public boolean isScheduled()
+	{
+		if (startTime == null || endTime == null)
+		{
+			GlobalLogger
+					.getLogger()
+					.logp(Level.WARNING, "core.Event", "isScheduled()",
+							"Start time or end time was null on an event checking scheduled status.");
+			return false;
+		}
+		else
+		{
+			// We should always return true from this method.
+			return true;
+		}
+	}
+
+	/**
+	 * For now we make Events never be completed, although, we could make them
+	 * be completed if they are being shown in the past.
+	 * 
+	 * @return False to indicate that events are never considered "complete"
+	 */
+	public boolean isCompleted()
+	{
+		return false;
 	}
 }

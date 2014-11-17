@@ -14,7 +14,7 @@ import logging.GlobalLogger;
 
 /**
  * 
- * Represents a single scheduleable task -- the heart of the application.
+ * Represents a single Scheduleable task -- the heart of the application.
  * 
  */
 
