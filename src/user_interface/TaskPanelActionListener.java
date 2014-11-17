@@ -85,7 +85,7 @@ public class TaskPanelActionListener implements ActionListener
 				catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseDeleteException(ex,
-							null, "actionPerformed()", "1102");
+							"TaskPanelActionListener", "actionPerformed()", "1102");
 				}
 				Timeflecks.getSharedApplication().postNotification(
 						TimeflecksEvent.GENERAL_REFRESH);
