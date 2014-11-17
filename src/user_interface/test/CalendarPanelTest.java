@@ -1,12 +1,21 @@
 package user_interface.test;
 
+import static org.junit.Assert.fail;
+
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.*;
 
 import org.junit.Test;
 
+import core.Event;
+import core.Timeflecks;
+import core.TimeflecksEvent;
 import user_interface.CalendarPanel;
 
 public class CalendarPanelTest
@@ -73,8 +82,59 @@ public class CalendarPanelTest
 		}
 
 	}
+	
+	@Test
+	public void testCalendarPanelWithEvents()
+	{
+		Timeflecks.getSharedApplication().getTaskList()
+				.setEvents(new ArrayList<Event>());
 
-	public static void main(String[] args)
+		Date d = new Date();
+		Date f = new Date();
+
+		Calendar c = Calendar.getInstance();
+		c.setTime(f);
+		c.set(Calendar.HOUR_OF_DAY, 6);
+		c.set(Calendar.MINUTE, 0);
+		d = c.getTime();
+		c.add(Calendar.HOUR, 2);
+		f = c.getTime();
+
+		Event testEvent = new Event("Test", d, f);
+
+		Timeflecks.getSharedApplication().getTaskList().addEvent(testEvent);
+
+		try
+		{
+			testEvent.saveToDatabase();
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			fail("Unexpected SQLException.");
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			fail("Unexpected IOException.");
+		}
+
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+			fail("Unexpected InterruptedException.");
+		}
+
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
+	}
+
+	@Test
+	public void testCalendarPanelLarge()
 	{
 		try
 		{
