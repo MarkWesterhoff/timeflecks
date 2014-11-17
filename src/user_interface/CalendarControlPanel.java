@@ -37,14 +37,15 @@ public class CalendarControlPanel extends JPanel implements
 		addDayWeekToggle(showWeekView);
 
 		addDateControlButtons();
-		
+
 		final CalendarControlPanel cp = this;
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(cp);
+				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
+						cp);
 			}
 		});
 	}
@@ -55,10 +56,16 @@ public class CalendarControlPanel extends JPanel implements
 		// calendarControlButtons.setLayout(new BorderLayout());
 
 		dayButton = new JToggleButton("Day");
-		weekButton = new JToggleButton("Week");
-		
+
+		// JAVA BUG: If this starts with "W" it doesn't calculate the size, so
+		// we hard-code it below. Because that doesn't work on all platforms, we
+		// simply cause the button to be a little extra wide by starting the
+		// button title with a space.
+		weekButton = new JToggleButton(" Week");
+
 		// For some reason, this truncates if we don't fix the size
-		weekButton.setPreferredSize(new Dimension(70, (int)weekButton.getPreferredSize().getHeight()));
+		// weekButton.setPreferredSize(new Dimension(70,
+		// (int)weekButton.getPreferredSize().getHeight()));
 
 		if (showWeekView)
 		{
@@ -207,11 +214,12 @@ public class CalendarControlPanel extends JPanel implements
 		}
 		else
 		{
-			// We want to silently ignore all of the events that we aren't ready for
-//			GlobalLogger
-//					.getLogger()
-//					.logp(Level.INFO, "CalendarControlPanel", "eventPosted",
-//							"CalendarControlPanel responding to unknown event. No action will be taken");
+			// We want to silently ignore all of the events that we aren't ready
+			// for
+			// GlobalLogger
+			// .getLogger()
+			// .logp(Level.INFO, "CalendarControlPanel", "eventPosted",
+			// "CalendarControlPanel responding to unknown event. No action will be taken");
 		}
 	}
 }
