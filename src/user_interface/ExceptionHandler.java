@@ -2,12 +2,12 @@ package user_interface;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
 import core.Timeflecks;
-
 import logging.GlobalLogger;
 
 public class ExceptionHandler
@@ -16,6 +16,11 @@ public class ExceptionHandler
 	public static void handleDatabaseSaveException(Exception e, Object origin,
 			String originFunction, String ID)
 	{
+		Objects.requireNonNull(e);
+		Objects.requireNonNull(origin);
+		Objects.requireNonNull(originFunction);
+		Objects.requireNonNull(ID);
+		
 		handleDatabaseSaveException(e, origin.getClass().getName(),
 				originFunction, ID);
 	}
@@ -23,6 +28,11 @@ public class ExceptionHandler
 	public static void handleDatabaseSaveException(Exception e,
 			String className, String originFunction, String ID)
 	{
+		Objects.requireNonNull(e);
+		Objects.requireNonNull(className);
+		Objects.requireNonNull(originFunction);
+		Objects.requireNonNull(ID);
+		
 		if (e instanceof IOException)
 		{
 			GlobalLogger.getLogger().logp(
@@ -65,12 +75,22 @@ public class ExceptionHandler
 	public static void handleDatabaseDeleteException(Exception e,
 			Object origin, String originFunction, String ID)
 	{
+		Objects.requireNonNull(e);
+		Objects.requireNonNull(origin);
+		Objects.requireNonNull(originFunction);
+		Objects.requireNonNull(ID);
+		
 		handleDatabaseDeleteException(e, origin.getClass().getName(), originFunction, ID);
 	}
 
 	public static void handleDatabaseDeleteException(Exception e,
 			String className, String originFunction, String ID)
 	{
+		Objects.requireNonNull(e);
+		Objects.requireNonNull(className);
+		Objects.requireNonNull(originFunction);
+		Objects.requireNonNull(ID);
+		
 		if (e instanceof SQLException)
 		{
 			GlobalLogger.getLogger().logp(
