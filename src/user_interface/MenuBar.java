@@ -147,6 +147,9 @@ public class MenuBar extends JMenuBar
 
 		editmenu.add(menuItem);
 
+		// Add a separator, like many applications have
+		filemenu.addSeparator();
+
 		menuItem = new JMenuItem("New Event...", KeyEvent.VK_M);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
 				InputEvent.CTRL_DOWN_MASK));
