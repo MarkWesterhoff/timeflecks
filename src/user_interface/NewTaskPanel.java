@@ -521,7 +521,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 				ArrayList<Task> tasks = new ArrayList<Task>();
 
-				if (repeatComboBox.getSelectedIndex() != 0)
+				if (repeatComboBox != null && repeatComboBox.getSelectedIndex() != 0)
 				{
 					// Set the time on the date to 11:59:59 PM so that it will
 					// recur until the end of that date set.
