@@ -19,9 +19,11 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	private TaskListTablePanel panel;
 	private ArrayList<CalendarPanel> cpanels;
+	private	JPanel calendarContainer;
 	private JScrollPane scrollPane;
 
 	private boolean showWeekView;
+	private Date mainDate;
 
 	public MainWindow()
 	{
@@ -29,8 +31,11 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		panel = null;
 		cpanels = new ArrayList<CalendarPanel>();
+		calendarContainer = null;
 		scrollPane = null;
+
 		showWeekView = true;
+		mainDate = new Date();
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -72,81 +77,18 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		panel = new TaskListTablePanel(taskListTableModel);
 
 		getContentPane().add(panel);
+		
+		calendarContainer = new JPanel();
+		calendarContainer.setLayout(new BorderLayout());
+		
+		CalendarControlPanel controlPanel = new CalendarControlPanel(
+				showWeekView);
+		calendarContainer.add(controlPanel, BorderLayout.NORTH);
 
-		JPanel calendarControlButtons = new JPanel();
-		calendarControlButtons.setLayout(new BorderLayout());
-
-		final JToggleButton dayButton = new JToggleButton("Day");
-		final JToggleButton weekButton = new JToggleButton("Week");
-
-		if (showWeekView)
-		{
-			dayButton.setSelected(false);
-			weekButton.setSelected(true);
-		}
-		else
-		{
-			dayButton.setSelected(true);
-			weekButton.setSelected(false);
-		}
-
-		dayButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (dayButton.isSelected())
-				{
-					weekButton.setSelected(false);
-					showWeekView = false;
-				}
-				else
-				{
-					weekButton.setSelected(true);
-					showWeekView = true;
-				}
-
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
-			}
-		});
-
-		weekButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (weekButton.isSelected())
-				{
-					dayButton.setSelected(false);
-					showWeekView = true;
-				}
-				else
-				{
-					dayButton.setSelected(true);
-					showWeekView = false;
-				}
-
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
-			}
-		});
-
-		JPanel dayWeekPanel = new JPanel();
-		FlowLayout panelLayout = new FlowLayout();
-		panelLayout.setHgap(0);
-		panelLayout.setVgap(0);
-		dayWeekPanel.setLayout(panelLayout);
-
-		dayWeekPanel.add(dayButton);
-		dayWeekPanel.add(weekButton);
-
-		calendarControlButtons.add(dayWeekPanel, BorderLayout.WEST);
-
-		getContentPane().add(calendarControlButtons);
-
-		// TODO Fix for showing the correct date
-		// Add the calendar
-		addCalendar(showWeekView, new Date());
-
+		// Add the calendar & controlPanel
+		addCalendar(showWeekView, mainDate);
+		
+		getContentPane().add(calendarContainer);
 	}
 
 	/**
@@ -217,9 +159,10 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			container.add(p);
 		}
 
-		scrollPane.setPreferredSize(new Dimension(730, 440));
+		// TODO Remove this
+		scrollPane.setPreferredSize(new Dimension(730, 420));
 
-		getContentPane().add(scrollPane);
+		calendarContainer.add(scrollPane, BorderLayout.SOUTH);
 	}
 
 	public void displayFrame()
@@ -257,7 +200,33 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			GlobalLogger.getLogger().logp(Level.WARNING, "MainWindow",
 					"refresh", "TaskListTablePanel named \"panel\" was null.");
 		}
+	}
 
+	/**
+	 * Perform a deep refresh that rebuilds all of the panels. This is necessary
+	 * whenever the date being displayed changes, or the week/day view changes.
+	 * 
+	 */
+	public void refreshPanels()
+	{
+		for (CalendarPanel p : cpanels)
+		{
+			scrollPane.getViewport().remove(p);
+		}
+
+		this.calendarContainer.remove(scrollPane);
+
+		cpanels.clear();
+		scrollPane = null;
+
+		// TODO Fix for showing the current date
+		addCalendar(this.isShowingWeekView(), this.getMainDate());
+
+		// We need to revalidate and repaint the entire new main window, not
+		// just the panels as we usually do with refresh.
+
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
 	}
 
 	public ArrayList<CalendarPanel> getCpanels()
@@ -275,28 +244,20 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		return showWeekView;
 	}
 
-	public void switchViewToShowWeekView(boolean showWeekView)
+	/**
+	 * Set whether or not to show the week view on the Calendar.
+	 * 
+	 * Note that this triggers the DAY_WEEK_VIEW_SWITCHED event.
+	 * 
+	 * @param newWeekView
+	 *            Whether to show the week view
+	 */
+	public void setShowWeekView(boolean newWeekView)
 	{
-		this.showWeekView = showWeekView;
-
-		for (CalendarPanel p : cpanels)
-		{
-			scrollPane.getViewport().remove(p);
-		}
-
-		this.getContentPane().remove(scrollPane);
-
-		cpanels.clear();
-		scrollPane = null;
-
-		// TODO Fix for showing the current date
-		addCalendar(showWeekView, new Date());
-
-		// We need to revalidate and repaint the entire new main window, not
-		// just the panels as we usually do with refresh.
+		showWeekView = newWeekView;
 
 		Timeflecks.getSharedApplication().postNotification(
-				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
+				TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
 	}
 
 	public void eventPosted(TimeflecksEvent t)
@@ -323,14 +284,78 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 					"eventPosted",
 					"MainWindow responding to day week view switched event.");
-			this.switchViewToShowWeekView(showWeekView);
+			this.refreshPanels();
+		}
+		else if (t.equals(TimeflecksEvent.DATE_LEFT_ONE_BUTTON))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+					"eventPosted",
+					"MainWindow responding to date left button event.");
+			this.bumpDateLeft(1);
+		}
+		else if (t.equals(TimeflecksEvent.DATE_TODAY_BUTTON))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+					"eventPosted",
+					"MainWindow responding to date today button event.");
+			this.bumpDateToday();
+		}
+		else if (t.equals(TimeflecksEvent.DATE_RIGHT_ONE_BUTTON))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+					"eventPosted",
+					"MainWindow responding to date right button event.");
+			this.bumpDateRight(1);
 		}
 		else
 		{
-			GlobalLogger
-					.getLogger()
-					.logp(Level.WARNING, "MainWindow", "eventPosted",
-							"MainWindow responding to unknown event. No action will be taken");
+			// We want to silently ignore all events that we aren't prepared to
+			// handle.
+			// GlobalLogger
+			// .getLogger()
+			// .logp(Level.WARNING, "MainWindow", "eventPosted",
+			// "MainWindow responding to unknown event. No action will be taken");
 		}
+	}
+
+	public void bumpDateLeft(int numDays)
+	{
+		Date d = getMainDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.add(Calendar.DATE, -1 * numDays);
+		d = c.getTime();
+		setMainDate(d);
+	}
+
+	public void bumpDateToday()
+	{
+		setMainDate(new Date());
+	}
+
+	public void bumpDateRight(int numDays)
+	{
+		Date d = getMainDate();
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		c.add(Calendar.DATE, 1 * numDays);
+		d = c.getTime();
+		setMainDate(d);
+	}
+
+	public Date getMainDate()
+	{
+		return mainDate;
+	}
+
+	public void setMainDate(Date mainDate)
+	{
+		this.mainDate = mainDate;
+
+		GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "setMainDate",
+				"Setting date to " + getMainDate());
+
+		// We need to refresh the dates that are shown.
+		this.refreshPanels();
 	}
 }
