@@ -10,8 +10,7 @@ import java.util.logging.Level;
 
 import javax.swing.*;
 
-import core.Task;
-import core.Timeflecks;
+import core.*;
 import logging.GlobalLogger;
 
 public class CalendarPanel extends JPanel
@@ -20,7 +19,7 @@ public class CalendarPanel extends JPanel
 	private boolean drawRightSideLine;
 
 	private Date date;
-	private ArrayList<Task> tasksToPaint;
+	private ArrayList<Scheduleable> itemsToPaint;
 
 	/**
 	 * Auto generated default serial version UID
@@ -51,7 +50,7 @@ public class CalendarPanel extends JPanel
 		this.drawRightSideLine = drawRightSideLine;
 
 		this.setDate(date);
-		setTasksToPaint(new ArrayList<Task>());
+		setItemsToPaint(new ArrayList<Scheduleable>());
 		refresh();
 
 		setBorder(BorderFactory.createEmptyBorder());
@@ -163,9 +162,13 @@ public class CalendarPanel extends JPanel
 
 		String dayOfWeek = new SimpleDateFormat("EEEE").format(this.getDate());
 		String date = new SimpleDateFormat("MM/dd/yyyy").format(this.getDate());
-
-		g.drawString(dayOfWeek, 2, fontHeight);
-		g.drawString(date, 2, 2 * fontHeight);
+		
+		FontMetrics fm = g.getFontMetrics();
+		int dayWidth = fm.stringWidth(dayOfWeek);
+		int dateWidth = fm.stringWidth(date);
+		
+		g.drawString(dayOfWeek, (int)(d.getWidth() / 2.0 - (dayWidth / 2.0)), fontHeight);
+		g.drawString(date, (int)(d.getWidth() / 2.0 - (dateWidth / 2.0)), 2 * fontHeight);
 
 		// ---------------------------------------------------------------------------------
 
@@ -177,7 +180,7 @@ public class CalendarPanel extends JPanel
 		}
 
 		// Go through and draw any tasks at the appropriate place
-		for (Task t : tasksToPaint)
+		for (Scheduleable t : itemsToPaint)
 		{
 			int firstInset = d.height / 24 - (fontHeight / 2);
 
@@ -208,13 +211,13 @@ public class CalendarPanel extends JPanel
 		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "refresh",
 				"Refresh called.");
 
-		// We need to go through the task list and update all tasks that match
+		// We need to go through the task list and update all items that match
 		// the current date
 
 		// Clear it out first
-		tasksToPaint.clear();
+		itemsToPaint.clear();
 
-		for (Task t : Timeflecks.getSharedApplication().getTaskList()
+		for (Scheduleable t : Timeflecks.getSharedApplication().getTaskList()
 				.getTasks())
 		{
 			if (t.isScheduled())
@@ -223,17 +226,29 @@ public class CalendarPanel extends JPanel
 				if (sameDay(t.getStartTime(), this.getDate()))
 				{
 					// They are on the same day
-					tasksToPaint.add(t);
+					itemsToPaint.add(t);
 				}
 			}
 		}
 
-		// Now we have the list of tasks to paint, we want to make sure that
+		for (Scheduleable t : Timeflecks.getSharedApplication().getTaskList()
+				.getEvents())
+		{
+			if (t.isScheduled())
+			{
+				// Same day will just return false if they are null
+				if (sameDay(t.getStartTime(), this.getDate()))
+				{
+					// They are on the same day
+					itemsToPaint.add(t);
+				}
+			}
+		}
+
+		// Now we have the list of items to paint, we want to make sure that
 		// they are painted in paintComponent.
 
-		// this.invalidate();
 		this.repaint();
-		// this.revalidate();
 	}
 
 	/**
@@ -265,24 +280,24 @@ public class CalendarPanel extends JPanel
 	}
 
 	/**
-	 * Getter for the tasksToPaint list.
+	 * Getter for the itemsToPaint list.
 	 * 
-	 * @return the tasksToPaint list
+	 * @return the itemsToPaint list
 	 */
-	public ArrayList<Task> getTasksToPaint()
+	public ArrayList<Scheduleable> getItemsToPaint()
 	{
-		return tasksToPaint;
+		return itemsToPaint;
 	}
 
 	/**
-	 * Setter for the tasksToPaint list.
+	 * Setter for the itemsToPaint list.
 	 * 
-	 * @param tasksToPaint
-	 *            The list of tasks to paint that should be set as tasksToPaint.
+	 * @param itemsToPaint
+	 *            The list of tasks to paint that should be set as itemsToPaint.
 	 */
-	public void setTasksToPaint(ArrayList<Task> tasksToPaint)
+	public void setItemsToPaint(ArrayList<Scheduleable> itemsToPaint)
 	{
-		this.tasksToPaint = tasksToPaint;
+		this.itemsToPaint = itemsToPaint;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
-
 import database.DatabaseSerializable;
 import database.SerializableType;
 import logging.GlobalLogger;
@@ -21,24 +20,19 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	private String name;
 	private Date startTime;
+	private Date endTime;
 	private String description;
 	private final long id;
 
-	/*
-	 * Java Date class has <code>getTime()</code>, <code>setTime()</code>, which
-	 * takes a <code>long</code>, so math can be done. In milliseconds.
-	 */
-	private long duration;
-
-	public Event(String name, Date startTime, long duration)
+	public Event(String name, Date startTime, Date endTime)
 	{
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(startTime);
-		
+
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		this.startTime = startTime;
-		this.duration = duration;
+		this.endTime = endTime;
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event()",
 				"Creating event " + this.name + " with id " + id);
 	}
@@ -83,7 +77,7 @@ public class Event implements Scheduleable, DatabaseSerializable
 	 */
 	public Date getEndTime()
 	{
-		return new Date(startTime.getTime() + duration);
+		return endTime;
 	}
 
 	public String getDescription()
@@ -98,12 +92,12 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	public long getDuration()
 	{
-		return duration;
+		return endTime.getTime() - startTime.getTime();
 	}
 
-	public void setDuration(long duration)
+	public void setEndTime(Date endTime)
 	{
-		this.duration = duration;
+		this.endTime = endTime;
 	}
 
 	/**
@@ -114,15 +108,52 @@ public class Event implements Scheduleable, DatabaseSerializable
 	 * @throws IOException
 	 *             when there is a problem with serialization
 	 */
-	public void saveToDatabase() throws SQLException, IOException {
-		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event.saveToDatabase()", "Saving " 
-				+ this.name + " to database.");
-		
-		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
+	public void saveToDatabase() throws SQLException, IOException
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Event",
+				"core.Event.saveToDatabase()",
+				"Saving " + this.name + " to database.");
+
+		Timeflecks.getSharedApplication().getDBConnector()
+				.serializeAndSave(this);
 	}
 
 	public SerializableType getType()
 	{
 		return SerializableType.EVENT;
+	}
+
+	/**
+	 * Note: All events should return true for this value. If they aren't going
+	 * to, they will print a warning through log level WARNING.
+	 * 
+	 * @return whether the object has assigned a start time and end time.
+	 */
+	public boolean isScheduled()
+	{
+		if (startTime == null || endTime == null)
+		{
+			GlobalLogger
+					.getLogger()
+					.logp(Level.WARNING, "core.Event", "isScheduled()",
+							"Start time or end time was null on an event checking scheduled status.");
+			return false;
+		}
+		else
+		{
+			// We should always return true from this method.
+			return true;
+		}
+	}
+
+	/**
+	 * For now we make Events never be completed, although, we could make them
+	 * be completed if they are being shown in the past.
+	 * 
+	 * @return False to indicate that events are never considered "complete"
+	 */
+	public boolean isCompleted()
+	{
+		return false;
 	}
 }

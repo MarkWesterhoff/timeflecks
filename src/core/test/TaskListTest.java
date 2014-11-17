@@ -47,14 +47,14 @@ public class TaskListTest
 		TaskList tl = new TaskList();
 		assertEquals("taskList should start with no elements.", tl.getEvents()
 				.size(), 0);
-		Event e = new Event("My first event.", new Date(), 0);
+		Event e = new Event("My first event.", new Date(), new Date());
 		tl.addEvent(e);
 		assertEquals("adding a task should add an element.", tl.getEvents()
 				.size(), 1);
 		assertEquals(
 				"The element added to an eventlist should be the added element",
 				tl.getEvents().get(0), e);
-		Event e2 = new Event("My second event.", new Date(), 1);
+		Event e2 = new Event("My second event.", new Date(), new Date());
 		tl.addEvent(e2);
 		assertEquals("adding an event should add an element.", tl.getEvents()
 				.size(), 2);

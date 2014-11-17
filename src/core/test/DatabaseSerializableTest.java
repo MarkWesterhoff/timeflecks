@@ -27,7 +27,7 @@ public class DatabaseSerializableTest
 				s2.getId(), 1 + first_id);
 
 		DatabaseSerializable s3 = new Event("Event 1", new Date(
-				System.currentTimeMillis()), 60000);
+				System.currentTimeMillis()), new Date(System.currentTimeMillis()+60000));
 		assertEquals("Events should keep the same ID counting scheue as Tasks",
 				s3.getId(), 2 + first_id);
 

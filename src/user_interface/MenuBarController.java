@@ -19,11 +19,12 @@ public class MenuBarController implements ActionListener
 {
 
 	private MenuBar menu;
-	public MenuBarController(MenuBar menu) {
+
+	public MenuBarController(MenuBar menu)
+	{
 		this.menu = menu;
 	}
-	
-	
+
 	public void actionPerformed(ActionEvent e)
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar", "actionPerformed",
@@ -61,6 +62,18 @@ public class MenuBarController implements ActionListener
 					"actionPerformed", "Edit task... menu item selected");
 			performEditCommand();
 		}
+		else if (cmd.equalsIgnoreCase("Delete Task..."))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "Delete task... menu item selected");
+			performDeleteTaskCommand();
+		}
+		else if (cmd.equalsIgnoreCase("New Event..."))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+					"actionPerformed", "New event... menu item selected");
+			performNewEventCommand();
+		}
 		else if (cmd.equalsIgnoreCase("No Help For You!"))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
@@ -68,7 +81,7 @@ public class MenuBarController implements ActionListener
 			performNoHelpCommand();
 		}
 	}
-	
+
 	public void performOpenCommand()
 	{
 		// Show jFileChooser
@@ -86,8 +99,11 @@ public class MenuBarController implements ActionListener
 			{
 				Timeflecks.getSharedApplication().getTaskList()
 						.saveAllTasksAndEvents();
-			} catch(Exception e) {
-				ExceptionHandler.handleDatabaseSaveException(e, this, "performOpenCommand", "1300");
+			}
+			catch (Exception e)
+			{
+				ExceptionHandler.handleDatabaseSaveException(e, this,
+						"performOpenCommand", "1300");
 			}
 
 			// Make sure it is a different .db file
@@ -123,7 +139,10 @@ public class MenuBarController implements ActionListener
 			try
 			{
 				Timeflecks.getSharedApplication()
-						.openDatabaseFile(selectedFile);  // Shouldn't this be handled here? (return success or failure?)
+						.openDatabaseFile(selectedFile); // Shouldn't this be
+															// handled here?
+															// (return success
+															// or failure?)
 			}
 			catch (SQLException e)
 			{
@@ -179,8 +198,11 @@ public class MenuBarController implements ActionListener
 		{
 			Timeflecks.getSharedApplication().getTaskList()
 					.saveAllTasksAndEvents();
-		} catch(Exception e) {
-			ExceptionHandler.handleDatabaseSaveException(e, this, "performSaveCommand()","1300");
+		}
+		catch (Exception e)
+		{
+			ExceptionHandler.handleDatabaseSaveException(e, this,
+					"performSaveCommand()", "1300");
 		}
 	}
 
@@ -250,10 +272,10 @@ public class MenuBarController implements ActionListener
 				{
 					Timeflecks.getSharedApplication().saveDatabaseFileAs(
 							selectedFile);
-					
+
 					success = true;
 				}
-				catch (IllegalArgumentException e)  //TODO
+				catch (IllegalArgumentException e) // TODO
 				{
 					GlobalLogger
 							.getLogger()
@@ -270,8 +292,10 @@ public class MenuBarController implements ActionListener
 									"Invalid Filename",
 									JOptionPane.ERROR_MESSAGE);
 				}
-				catch(Exception e) {
-						ExceptionHandler.handleDatabaseSaveException(e, this, "performSaveAsCommand()","1300");
+				catch (Exception e)
+				{
+					ExceptionHandler.handleDatabaseSaveException(e, this,
+							"performSaveAsCommand()", "1300");
 				}
 			}
 			else
@@ -298,10 +322,27 @@ public class MenuBarController implements ActionListener
 	public void performEditCommand()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-			"performEditCommand()",
-			"Edit task command issued. Bringing up NewTaskPanel.");
-		TaskPanelActionListener.editSelectedTask(Timeflecks.getSharedApplication().getMainWindow()
-				.getTablePanel());
+				"performEditCommand()",
+				"Edit task command issued. Bringing up NewTaskPanel.");
+		TaskPanelActionListener.editSelectedTask(Timeflecks
+				.getSharedApplication().getMainWindow().getTablePanel());
+	}
+
+	public void performDeleteTaskCommand()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"performDeleteTaskCommand()",
+				"Delete task command issued. Bringing up confirmation.");
+		TaskPanelActionListener.deleteSelectedTask(Timeflecks
+				.getSharedApplication().getMainWindow().getTablePanel());
+	}
+
+	public void performNewEventCommand()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
+				"performNewEventCommand()",
+				"New Event command issued. Bringing up NewEventPanel.");
+		TaskPanelActionListener.addNewEvent();
 	}
 
 	public void performNoHelpCommand()
