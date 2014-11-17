@@ -16,11 +16,18 @@ public class ExceptionHandler
 	public static void handleDatabaseSaveException(Exception e, Object origin,
 			String originFunction, String ID)
 	{
+		handleDatabaseSaveException(e, origin.getClass().getName(),
+				originFunction, ID);
+	}
+
+	public static void handleDatabaseSaveException(Exception e,
+			String className, String originFunction, String ID)
+	{
 		if (e instanceof IOException)
 		{
 			GlobalLogger.getLogger().logp(
 					Level.WARNING,
-					origin.getClass().getName(),
+					className,
 					originFunction,
 					"IOException caught when saving task to database.\nMessage:\n"
 							+ e.getLocalizedMessage());
@@ -39,7 +46,7 @@ public class ExceptionHandler
 		{
 			GlobalLogger.getLogger().logp(
 					Level.WARNING,
-					origin.getClass().getName(),
+					className,
 					originFunction,
 					"SQLException caught when saving task to database.\nSQL State:\n"
 							+ ((SQLException) e).getSQLState() + "\nMessage:\n"
@@ -58,28 +65,21 @@ public class ExceptionHandler
 	public static void handleDatabaseDeleteException(Exception e,
 			Object origin, String originFunction, String ID)
 	{
+		handleDatabaseDeleteException(e, origin.getClass().getName(), originFunction, ID);
+	}
+
+	public static void handleDatabaseDeleteException(Exception e,
+			String className, String originFunction, String ID)
+	{
 		if (e instanceof SQLException)
 		{
-			if (origin != null)
-			{
-				GlobalLogger.getLogger().logp(
-						Level.WARNING,
-						origin.getClass().getName(),
-						originFunction,
-						"SQLException caught when deleting task from database.\nSQL State:\n"
-								+ ((SQLException) e).getSQLState()
-								+ "\nMessage:\n" + e.getMessage());
-			}
-			else
-			{
-				GlobalLogger.getLogger().logp(
-						Level.WARNING,
-						"Origin Class Not Found",
-						originFunction,
-						"SQLException caught when deleting task from database.\nSQL State:\n"
-								+ ((SQLException) e).getSQLState()
-								+ "\nMessage:\n" + e.getMessage());
-			}
+			GlobalLogger.getLogger().logp(
+					Level.WARNING,
+					className,
+					originFunction,
+					"SQLException caught when deleting task from database.\nSQL State:\n"
+							+ ((SQLException) e).getSQLState() + "\nMessage:\n"
+							+ e.getMessage());
 
 			JOptionPane
 					.showMessageDialog(
