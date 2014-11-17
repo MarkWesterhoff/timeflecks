@@ -2,6 +2,9 @@ package user_interface;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -27,6 +30,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 	private SpinnerModel hourModel, minuteModel, secondModel;
 	private JComboBox<String> taskPriorityComboBox;
 	private JTextArea taskDescriptionArea;
+	private JLabel recurrenceLabel;
+	private JDateChooser recurrenceEndDateChooser;
+	private JComboBox<String> repeatComboBox;
 
 	private JButton saveButton, cancelButton;
 
@@ -45,7 +51,21 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 365));
+
+		// Set the size of the panel. Note one is setting content pane and one
+		// is setting frame.
+
+		if (taskToEdit != null)
+		{
+			// Smaller pane
+			this.getContentPane().setPreferredSize(new Dimension(350, 365));
+			this.setMinimumSize(new Dimension(380, 400));
+		}
+		else
+		{
+			this.getContentPane().setPreferredSize(new Dimension(350, 425));
+			this.setMinimumSize(new Dimension(380, 455));
+		}
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Beginning interface setup");
@@ -290,6 +310,52 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Added priority drop down");
 
+		// Recurrence support
+
+		if (taskToEdit == null)
+		{
+			recurrenceLabel = new JLabel("Repeat");
+
+			gc.gridy++;
+			gc.insets = labelInsets;
+
+			centerPanel.add(recurrenceLabel, gc);
+
+			repeatComboBox = new JComboBox<String>();
+			repeatComboBox.addItem("Don't Repeat");
+			repeatComboBox.addItem("Daily Until");
+			repeatComboBox.addItem("Weekly Until");
+			repeatComboBox.addItem("Every Weekday Until");
+			repeatComboBox.addItem("Monthly Until");
+
+			recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
+
+			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+					"NewTaskPanel", "Added recurrence drop down");
+
+			JPanel recurrencePanel = new JPanel();
+			recurrencePanel.setLayout(panelLayout);
+
+			recurrencePanel.add(repeatComboBox);
+			recurrencePanel.add(new JLabel("  "));
+
+			recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
+
+			recurrenceEndDateChooser.setMinimumSize(new Dimension(120,
+					startDateChooser.getMinimumSize().height));
+			recurrenceEndDateChooser.setPreferredSize(new Dimension(120,
+					startDateChooser.getPreferredSize().height));
+
+			recurrenceLabel.setLabelFor(recurrenceEndDateChooser); // Accessibility
+
+			recurrencePanel.add(recurrenceEndDateChooser);
+
+			gc.gridy++;
+			gc.insets = fieldInsets;
+
+			centerPanel.add(recurrencePanel, gc);
+		}
+
 		// Description
 		taskDescriptionLabel = new JLabel("Description");
 
@@ -450,25 +516,137 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					task.setDescription(taskDescriptionArea.getText());
 				}
 
+				// Now the task is all set up, let's add however many tasks we
+				// need to.
+
+				ArrayList<Task> tasks = new ArrayList<Task>();
+
+				if (repeatComboBox.getSelectedIndex() != 0)
+				{
+					// Set the time on the date to 11:59:59 PM so that it will
+					// recur until the end of that date set.
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(recurrenceEndDateChooser.getDate());
+
+					calendar.set(Calendar.HOUR_OF_DAY, 23);
+					calendar.set(Calendar.MINUTE, 59);
+					calendar.set(Calendar.SECOND, 59);
+
+					Date endDate = calendar.getTime();
+
+					if (endDate != null)
+					{
+						Recurrence r;
+
+						try
+						{
+							if (repeatComboBox.getSelectedIndex() == 1)
+							{
+								r = new DailyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 2)
+							{
+								r = new WeeklyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 3)
+							{
+								r = new WeekDayRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+							else if (repeatComboBox.getSelectedIndex() == 4)
+							{
+								r = new MonthlyRecurrence(task, endDate);
+								tasks = r.getTasks();
+							}
+						}
+						catch (IllegalArgumentException e1)
+						{
+							// If the task did not have a due date, then we need
+							// to put the user back to be editing.
+
+							GlobalLogger
+									.getLogger()
+									.logp(Level.WARNING,
+											"NewTaskPanel",
+											"actionPerformed",
+											"IllegalArgumentException for repeating task. Likely no due/start date set. Prompting user.\nException Message: "
+													+ e1.getMessage());
+
+							JOptionPane
+									.showMessageDialog(
+											this,
+											"You must specify either a start date or a due date for a repeating task.",
+											"Start or Due Date Required",
+											JOptionPane.WARNING_MESSAGE);
+
+							// Now we just return the user to editing
+							return;
+						}
+
+						// Tasks are all created. Now we just need to add them
+						// to the list
+
+					}
+					else
+					{
+						// We require an end date for the recurrence, so we
+						// will have an error here and alert the user
+
+						GlobalLogger
+								.getLogger()
+								.logp(Level.WARNING, "NewTaskPanel",
+										"actionPerformed",
+										"No end date specified for recurrence. Prompting user.");
+
+						JOptionPane
+								.showMessageDialog(
+										this,
+										"You must specify an end date for a repeating task.",
+										"End Date Required",
+										JOptionPane.WARNING_MESSAGE);
+
+						// Now we just return the user to editing
+						return;
+					}
+				}
+				else
+				{
+					// We add the task to the list of tasks, since we are just
+					// going to save that later.
+					tasks.add(task);
+				}
+
+				// Regardless of the repeating selection, we just add everything
+				// in the list.
+
 				// Actually create the task and add it to the list
 				if (taskToEdit == null)
 				{
-					// If it already existed, we don't want to add it
-					Timeflecks.getSharedApplication().getTaskList()
-							.addTask(task);
+					for (Task t : tasks)
+					{
+						// If it already existed, we don't want to add it
+						Timeflecks.getSharedApplication().getTaskList()
+								.addTask(t);
 
-					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-							"actionPerformed",
-							"Added task to TaskList.\n" + task);
+						GlobalLogger.getLogger().logp(Level.INFO,
+								"NewTaskPanel", "actionPerformed",
+								"Added task to TaskList.\n" + t);
+					}
 				}
 
 				try
 				{
-					// Update the task.
-					task.saveToDatabase();
+					for (Task t : tasks)
+					{
+						// Update the task.
+						t.saveToDatabase();
 
-					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-							"actionPerformed", "Saved task to database.");
+						GlobalLogger.getLogger().logp(Level.INFO,
+								"NewTaskPanel", "actionPerformed",
+								"Saved task to database.\n" + t);
+					}
 				}
 				catch (Exception ex)
 				{
@@ -476,6 +654,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 							"ActionPerformed", "1302");
 				}
 
+				// We're done with this pane, let's get rid of it now
 				dismissPane();
 			}
 		}
@@ -531,7 +710,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public boolean hasEnteredText()
 	{
-
 		boolean returnBool = false;
 		if (taskNameField.getText() != null
 				&& taskNameField.getText().length() > 0)
@@ -562,7 +740,19 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskPriorityComboBox.getSelectedIndex() != 0)
 		{
 			returnBool = true;
+		// If we are editing, this could be null
 		}
+
+		if (repeatComboBox != null)
+		{
+			if (repeatComboBox.getSelectedIndex() != 0)
+			{
+				returnBool = true;
+			}
+		}
+
+		// Note that we don't need to check the date, because that won't show up
+		// unless repeatComboBox has a different selection
 
 		if (taskDescriptionArea.getText().length() != 0)
 		{
@@ -609,7 +799,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		this.setAutoRequestFocus(true);
 		this.setResizable(true);
-		this.setMinimumSize(new Dimension(380, 400));
 
 		this.setVisible(true);
 	}
