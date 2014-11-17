@@ -14,7 +14,7 @@ public class TaskList
 
 	private ArrayList<Task> tasks;
 	private ArrayList<Event> events;
-	private Comparator<Task> taskComparator;
+	
 
 	public TaskList()
 	{
@@ -28,8 +28,6 @@ public class TaskList
 
 		this.tasks = tasks;
 		this.events = events;
-
-		taskComparator = Task.manualComparator;
 	}
 
 	public ArrayList<Task> getTasks()
@@ -73,24 +71,6 @@ public class TaskList
 		tasks.add(t);
 	}
 
-	// DEPRECATED, use sort() and setTaskComparator
-
-	public void sortTasks(Comparator<Task> taskComp)
-	{
-		Objects.requireNonNull(taskComp);
-
-		Collections.sort(tasks, taskComp);
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.sortTasks()", "Sorting task list");
-	}
-
-	public void sort()
-	{
-		Collections.sort(tasks, taskComparator);
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.sortTasks()", "Sorting task list");
-	}
-
 	/**
 	 * Saves all tasks to the database.
 	 * 
@@ -110,9 +90,5 @@ public class TaskList
 		.serializeAndSave(this.events);
 	}
 
-	public void setTaskComparator(Comparator<Task> taskComparator)
-	{
-		this.taskComparator = taskComparator;
-	}
 
 }

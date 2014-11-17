@@ -165,7 +165,7 @@ public class TaskListTablePanel extends JPanel
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"refresh()", "Refreshing TaskListTableModel" + this.table);
-		Timeflecks.getSharedApplication().getTaskList().sort();
+		Timeflecks.getSharedApplication().getFilteredTaskList().sort();
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
 
@@ -179,7 +179,7 @@ public class TaskListTablePanel extends JPanel
 		int row = table.getSelectedRow();
 		if (row >= 0 && row < table.getRowCount())
 		{
-			return Timeflecks.getSharedApplication().getTaskList().getTasks().get(row);
+			return Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(row);
 		}
 		else
 		{

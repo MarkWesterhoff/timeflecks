@@ -238,9 +238,12 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	public void refresh()
 	{
+		// Refresh filtered list that everything is populated from
+		Timeflecks.getSharedApplication().getFilteredTaskList().repopulate();
+		
 		// Refresh all calendar panels
 		// Could also store in the list
-
+		
 		for (CalendarPanel p : cpanels)
 		{
 			p.refresh();

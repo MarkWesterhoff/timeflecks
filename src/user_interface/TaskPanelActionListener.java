@@ -49,7 +49,7 @@ public class TaskPanelActionListener implements ActionListener
 			// TODO Resolve this warning
 			JComboBox<String> box = (JComboBox<String>) (e.getSource());
 			String switchOn = (String) box.getSelectedItem();
-			Timeflecks.getSharedApplication().getTaskList()
+			Timeflecks.getSharedApplication().getFilteredTaskList()
 					.setTaskComparator(mainPanel.getComboMap().get(switchOn));
 			mainPanel.refresh();
 			mainPanel.setBumpButtonsVisibility(switchOn == "Manual");

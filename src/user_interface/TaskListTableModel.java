@@ -34,7 +34,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return Timeflecks.getSharedApplication().getTaskList().getTasks().size();
+		return Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().size();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class TaskListTableModel extends AbstractTableModel
 				"setValueAt",
 				String.format("Setting value at (%d, %d) to %s", row, col,
 						value));
-		Task task = (Task) Timeflecks.getSharedApplication().getTaskList().getTasks().get(row);
+		Task task = (Task) Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(row);
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
@@ -151,7 +151,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		Task task = Timeflecks.getSharedApplication().getTaskList().getTasks().get(rowIndex);
+		Task task = Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return task.isCompleted();

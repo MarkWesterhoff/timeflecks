@@ -214,7 +214,7 @@ public class CalendarPanel extends JPanel
 		// Clear it out first
 		tasksToPaint.clear();
 
-		for (Task t : Timeflecks.getSharedApplication().getTaskList()
+		for (Task t : Timeflecks.getSharedApplication().getFilteredTaskList()
 				.getTasks())
 		{
 			if (t.isScheduled())
