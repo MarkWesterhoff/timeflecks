@@ -42,7 +42,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 365));
+		this.getContentPane().setPreferredSize(new Dimension(350, 280));
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 				"NewEventPanel", "Beginning interface setup");
@@ -255,15 +255,23 @@ public class NewEventPanel extends JFrame implements ActionListener
 				JOptionPane.showMessageDialog(this,
 						"You must specify a name for this event.",
 						"Name Required", JOptionPane.WARNING_MESSAGE);
-			} else if(startDateChooser.getDate() == null || endDateChooser.getDate() == null) {
+			}
+			else if (startDateChooser.getDate() == null
+					|| endDateChooser.getDate() == null)
+			{
 				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 						"actionPerformed",
 						"Save button pressed. Missing required time.");
 
-				JOptionPane.showMessageDialog(this,
-						"You must specify a start and end time for this event.",
-						"Name Required", JOptionPane.WARNING_MESSAGE);
-			} else if(startDateChooser.getDate().compareTo(endDateChooser.getDate()) > 0) {
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"You must specify a start and end time for this event.",
+								"Name Required", JOptionPane.WARNING_MESSAGE);
+			}
+			else if (startDateChooser.getDate().compareTo(
+					endDateChooser.getDate()) > 0)
+			{
 				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 						"actionPerformed",
 						"Save button pressed. End Time before start time");
@@ -272,7 +280,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 						"The end time entered must be before the start time.",
 						"Name Required", JOptionPane.WARNING_MESSAGE);
 			}
-				// order
+			// order
 			else
 			{
 				GlobalLogger.getLogger()
@@ -443,7 +451,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		this.setAutoRequestFocus(true);
 		this.setResizable(true);
-		this.setMinimumSize(new Dimension(380, 400));
+		this.setMinimumSize(new Dimension(380, 310));
 
 		this.setVisible(true);
 	}

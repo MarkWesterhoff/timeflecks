@@ -40,6 +40,78 @@ public class TaskPanelActionListener implements ActionListener
 		NewTaskPanel p = new NewTaskPanel();
 		p.displayFrame();
 	}
+	
+	public static void addNewEvent()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+				"addNewEvent()", "Bringing up NewEventPanel.");
+		NewEventPanel p = new NewEventPanel();
+		p.displayFrame();
+	}
+	
+	public static void deleteSelectedTask(TaskListTablePanel mainPanel)
+	{
+		int row = mainPanel.getTable().getSelectedRow();
+		if (row >= 0 && row < mainPanel.getTable().getRowCount())
+		{
+			GlobalLogger
+					.getLogger()
+					.logp(Level.INFO, "TaskListTablePanel",
+							"deleteSelectedTask",
+							"Delete task button pressed. Deleting currently selected task.");
+
+			// We need to prompt the user to see if they want to
+			// delete the task.
+			Object[] options = { "Delete Task", "Cancel" };
+			int reply = JOptionPane.showOptionDialog(mainPanel,
+					"Are you sure you wish to delete this task?",
+					"Confirm Delete", JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+
+			if (reply == JOptionPane.YES_OPTION)
+			{
+				// The user selected to delete the Task
+				GlobalLogger.getLogger().logp(Level.INFO,
+						"TaskListTablePanel", "deleteSelectedTask",
+						"User elected to delete selected task.");
+
+				Task t = Timeflecks.getSharedApplication().getTaskList()
+						.getTasks().remove(row);
+				try
+				{
+					Timeflecks.getSharedApplication().getDBConnector()
+							.delete(t.getId());
+				}
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseDeleteException(ex,
+							null, "actionPerformed()", "1102");
+				}
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.GENERAL_REFRESH);
+			}
+			else
+			{
+				// User selected to not delete task
+				GlobalLogger
+						.getLogger()
+						.logp(Level.INFO, "TaskListTablePanel",
+								"deleteSelectedTask",
+								"User declined to delete task.");
+			}
+		}
+		else
+		{
+			// This happens if there are no tasks selected
+
+			// TODO Gray out the Delete Task Button if there are no tasks
+			// selected
+
+			GlobalLogger.getLogger().logp(Level.WARNING,
+					"TaskListTablePanel", "actionPerformed(ActionEvent)",
+					"Selected row is out of bounds for the current table.");
+		}
+	}
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -134,71 +206,10 @@ public class TaskPanelActionListener implements ActionListener
 		else if (e.getActionCommand().equals("Edit Task"))
 		{
 			editSelectedTask(mainPanel);
-
 		}
 		else if (e.getActionCommand().equals("Delete Task"))
 		{
-			int row = mainPanel.getTable().getSelectedRow();
-			if (row >= 0 && row < mainPanel.getTable().getRowCount())
-			{
-				GlobalLogger
-						.getLogger()
-						.logp(Level.INFO, "TaskListTablePanel",
-								"actionPerformed(ActionEvent)",
-								"Delete task button pressed. Deleting currently selected task.");
-
-				// We need to prompt the user to see if they want to
-				// delete the task.
-				Object[] options = { "Delete Task", "Cancel" };
-				int reply = JOptionPane.showOptionDialog(mainPanel,
-						"Are you sure you wish to delete this task?",
-						"Confirm Delete", JOptionPane.DEFAULT_OPTION,
-						JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-
-				if (reply == JOptionPane.YES_OPTION)
-				{
-					// The user selected to delete the Task
-					GlobalLogger.getLogger().logp(Level.INFO,
-							"TaskListTablePanel", "performSaveAsCommand",
-							"User elected to overwrite existing file.");
-
-					Task t = Timeflecks.getSharedApplication().getTaskList()
-							.getTasks().remove(row);
-					try
-					{
-						Timeflecks.getSharedApplication().getDBConnector()
-								.delete(t.getId());
-					}
-					catch (Exception ex)
-					{
-						ExceptionHandler.handleDatabaseDeleteException(ex,
-								this, "actionPerformed()", "1102");
-					}
-					Timeflecks.getSharedApplication().postNotification(
-							TimeflecksEvent.GENERAL_REFRESH);
-				}
-				else
-				{
-					// User selected to not delete task
-					GlobalLogger
-							.getLogger()
-							.logp(Level.INFO, "TaskListTablePanel",
-									"performSaveAsCommand",
-									"User declined to overwrite file, prompting for new file choice.");
-				}
-			}
-			else
-			{
-				// This happens if there are no tasks selected
-
-				// TODO Gray out the Delete Task Button if there are no tasks
-				// selected
-
-				GlobalLogger.getLogger().logp(Level.WARNING,
-						"TaskListTablePanel", "actionPerformed(ActionEvent)",
-						"Selected row is out of bounds for the current table.");
-			}
-
+			deleteSelectedTask(mainPanel);
 		}
 		else
 		{

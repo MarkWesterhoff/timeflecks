@@ -60,13 +60,26 @@ public class ExceptionHandler
 	{
 		if (e instanceof SQLException)
 		{
-			GlobalLogger.getLogger().logp(
-					Level.WARNING,
-					origin.getClass().getName(),
-					originFunction,
-					"SQLException caught when deleting task from database.\nSQL State:\n"
-							+ ((SQLException) e).getSQLState() + "\nMessage:\n"
-							+ e.getMessage());
+			if (origin != null)
+			{
+				GlobalLogger.getLogger().logp(
+						Level.WARNING,
+						origin.getClass().getName(),
+						originFunction,
+						"SQLException caught when deleting task from database.\nSQL State:\n"
+								+ ((SQLException) e).getSQLState()
+								+ "\nMessage:\n" + e.getMessage());
+			}
+			else
+			{
+				GlobalLogger.getLogger().logp(
+						Level.WARNING,
+						"Origin Class Not Found",
+						originFunction,
+						"SQLException caught when deleting task from database.\nSQL State:\n"
+								+ ((SQLException) e).getSQLState()
+								+ "\nMessage:\n" + e.getMessage());
+			}
 
 			JOptionPane
 					.showMessageDialog(

@@ -139,9 +139,25 @@ public class MenuBar extends JMenuBar
 
 		editmenu.add(menuItem);
 
+		menuItem = new JMenuItem("Delete Task...", KeyEvent.VK_BACK_SPACE);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,
+				InputEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Delete task");
+		menuItem.addActionListener(mb);
+
+		editmenu.add(menuItem);
+
+		menuItem = new JMenuItem("New Event...", KeyEvent.VK_M);
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M,
+				InputEvent.CTRL_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Create new event");
+		menuItem.addActionListener(mb);
+
+		editmenu.add(menuItem);
+
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
 				"createAndAddEditMenu", "Added edit menu");
-
 	}
 
 	/**
