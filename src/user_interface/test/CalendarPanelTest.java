@@ -106,7 +106,7 @@ public class CalendarPanelTest
 
 		try
 		{
-			testEvent.saveToDatabase();
+			Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
 		}
 		catch (SQLException e)
 		{
