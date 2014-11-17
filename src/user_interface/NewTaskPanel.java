@@ -523,19 +523,20 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 				if (repeatComboBox != null && repeatComboBox.getSelectedIndex() != 0)
 				{
-					// Set the time on the date to 11:59:59 PM so that it will
-					// recur until the end of that date set.
-					Calendar calendar = Calendar.getInstance();
-					calendar.setTime(recurrenceEndDateChooser.getDate());
-
-					calendar.set(Calendar.HOUR_OF_DAY, 23);
-					calendar.set(Calendar.MINUTE, 59);
-					calendar.set(Calendar.SECOND, 59);
-
-					Date endDate = calendar.getTime();
-
+					Date endDate = recurrenceEndDateChooser.getDate();
 					if (endDate != null)
 					{
+						// Set the time on the date to 11:59:59 PM so that it will
+						// recur until the end of that date set.
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(endDate);
+
+						calendar.set(Calendar.HOUR_OF_DAY, 23);
+						calendar.set(Calendar.MINUTE, 59);
+						calendar.set(Calendar.SECOND, 59);
+
+						endDate = calendar.getTime();
+						
 						Recurrence r;
 
 						try
