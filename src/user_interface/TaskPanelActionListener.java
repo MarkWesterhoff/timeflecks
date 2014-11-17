@@ -45,15 +45,15 @@ public class TaskPanelActionListener implements ActionListener
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
 		{
+
 			// TODO Resolve this warning
 			JComboBox<String> box = (JComboBox<String>) (e.getSource());
 			String switchOn = (String) box.getSelectedItem();
-
-			mainPanel.getTable().getModel()
+			Timeflecks.getSharedApplication().getTaskList()
 					.setTaskComparator(mainPanel.getComboMap().get(switchOn));
-
 			mainPanel.refresh();
 			mainPanel.setBumpButtonsVisibility(switchOn == "Manual");
+
 		}
 		else if (e.getActionCommand().equals("Move Up"))
 		{

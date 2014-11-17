@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import javax.swing.*;
 
 import logging.GlobalLogger;
-import core.TagFilterComparator;
 import core.Timeflecks;
 import core.TimeflecksEvent;
 import core.TimeflecksEventResponder;
@@ -69,8 +68,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		setJMenuBar(menu);
 
 		// Add the task list panel
-		TaskListTableModel taskListTableModel = new TaskListTableModel(
-				new TagFilterComparator());
+		TaskListTableModel taskListTableModel = new TaskListTableModel();
 		panel = new TaskListTablePanel(taskListTableModel);
 
 		getContentPane().add(panel);

@@ -266,8 +266,6 @@ public class Task implements Scheduleable, DatabaseSerializable
 		}
 	};
 
-	public final static Comparator<Task> defaultComparator = manualComparator;
-	
 	/**
 	 * Saves this TimeObject to the database.
 	 * 

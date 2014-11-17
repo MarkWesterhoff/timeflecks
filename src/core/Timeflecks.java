@@ -35,16 +35,13 @@ public class Timeflecks
 	private File currentFile;
 	private MainWindow mainWindow;
 	private TimeflecksEventManager eventManager;
-	private TagManager tagManager;
 
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
 
 		taskList = new TaskList();
-		
-		tagManager = new TagManager();
-		
+
 		try
 		{
 			openDatabaseFile(new File("calendar1.db"));
@@ -107,17 +104,13 @@ public class Timeflecks
 	{
 		return idGenerator;
 	}
-	
+
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
 		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
-	
-	public TagManager getTagManager() {
-		return tagManager;
-	}
-	
+
 	public File getCurrentFile()
 	{
 		return currentFile;

@@ -1,18 +1,11 @@
 package user_interface;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Objects;
 import java.util.logging.Level;
 
 import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
-import core.TagFilterComparator;
 import core.Task;
-import core.TaskFilterManager;
 import core.Timeflecks;
 import core.TimeflecksEvent;
 
@@ -20,10 +13,7 @@ public class TaskListTableModel extends AbstractTableModel
 {
 
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Task> filteredTasks;
-	private TagFilterComparator tagFilterComparator;
-	private Comparator<Task> taskComparator;
-	
+
 	/**
 	 * Constructor for the TaskListTableModel. Takes a TaskList that holds the
 	 * Tasks.
@@ -31,15 +21,10 @@ public class TaskListTableModel extends AbstractTableModel
 	 * @param taskList
 	 *            The TaskList holding the Tasks for the table model
 	 */
-	public TaskListTableModel(TagFilterComparator tagFilterComparator)
+	public TaskListTableModel()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
 				"TaskListTableModel", "Constructing TaskListTableModel.");
-		
-		this.tagFilterComparator = tagFilterComparator;
-		
-		taskComparator = Task.manualComparator;
-		repopulateFilteredTasks();
 	}
 
 	/**
@@ -49,7 +34,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return filteredTasks.size();
+		return Timeflecks.getSharedApplication().getTaskList().getTasks().size();
 	}
 
 	/**
@@ -114,18 +99,17 @@ public class TaskListTableModel extends AbstractTableModel
 				"setValueAt",
 				String.format("Setting value at (%d, %d) to %s", row, col,
 						value));
-		Task task = filteredTasks.get(row);
+		Task task = (Task) Timeflecks.getSharedApplication().getTaskList().getTasks().get(row);
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
+			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		case 1:
 			task.setName((String) value);
+			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		}
-		
-		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
-		
 		try
 		{
 			task.saveToDatabase();
@@ -167,7 +151,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		Task task = filteredTasks.get(rowIndex);
+		Task task = Timeflecks.getSharedApplication().getTaskList().getTasks().get(rowIndex);
 		switch (columnIndex) {
 		case 0:
 			return task.isCompleted();
@@ -175,43 +159,5 @@ public class TaskListTableModel extends AbstractTableModel
 			return task.getName();
 		}
 		return null;
-	}
-	
-	/**
-	 * Set the TaskComparator used to sort the list of tasks.
-	 * 
-	 * @param taskComparator the TaskComparator to use
-	 */
-	public void setTaskComparator(Comparator<Task> taskComparator) {
-		Objects.requireNonNull(taskComparator);
-		this.taskComparator = taskComparator;
-	}
-
-	/**
-	 * Repopulates the list of tasks to hold in the table model based on the
-	 * tags the user has selected.
-	 */
-	public void repopulateFilteredTasks()
-	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
-				"refreshFilteredTasks()", "Repopulating filtered task list");
-
-		ArrayList<Task> allTasks = Timeflecks.getSharedApplication()
-				.getTaskList().getTasks();
-		Collection<String> tags = Timeflecks.getSharedApplication()
-				.getTagManager().getTags();
-
-		// Filter by tags as long as at least one is selected.
-		if (!tags.isEmpty())
-		{
-			this.filteredTasks = TaskFilterManager.getFilteredTasks(allTasks,
-					tags, this.tagFilterComparator);
-		}
-		else
-		{
-			this.filteredTasks = allTasks;
-		}
-		
-		Collections.sort(this.filteredTasks, this.taskComparator);
 	}
 }
