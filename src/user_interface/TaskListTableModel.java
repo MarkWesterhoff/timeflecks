@@ -11,8 +11,8 @@ import core.TimeflecksEvent;
 
 public class TaskListTableModel extends AbstractTableModel
 {
-
 	private static final long serialVersionUID = 1L;
+
 
 	/**
 	 * Constructor for the TaskListTableModel. Takes a TaskList that holds the
@@ -34,7 +34,8 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public int getRowCount()
 	{
-		return Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().size();
+		return Timeflecks.getSharedApplication().getFilteringManager()
+				.getFilteredTaskList().size();
 	}
 
 	/**
@@ -78,7 +79,7 @@ public class TaskListTableModel extends AbstractTableModel
 	public boolean isCellEditable(int row, int col)
 	{
 		return col == 0; // isCompleted
-				//|| col == 1; // name
+		// || col == 1; // name
 	}
 
 	/**
@@ -99,24 +100,32 @@ public class TaskListTableModel extends AbstractTableModel
 				"setValueAt",
 				String.format("Setting value at (%d, %d) to %s", row, col,
 						value));
-		Task task = (Task) Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(row);
+
+		Task task = (Task) Timeflecks.getSharedApplication()
+				.getFilteringManager().getFilteredTaskList().get(row);
+
 		switch (col) {
 		case 0:
 			task.setCompleted((Boolean) value);
-			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		case 1:
 			task.setName((String) value);
-			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 			break;
 		}
+
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.GENERAL_REFRESH);
+
 		try
 		{
 			task.saveToDatabase();
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
 					"setValueAt", "Saved modified task to database.");
-		} catch(Exception ex) {
-			ExceptionHandler.handleDatabaseSaveException(ex, this, "setValueAt", "1200");
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler.handleDatabaseSaveException(ex, this,
+					"setValueAt", "1200");
 		}
 
 		fireTableCellUpdated(row, col);
@@ -151,7 +160,9 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public Object getValueAt(int rowIndex, int columnIndex)
 	{
-		Task task = Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(rowIndex);
+		Task task = Timeflecks.getSharedApplication().getFilteringManager()
+				.getFilteredTaskList().get(rowIndex);
+
 		switch (columnIndex) {
 		case 0:
 			return task.isCompleted();

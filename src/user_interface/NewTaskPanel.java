@@ -504,7 +504,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"ActionPerformed", "1302");
 				}
-
+				
 				dismissPane();
 			}
 		}
@@ -613,9 +613,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		// WindowEvent.WINDOW_CLOSING));
 
 		// After it is done, we need to refresh everything
-		// Dismissing a newTaskPanel causes a refresh
 		Timeflecks.getSharedApplication().postNotification(
-				TimeflecksEvent.GENERAL_REFRESH);
+				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
 
 		this.setVisible(false);
 		this.dispose();

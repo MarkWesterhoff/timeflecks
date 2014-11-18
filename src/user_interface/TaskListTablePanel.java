@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -8,7 +9,6 @@ import java.util.logging.Level;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import logging.GlobalLogger;
 import core.Task;
@@ -22,7 +22,7 @@ public class TaskListTablePanel extends JPanel
 	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 40;
 	private static final int MIN_NAME_COLUMN_WIDTH = 30;
 	private static final int PREFERRED_NAME_COLUMN_WIDTH = 200;
-
+	
 	private final JTable table;
 
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
@@ -32,13 +32,12 @@ public class TaskListTablePanel extends JPanel
 	private JButton upButton;
 	private JButton downButton;
 
-	public TaskListTablePanel(TableModel tableModel)
+	public TaskListTablePanel(TaskListTableModel taskListTableModel)
 	{
 		super();
+		Objects.requireNonNull(taskListTableModel);
 
 		ActionListener al = new TaskPanelActionListener(this);
-
-		Objects.requireNonNull(tableModel);
 
 		setLayout(new BorderLayout());
 
@@ -113,9 +112,20 @@ public class TaskListTablePanel extends JPanel
 		// topPanel.setPreferredSize(new Dimension(600, 50));
 
 		add(topPanel, BorderLayout.NORTH);
+		
+		/*
+		// Filtering panel
+		JPanel filterPanel = new JPanel(new FlowLayout());
+		JTextField filterField = new JTextField();
+		filterField.setPreferredSize(new Dimension(100, 20));
+		
+		filterPanel.add(filterField);
 
+		add(filterPanel, BorderLayout.CENTER);
+		*/
+		
 		// Actual table
-		table = new JTable(tableModel);
+		table = new JTable(taskListTableModel);
 
 		// Set column widths
 		table.getColumnModel().getColumn(0)
@@ -129,7 +139,7 @@ public class TaskListTablePanel extends JPanel
 		JScrollPane scroll = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(false);
-		add(scroll, BorderLayout.CENTER);
+		add(scroll, BorderLayout.SOUTH);
 
 	}
 
@@ -165,7 +175,7 @@ public class TaskListTablePanel extends JPanel
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"refresh()", "Refreshing TaskListTableModel" + this.table);
-		Timeflecks.getSharedApplication().getFilteredTaskList().sort();
+
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
 
@@ -179,7 +189,7 @@ public class TaskListTablePanel extends JPanel
 		int row = table.getSelectedRow();
 		if (row >= 0 && row < table.getRowCount())
 		{
-			return Timeflecks.getSharedApplication().getFilteredTaskList().getTasks().get(row);
+			return Timeflecks.getSharedApplication().getFilteringManager().getFilteredTaskList().get(row);
 		}
 		else
 		{

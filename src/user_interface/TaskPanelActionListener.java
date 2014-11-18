@@ -45,15 +45,18 @@ public class TaskPanelActionListener implements ActionListener
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
 		{
-
 			// TODO Resolve this warning
 			JComboBox<String> box = (JComboBox<String>) (e.getSource());
 			String switchOn = (String) box.getSelectedItem();
-			Timeflecks.getSharedApplication().getFilteredTaskList()
-					.setTaskComparator(mainPanel.getComboMap().get(switchOn));
-			mainPanel.refresh();
-			mainPanel.setBumpButtonsVisibility(switchOn == "Manual");
 
+			Timeflecks.getSharedApplication().getFilteringManager()
+					.setTaskComparator(mainPanel.getComboMap().get(switchOn));
+
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+
+			mainPanel.refresh();
+			mainPanel.setBumpButtonsVisibility(switchOn.equals("Manual"));
 		}
 		else if (e.getActionCommand().equals("Move Up"))
 		{
@@ -61,14 +64,18 @@ public class TaskPanelActionListener implements ActionListener
 			int row = mainPanel.getTable().getSelectedRow();
 			if (row > 0)
 			{
-				long originalOrdering = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row).getOrdering();
-				long newOrdering = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row - 1).getOrdering();
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).setOrdering(newOrdering);
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row - 1).setOrdering(originalOrdering);
+				// Swap the orders of the selected Task and the one above it
+				Task originalTask = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row);
+				Task previousTask = Timeflecks.getSharedApplication()
+						.getTaskList().getTasks().get(row - 1);
+
+				long originalOrdering = originalTask.getOrdering();
+				long previousOrdering = previousTask.getOrdering();
+
+				originalTask.setOrdering(previousOrdering);
+				previousTask.setOrdering(originalOrdering);
+
 				mainPanel.refresh();
 				GlobalLogger.getLogger().logp(Level.INFO,
 						this.getClass().getName(), "actionPerformed()",
@@ -77,10 +84,8 @@ public class TaskPanelActionListener implements ActionListener
 						.setSelectionInterval(row - 1, row - 1);
 				try
 				{
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-							.get(row).saveToDatabase();
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-							.get(row - 1).saveToDatabase();
+					originalTask.saveToDatabase();
+					previousTask.saveToDatabase();
 				}
 				catch (Exception ex)
 				{
@@ -96,14 +101,19 @@ public class TaskPanelActionListener implements ActionListener
 			int row = mainPanel.getTable().getSelectedRow();
 			if (row > -1 && row < mainPanel.getTable().getRowCount() - 1)
 			{
-				long originalOrdering = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row).getOrdering();
-				long newOrdering = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row + 1).getOrdering();
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row).setOrdering(newOrdering);
-				Timeflecks.getSharedApplication().getTaskList().getTasks()
-						.get(row + 1).setOrdering(originalOrdering);
+				// Swap the orders of the selected Task and the one below it
+				Task originalTask = Timeflecks.getSharedApplication()
+						.getFilteringManager().getFilteredTaskList().get(row);
+				Task nextTask = Timeflecks.getSharedApplication()
+						.getFilteringManager().getFilteredTaskList()
+						.get(row + 1);
+
+				long originalOrdering = originalTask.getOrdering();
+				long nextOrdering = nextTask.getOrdering();
+
+				originalTask.setOrdering(nextOrdering);
+				nextTask.setOrdering(originalOrdering);
+
 				mainPanel.refresh();
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()",
@@ -113,10 +123,8 @@ public class TaskPanelActionListener implements ActionListener
 
 				try
 				{
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-							.get(row).saveToDatabase();
-					Timeflecks.getSharedApplication().getTaskList().getTasks()
-							.get(row + 1).saveToDatabase();
+					originalTask.saveToDatabase();
+					nextTask.saveToDatabase();
 				}
 				catch (Exception ex)
 				{
@@ -162,12 +170,29 @@ public class TaskPanelActionListener implements ActionListener
 							"TaskListTablePanel", "performSaveAsCommand",
 							"User elected to overwrite existing file.");
 
-					Task t = Timeflecks.getSharedApplication().getTaskList()
-							.getTasks().remove(row);
+					// Grab the Task from the Filtered list of Tasks that the
+					// Panel displays and delete that Task from the main
+					// TaskList
+					Task task = Timeflecks.getSharedApplication()
+							.getFilteringManager().getFilteredTaskList()
+							.get(row);
+
+					boolean removed = Timeflecks.getSharedApplication()
+							.getTaskList().getTasks().remove(task);
+
+					if (!removed)
+					{
+						GlobalLogger
+								.getLogger()
+								.logp(Level.WARNING, "TaskPanelActionListener",
+										"actionPerformed(ActionEvent)",
+										"Selected Task for deletion does not exist in application's TaskList.");
+					}
+
 					try
 					{
 						Timeflecks.getSharedApplication().getDBConnector()
-								.delete(t.getId());
+								.delete(task.getId());
 					}
 					catch (Exception ex)
 					{
@@ -175,7 +200,7 @@ public class TaskPanelActionListener implements ActionListener
 								this, "actionPerformed()", "1102");
 					}
 					Timeflecks.getSharedApplication().postNotification(
-							TimeflecksEvent.GENERAL_REFRESH);
+							TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
 				}
 				else
 				{

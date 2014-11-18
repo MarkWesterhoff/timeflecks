@@ -6,7 +6,6 @@ import java.util.Objects;
  * Concrete extension of FilterComparator for tags.
  * 
  * @author Andrew
- * 
  */
 public class TagFilterComparator extends FilterComparator<String>
 {

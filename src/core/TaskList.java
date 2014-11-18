@@ -70,7 +70,15 @@ public class TaskList
 				"Adding new task with id " + t.getId() + " to task list");
 		tasks.add(t);
 	}
-
+	
+	public void removeTask(Task t) {
+		Objects.requireNonNull(t);
+		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
+				"core.TaskList.deleteTask(e)",
+				"Deleting task with id " + t.getId());
+		tasks.remove(t);
+	}
+	
 	/**
 	 * Saves all tasks to the database.
 	 * 

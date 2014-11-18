@@ -30,21 +30,22 @@ public class Timeflecks
 
 	// Instance
 	private TaskList taskList;
-	private FilteredTaskList filteredTaskList;
 	private SQLiteConnector dbConnector;
 	private IDGenerator idGenerator;
 	private File currentFile;
 	private MainWindow mainWindow;
 	private TimeflecksEventManager eventManager;
-
+	private FilteringManager filteringManager;
+	
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
 
 		taskList = new TaskList();
 		
-		filteredTaskList = new FilteredTaskList();
-		
+		this.filteringManager = new FilteringManager(new TagFilterComparator(),
+				new TagCollection());
+
 		try
 		{
 			openDatabaseFile(new File("calendar1.db"));
@@ -94,13 +95,8 @@ public class Timeflecks
 		this.taskList = taskList;
 	}
 	
-	public FilteredTaskList getFilteredTaskList() {
-		return this.filteredTaskList;
-	}
-	
-	public void setFilteredTaskList(FilteredTaskList filteredTaskList) {
-		Objects.requireNonNull(filteredTaskList);
-		this.filteredTaskList = filteredTaskList;
+	public FilteringManager getFilteringManager() {
+		return this.filteringManager;
 	}
 	
 	public SQLiteConnector getDBConnector()
@@ -117,13 +113,13 @@ public class Timeflecks
 	{
 		return idGenerator;
 	}
-
+	
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
 		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
-
+	
 	public File getCurrentFile()
 	{
 		return currentFile;
