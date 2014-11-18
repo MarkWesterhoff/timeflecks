@@ -18,13 +18,18 @@ public class Timeflecks
 	// Singleton behavior
 
 	static Timeflecks instance;
+	static final Object initializerLock = new Object();
 
 	public static Timeflecks getSharedApplication()
 	{
-		if (instance == null)
+		synchronized (initializerLock)
 		{
-			instance = new Timeflecks();
+			if (instance == null)
+			{
+				instance = new Timeflecks();
+			}
 		}
+
 		return instance;
 	}
 
