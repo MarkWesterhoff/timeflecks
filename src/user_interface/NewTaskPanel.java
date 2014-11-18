@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -469,9 +470,32 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					}
 				}
 				
-				if(tagListField.getText().length() != 0) {
-					String[] tags = tagListField.getText().split(",");
-					task.setTags(new ArrayList<String>(Arrays.asList(tags)));
+				if (tagListField.getText().length() != 0)
+				{
+					ArrayList<String> tags = new ArrayList<String>(
+							Arrays.asList(tagListField.getText().split(",")));
+
+					// Parse the list of tags
+					for (int i = 0; i < tags.size();)
+					{
+						String tag = tags.get(i);
+						
+						// Remove leading and trailing whitespace
+						tag = tag.trim();
+						
+						// Only add if not blank
+						if (tag.equals(""))
+						{
+							tags.remove(i);
+						}
+						else
+						{
+							tags.set(i, tag);
+							i++;
+						}
+					}
+
+					task.setTags(tags);
 				}
 
 				if (taskDescriptionArea.getText().length() != 0)

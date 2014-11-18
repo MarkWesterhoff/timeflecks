@@ -200,7 +200,11 @@ public class Task implements Scheduleable, DatabaseSerializable
 	public void addTag(String tagname)
 	{
 		Objects.requireNonNull(tagname);
-		
+		if (tagname.equals(""))
+		{
+			throw new IllegalArgumentException("tagname");
+		}
+
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 				"core.Task.addTag(tagname)",
 				"Adding new tag " + tagname + " to task with id " + id);
