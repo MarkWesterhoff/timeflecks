@@ -307,6 +307,20 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 					"MainWindow responding to date right button event.");
 			this.bumpDateRight(1);
 		}
+		else if (t.equals(TimeflecksEvent.DATE_LEFT_SEVEN_BUTTON))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+					"eventPosted",
+					"MainWindow responding to date week left button event.");
+			this.bumpDateLeft(7);
+		}
+		else if (t.equals(TimeflecksEvent.DATE_RIGHT_SEVEN_BUTTON))
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+					"eventPosted",
+					"MainWindow responding to date week right button event.");
+			this.bumpDateRight(7);
+		}
 		else
 		{
 			// We want to silently ignore all events that we aren't prepared to

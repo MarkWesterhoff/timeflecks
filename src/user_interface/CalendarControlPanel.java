@@ -29,6 +29,8 @@ public class CalendarControlPanel extends JPanel implements
 	private JButton dateLeftButton;
 	private JButton dateTodayButton;
 	private JButton dateRightButton;
+	private JButton dateWeekLeftButton;
+	private JButton dateWeekRightButton;
 
 	public CalendarControlPanel(boolean showWeekView)
 	{
@@ -142,6 +144,9 @@ public class CalendarControlPanel extends JPanel implements
 		dateLeftButton = new JButton("<");
 		dateTodayButton = new JButton("Today");
 		dateRightButton = new JButton(">");
+		
+		dateWeekLeftButton = new JButton("<<");
+		dateWeekRightButton = new JButton(">>");
 
 		// By posting the notifications in this manner we adhere to good design
 		// principles, because anyone in the application that needs to know can
@@ -175,6 +180,24 @@ public class CalendarControlPanel extends JPanel implements
 						TimeflecksEvent.DATE_RIGHT_ONE_BUTTON);
 			}
 		});
+		
+		dateWeekLeftButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.DATE_LEFT_SEVEN_BUTTON);
+			}
+		});
+		
+		dateWeekRightButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.DATE_RIGHT_SEVEN_BUTTON);
+			}
+		});
 
 		JPanel dateControlPanel = new JPanel();
 		FlowLayout panelLayout = new FlowLayout();
@@ -182,9 +205,11 @@ public class CalendarControlPanel extends JPanel implements
 		panelLayout.setVgap(0);
 		dateControlPanel.setLayout(panelLayout);
 
+		dateControlPanel.add(dateWeekLeftButton);
 		dateControlPanel.add(dateLeftButton);
 		dateControlPanel.add(dateTodayButton);
 		dateControlPanel.add(dateRightButton);
+		dateControlPanel.add(dateWeekRightButton);
 
 		this.add(dateControlPanel, BorderLayout.EAST);
 	}
