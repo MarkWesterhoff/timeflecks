@@ -66,16 +66,19 @@ public class TaskPanelActionListener implements ActionListener
 			{
 				// Swap the orders of the selected Task and the one above it
 				Task originalTask = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row);
+						.getFilteringManager().getFilteredTaskList().get(row);
 				Task previousTask = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().get(row - 1);
+						.getFilteringManager().getFilteredTaskList().get(row - 1);
 
 				long originalOrdering = originalTask.getOrdering();
 				long previousOrdering = previousTask.getOrdering();
 
 				originalTask.setOrdering(previousOrdering);
 				previousTask.setOrdering(originalOrdering);
-
+				
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+				
 				mainPanel.refresh();
 				GlobalLogger.getLogger().logp(Level.INFO,
 						this.getClass().getName(), "actionPerformed()",
@@ -92,7 +95,6 @@ public class TaskPanelActionListener implements ActionListener
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"actionPerformed", "1603");
 				}
-
 			}
 		}
 		else if (e.getActionCommand().equals("Move Down"))
@@ -113,7 +115,10 @@ public class TaskPanelActionListener implements ActionListener
 
 				originalTask.setOrdering(nextOrdering);
 				nextTask.setOrdering(originalOrdering);
-
+				
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+				
 				mainPanel.refresh();
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed()",
@@ -188,7 +193,10 @@ public class TaskPanelActionListener implements ActionListener
 										"actionPerformed(ActionEvent)",
 										"Selected Task for deletion does not exist in application's TaskList.");
 					}
-
+					
+					Timeflecks.getSharedApplication().postNotification(
+							TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+					
 					try
 					{
 						Timeflecks.getSharedApplication().getDBConnector()
@@ -199,8 +207,7 @@ public class TaskPanelActionListener implements ActionListener
 						ExceptionHandler.handleDatabaseDeleteException(ex,
 								this, "actionPerformed()", "1102");
 					}
-					Timeflecks.getSharedApplication().postNotification(
-							TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+					
 				}
 				else
 				{
