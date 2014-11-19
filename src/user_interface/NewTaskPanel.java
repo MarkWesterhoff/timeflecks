@@ -26,7 +26,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
 			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
 			taskDescriptionLabel, tagListLabel;
-	private JTextField taskNameField,tagListField;
+	private JTextField taskNameField, tagListField;
 	private JDateChooser startDateChooser, dueDateChooser;
 	private SpinnerModel hourModel, minuteModel, secondModel;
 	private JComboBox<String> taskPriorityComboBox;
@@ -313,12 +313,12 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		// TAGS -- start with semicolon separation
 		tagListLabel = new JLabel("Tags");
-		
+
 		gc.gridy++;
 		gc.insets = labelInsets;
-		
+
 		centerPanel.add(tagListLabel, gc);
-		
+
 		tagListField = new JTextField(30);
 		tagListLabel.setLabelFor(tagListField); // Accessibility
 
@@ -532,34 +532,32 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					}
 				}
 
-				if (tagListField.getText().length() != 0)
+				// If there are not tags present, this will give an empty
+				// ArrayList<String>, which is what we want to set anyways.
+				ArrayList<String> tags = new ArrayList<String>(
+						Arrays.asList(tagListField.getText().split(",")));
+
+				// Parse the list of tags
+				for (int i = 0; i < tags.size();)
 				{
-					ArrayList<String> tags = new ArrayList<String>(
-							Arrays.asList(tagListField.getText().split(",")));
+					String tag = tags.get(i);
 
-					// Parse the list of tags
-					for (int i = 0; i < tags.size();)
+					// Remove leading and trailing whitespace
+					tag = tag.trim();
+
+					// Only add if not blank
+					if (tag.equals(""))
 					{
-						String tag = tags.get(i);
-						
-						// Remove leading and trailing whitespace
-						tag = tag.trim();
-						
-						// Only add if not blank
-						if (tag.equals(""))
-						{
-							tags.remove(i);
-						}
-						else
-						{
-							tags.set(i, tag);
-							i++;
-						}
+						tags.remove(i);
 					}
-
-					task.setTags(tags);
+					else
+					{
+						tags.set(i, tag);
+						i++;
+					}
 				}
 
+				task.setTags(tags);
 
 				if (taskDescriptionArea.getText().length() != 0)
 				{
@@ -571,12 +569,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 				ArrayList<Task> tasks = new ArrayList<Task>();
 
-				if (repeatComboBox != null && repeatComboBox.getSelectedIndex() != 0)
+				if (repeatComboBox != null
+						&& repeatComboBox.getSelectedIndex() != 0)
 				{
 					Date endDate = recurrenceEndDateChooser.getDate();
 					if (endDate != null)
 					{
-						// Set the time on the date to 11:59:59 PM so that it will
+						// Set the time on the date to 11:59:59 PM so that it
+						// will
 						// recur until the end of that date set.
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(endDate);
@@ -586,7 +586,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						calendar.set(Calendar.SECOND, 59);
 
 						endDate = calendar.getTime();
-						
+
 						Recurrence r;
 
 						try
@@ -705,10 +705,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 							"ActionPerformed", "1302");
 				}
 
-				
 				Timeflecks.getSharedApplication().postNotification(
 						TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
-				
 
 				// We're done with this pane, let's get rid of it now
 				dismissPane();
@@ -796,7 +794,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskPriorityComboBox.getSelectedIndex() != 0)
 		{
 			returnBool = true;
-		// If we are editing, this could be null
+			// If we are editing, this could be null
 		}
 
 		if (repeatComboBox != null)
@@ -832,7 +830,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		// After it is done, we need to refresh everything
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
-Timeflecks.getSharedApplication().postNotification(
+		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);
