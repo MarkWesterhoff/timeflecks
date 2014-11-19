@@ -136,7 +136,7 @@ public class Timeflecks
 
 		long highestID = getDBConnector().getHighestID();
 
-		IDGenerator newGenerator = new IDGenerator(highestID);
+		IDGenerator newGenerator = new IDGenerator(highestID + 1);
 		setIdGenerator(newGenerator);
 
 		TaskList newList = loadTaskListFromConnector(getDBConnector());
