@@ -20,7 +20,26 @@ public class StringUtility {
 		}
 		return false;
 	}
-	
+
+	/**
+	 * Throws an IllegalArgumentException if the String is null or empty.
+	 * 
+	 * @param str
+	 *            the String to check
+	 */
+	public void requiresNotNullOrEmpty(String str)
+	{
+		if (str == null )
+		{
+			throw new NullPointerException(str);
+		}
+		
+		if (str.equals(""))
+		{
+			throw new IllegalArgumentException(str);
+		}
+	}
+
 	public static String join(ArrayList<String> strings, char joinChar) {
 		StringBuilder sb = new StringBuilder();
 		String joinString = "";
