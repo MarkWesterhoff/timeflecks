@@ -2,7 +2,7 @@ package database;
 
 public class IDGenerator
 {
-	private long currentID = 0;
+	private long currentID;
 	
 	public IDGenerator() {
 		currentID = 0;
