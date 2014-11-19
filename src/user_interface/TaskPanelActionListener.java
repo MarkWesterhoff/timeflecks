@@ -92,8 +92,8 @@ public class TaskPanelActionListener implements ActionListener
 			Object[] options = { "Delete Task", "Cancel" };
 
 			int reply = JOptionPane.showOptionDialog(mainPanel,
-					"Are you sure you wish to delete the task" + task.getName()
-							+ "?", "Confirm Delete",
+					"Are you sure you wish to delete the task \"" + task.getName()
+							+ "\"?", "Confirm Delete",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, options, options[1]);
 
