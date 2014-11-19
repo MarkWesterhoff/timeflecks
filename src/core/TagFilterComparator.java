@@ -1,5 +1,6 @@
 package core;
 
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Objects;
  * 
  * @author Andrew
  */
-public class TagFilterComparator extends FilterComparator<String>
+public class TagFilterComparator extends FilterComparator<Collection<String>>
 {
 	/**
 	 * Returns true if the task is tagged with the tag.
@@ -18,15 +19,18 @@ public class TagFilterComparator extends FilterComparator<String>
 	 *            the tag to check for
 	 * @return true if the task is tagged with the tag; false otherwise
 	 */
-	@Override
-	public boolean matchesFilter(Task task, String tag)
+	public boolean matchesFilter(Task task, Collection<String> tags)
 	{
 		Objects.requireNonNull(task);
-		Objects.requireNonNull(tag);
+		Objects.requireNonNull(tags);
 		
-		if (task.hasTag(tag))
+		// If the Task is tagged with any of the tags in the list, it matches
+		for (String tag : tags)
 		{
-			return true;
+			if (task.hasTag(tag))
+			{
+				return true;
+			}
 		}
 		return false;
 	}
