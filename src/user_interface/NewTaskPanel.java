@@ -3,6 +3,7 @@ package user_interface;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -24,8 +25,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	private JLabel titleLabel, taskNameLabel, taskStartDateLabel,
 			taskDueDateLabel, taskDurationLabel, taskPriorityLabel,
-			taskDescriptionLabel;
-	private JTextField taskNameField;
+			taskDescriptionLabel, tagListLabel;
+	private JTextField taskNameField,tagListField;
 	private JDateChooser startDateChooser, dueDateChooser;
 	private SpinnerModel hourModel, minuteModel, secondModel;
 	private JComboBox<String> taskPriorityComboBox;
@@ -58,13 +59,13 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit != null)
 		{
 			// Smaller pane
-			this.getContentPane().setPreferredSize(new Dimension(350, 365));
-			this.setMinimumSize(new Dimension(380, 400));
+			this.getContentPane().setPreferredSize(new Dimension(350, 405));
+			this.setMinimumSize(new Dimension(380, 450));
 		}
 		else
 		{
-			this.getContentPane().setPreferredSize(new Dimension(350, 425));
-			this.setMinimumSize(new Dimension(380, 455));
+			this.getContentPane().setPreferredSize(new Dimension(350, 450));
+			this.setMinimumSize(new Dimension(380, 495));
 		}
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
@@ -310,6 +311,26 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 				"NewTaskPanel", "Added priority drop down");
 
+		// TAGS -- start with semicolon separation
+		tagListLabel = new JLabel("Tags");
+		
+		gc.gridy++;
+		gc.insets = labelInsets;
+		
+		centerPanel.add(tagListLabel, gc);
+		
+		tagListField = new JTextField(30);
+		tagListLabel.setLabelFor(tagListField); // Accessibility
+
+		if (taskToEdit != null)
+		{
+			tagListField.setText(taskToEdit.getTagsAsString());
+		}
+
+		gc.gridy++;
+		gc.insets = fieldInsets;
+		centerPanel.add(tagListField, gc);
+
 		// Recurrence support
 
 		if (taskToEdit == null)
@@ -511,6 +532,35 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					}
 				}
 
+				if (tagListField.getText().length() != 0)
+				{
+					ArrayList<String> tags = new ArrayList<String>(
+							Arrays.asList(tagListField.getText().split(",")));
+
+					// Parse the list of tags
+					for (int i = 0; i < tags.size();)
+					{
+						String tag = tags.get(i);
+						
+						// Remove leading and trailing whitespace
+						tag = tag.trim();
+						
+						// Only add if not blank
+						if (tag.equals(""))
+						{
+							tags.remove(i);
+						}
+						else
+						{
+							tags.set(i, tag);
+							i++;
+						}
+					}
+
+					task.setTags(tags);
+				}
+
+
 				if (taskDescriptionArea.getText().length() != 0)
 				{
 					task.setDescription(taskDescriptionArea.getText());
@@ -655,6 +705,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 							"ActionPerformed", "1302");
 				}
 
+				
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
+				
+
 				// We're done with this pane, let's get rid of it now
 				dismissPane();
 			}
@@ -775,8 +830,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		// WindowEvent.WINDOW_CLOSING));
 
 		// After it is done, we need to refresh everything
-		// Dismissing a newTaskPanel causes a refresh
 		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);

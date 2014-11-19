@@ -40,12 +40,16 @@ public class Timeflecks
 	private File currentFile;
 	private MainWindow mainWindow;
 	private TimeflecksEventManager eventManager;
-
+	private FilteringManager filteringManager;
+	
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
 
 		taskList = new TaskList();
+		
+		this.filteringManager = new FilteringManager(new TagFilterComparator(),
+				new TagCollection());
 
 		try
 		{
@@ -92,9 +96,14 @@ public class Timeflecks
 
 	public void setTaskList(TaskList taskList)
 	{
+		Objects.requireNonNull(taskList);
 		this.taskList = taskList;
 	}
-
+	
+	public FilteringManager getFilteringManager() {
+		return this.filteringManager;
+	}
+	
 	public SQLiteConnector getDBConnector()
 	{
 		return dbConnector;
@@ -109,13 +118,13 @@ public class Timeflecks
 	{
 		return idGenerator;
 	}
-
+	
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
 		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
-
+	
 	public File getCurrentFile()
 	{
 		return currentFile;

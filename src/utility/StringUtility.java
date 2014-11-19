@@ -1,5 +1,6 @@
 package utility;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class StringUtility {
@@ -18,5 +19,16 @@ public class StringUtility {
 			return true;
 		}
 		return false;
+	}
+	
+	public static String join(ArrayList<String> strings, char joinChar) {
+		StringBuilder sb = new StringBuilder();
+		String joinString = "";
+		for(String s : strings) {
+			sb.append(joinString);
+			sb.append(s);
+			joinString = String.valueOf(joinChar);
+		}
+		return sb.toString();
 	}
 }

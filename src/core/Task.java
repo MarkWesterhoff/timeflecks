@@ -3,11 +3,13 @@ package core;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
 
+import utility.StringUtility;
 import database.DatabaseSerializable;
 import database.SerializableType;
 import logging.GlobalLogger;
@@ -42,7 +44,7 @@ public class Task implements Scheduleable, DatabaseSerializable
 	public Task(String name)
 	{
 		Objects.requireNonNull(name);
-		
+
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		this.name = name;
 		completed = false;
@@ -52,20 +54,23 @@ public class Task implements Scheduleable, DatabaseSerializable
 		priority = Priority.NO_PRIORITY_SELECTED;
 		tags = new ArrayList<String>();
 	}
-	
-	public Task(Task t) {
+
+	// We don't want this warning, we know what it will be and we don't need to check below. 
+	@SuppressWarnings("unchecked")
+	public Task(Task t)
+	{
 		Objects.requireNonNull(t);
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		setOrdering(id);
-		//TODO: Research copy constructors in Java (why isn't this a thing...?)
+		// TODO: Research copy constructors in Java (why isn't this a thing...?)
 		this.name = t.name;
 		this.completed = t.completed;
 		this.description = t.description;
 		this.priority = t.priority;
 		this.duration = t.duration;
 		this.description = t.description;
-		tags = new ArrayList<String>();
-
+		
+		this.tags = (ArrayList<String>) t.getTags().clone();
 	}
 
 	/*
@@ -194,6 +199,11 @@ public class Task implements Scheduleable, DatabaseSerializable
 		return tags;
 	}
 
+	public String getTagsAsString()
+	{
+		return StringUtility.join(tags, ',');
+	}
+
 	public void setTags(ArrayList<String> tags)
 	{
 		Objects.requireNonNull(tags);
@@ -209,7 +219,11 @@ public class Task implements Scheduleable, DatabaseSerializable
 	public void addTag(String tagname)
 	{
 		Objects.requireNonNull(tagname);
-		
+		if (tagname.equals(""))
+		{
+			throw new IllegalArgumentException("tagname");
+		}
+
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 				"core.Task.addTag(tagname)",
 				"Adding new tag " + tagname + " to task with id " + id);
@@ -275,6 +289,8 @@ public class Task implements Scheduleable, DatabaseSerializable
 		}
 	};
 
+	public final static Comparator<Task> defaultComparator = manualComparator;
+
 	/**
 	 * Saves this TimeObject to the database.
 	 * 
@@ -283,14 +299,16 @@ public class Task implements Scheduleable, DatabaseSerializable
 	 * @throws IOException
 	 *             when there is a problem with serialization
 	 */
-	public void saveToDatabase() throws SQLException, IOException {
+	public void saveToDatabase() throws SQLException, IOException
+	{
 		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 				"core.Task.saveToDatabase()",
 				"Saving " + this.name + " to database.");
-		
-		Timeflecks.getSharedApplication().getDBConnector().serializeAndSave(this);
+
+		Timeflecks.getSharedApplication().getDBConnector()
+				.serializeAndSave(this);
 	}
-	
+
 	public SerializableType getType()
 	{
 		return SerializableType.TASK;

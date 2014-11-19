@@ -160,7 +160,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		}
 
 		// TODO Remove this
-		scrollPane.setPreferredSize(new Dimension(730, 420));
+//		scrollPane.setPreferredSize(new Dimension(730, 420));
+		scrollPane.setPreferredSize(new Dimension(730, 490));
 
 		calendarContainer.add(scrollPane, BorderLayout.SOUTH);
 	}
@@ -179,9 +180,13 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	public void refresh()
 	{
+		// Refresh filtered list that everything is populated from
+		Timeflecks.getSharedApplication().getFilteringManager()
+				.repopulateFilteredTasks();
+
 		// Refresh all calendar panels
 		// Could also store in the list
-
+		
 		for (CalendarPanel p : cpanels)
 		{
 			p.refresh();
