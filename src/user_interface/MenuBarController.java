@@ -333,7 +333,7 @@ public class MenuBarController implements ActionListener
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
 				"performDeleteTaskCommand()",
 				"Delete task command issued. Bringing up confirmation.");
-		TaskPanelActionListener.deleteSelectedTask(Timeflecks
+		TaskPanelActionListener.deleteSelectedTasks(Timeflecks
 				.getSharedApplication().getMainWindow().getTablePanel());
 	}
 

@@ -305,27 +305,36 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		upButton.setEnabled(visibility);
 		downButton.setEnabled(visibility);
 	}
-
-	public Task getSelectedTask()
+	
+	/**
+	 * Gets the Tasks that have been selected based on the table rows that have
+	 * been selected.
+	 * 
+	 * @return a list of Tasks that have been selected
+	 */
+	public List<Task> getSelectedTasks()
 	{
-		int row = table.getSelectedRow();
-		if (row >= 0 && row < table.getRowCount())
-		{
-			return Timeflecks.getSharedApplication().getFilteringManager()
-					.getFilteredTaskList().get(row);
-		}
-		else
-		{
-			// This happens if there are no tasks selected
+		List<Task> tasks = new ArrayList<Task>();
 
-			// TODO Grey out the Edit Task Button if there are no tasks
-			// selected
-
-			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
-					"getSelectedTask()",
-					"Selected row is out of bounds for the current table.");
-			return null;
+		for (int row : this.table.getSelectedRows())
+		{
+			if (row >= 0 && row < table.getRowCount())
+			{
+				tasks.add(Timeflecks.getSharedApplication()
+						.getFilteringManager().getFilteredTaskList().get(row));
+			}
+			else
+			{
+				GlobalLogger.getLogger().logp(
+						Level.WARNING,
+						"TaskListTablePanel",
+						"getSelectedTask()",
+						"Selected row " + Integer.toString(row)
+								+ " is out of bounds for the current table.");
+			}
 		}
+		
+		return tasks;
 	}
 
 	public JTable getTable()

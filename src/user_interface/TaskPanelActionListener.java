@@ -2,6 +2,7 @@ package user_interface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.logging.Level;
 
 import javax.swing.JComboBox;
@@ -23,12 +24,14 @@ public class TaskPanelActionListener implements ActionListener
 
 	public static void editSelectedTask(TaskListTablePanel mainPanel)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"editSelectedTask()", "Bringing up EditTaskPanel.");
-		Task selectedTask = mainPanel.getSelectedTask();
-		if (selectedTask != null)
+
+		List<Task> selectedTasks = mainPanel.getSelectedTasks();
+		for (Task task : selectedTasks)
 		{
-			NewTaskPanel p = new NewTaskPanel(selectedTask);
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+					"editSelectedTask()",
+					"Bringing up EditTaskPanel for Task " + task.getName());
+			NewTaskPanel p = new NewTaskPanel(task);
 			p.displayFrame();
 		}
 	}
@@ -49,41 +52,49 @@ public class TaskPanelActionListener implements ActionListener
 		p.displayFrame();
 	}
 
-	public static void deleteSelectedTask(TaskListTablePanel mainPanel)
+	public static void deleteSelectedTasks(TaskListTablePanel mainPanel)
 	{
-		int row = mainPanel.getTable().getSelectedRow();
+		List<Task> selectedTasks = mainPanel.getSelectedTasks();
 
-		if (row >= 0 && row < mainPanel.getTable().getRowCount())
+		if (selectedTasks.size() == 0)
 		{
+			// This happens if there are no tasks selected
+
+			// TODO Gray out the Delete Task Button if there are no tasks
+			// selected
+
+			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
+					"actionPerformed(ActionEvent)",
+					"There are no rows selected to delete.");
+		}
+
+		// Perform delete for each Task the user selected
+		for (Task task : selectedTasks)
+		{
+
 			GlobalLogger
 					.getLogger()
 					.logp(Level.INFO, "TaskListTablePanel",
 							"actionPerformed(ActionEvent)",
-							"Delete task button pressed. Deleting currently selected task.");
+							"Delete task button pressed. Prompting for currently selected task.");
 
-			// We need to prompt the user to see if they want to
-			// delete the task.
+			// Prompt the user to see if they are sure they want to delete the
+			// task.
 
 			Object[] options = { "Delete Task", "Cancel" };
 
 			int reply = JOptionPane.showOptionDialog(mainPanel,
-					"Are you sure you wish to delete this task?",
-					"Confirm Delete", JOptionPane.DEFAULT_OPTION,
-					JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+					"Are you sure you wish to delete the task" + task.getName()
+							+ "?", "Confirm Delete",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					null, options, options[1]);
 
 			if (reply == JOptionPane.YES_OPTION)
 			{
 				// The user selected to delete the Task
-				GlobalLogger.getLogger().logp(Level.INFO,
-						"TaskListTablePanel", "performSaveAsCommand",
-						"User elected to overwrite existing file.");
-
-				// Grab the Task from the Filtered list of Tasks that the
-				// Panel displays and delete that Task from the main
-				// TaskList
-				Task task = Timeflecks.getSharedApplication()
-						.getFilteringManager().getFilteredTaskList()
-						.get(row);
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"deleteSelectedTasks(TaskListTablePanel)",
+						"User elected to delete Task " + task.getName());
 
 				boolean removed = Timeflecks.getSharedApplication()
 						.getTaskList().getTasks().remove(task);
@@ -97,9 +108,6 @@ public class TaskPanelActionListener implements ActionListener
 									"Selected Task for deletion does not exist in application's TaskList.");
 				}
 
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
-
 				try
 				{
 					Timeflecks.getSharedApplication().getDBConnector()
@@ -108,33 +116,24 @@ public class TaskPanelActionListener implements ActionListener
 				catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseDeleteException(ex,
-							"TaskPanelActionListener", "actionPerformed()", "1102");
+							"TaskPanelActionListener",
+							"actionPerformed(ActionEvent)", "1102");
 				}
-				
-				Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
-
 			}
 			else
 			{
 				// User selected to not delete task
-				GlobalLogger
-						.getLogger()
-						.logp(Level.INFO, "TaskListTablePanel",
-								"performSaveAsCommand",
-								"User declined to overwrite file, prompting for new file choice.");
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"User cancelled Task deletion.");
 			}
 		}
-		else
-		{
-			// This happens if there are no tasks selected
 
-			// TODO Gray out the Delete Task Button if there are no tasks
-			// selected
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
 
-			GlobalLogger.getLogger().logp(Level.WARNING,
-					"TaskListTablePanel", "actionPerformed(ActionEvent)",
-					"Selected row is out of bounds for the current table.");
-		}
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -247,7 +246,7 @@ public class TaskPanelActionListener implements ActionListener
 		}
 		else if (e.getActionCommand().equals("Delete Task"))
 		{
-			deleteSelectedTask(mainPanel);
+			deleteSelectedTasks(mainPanel);
 		}
 		else
 		{
