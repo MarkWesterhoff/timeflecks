@@ -49,7 +49,7 @@ public class Timeflecks
 		taskList = new TaskList();
 		
 		this.filteringManager = new FilteringManager(new TagFilterComparator(),
-				new TagCollection());
+				new TagCollection(), new SearchFilterComparator());
 
 		try
 		{

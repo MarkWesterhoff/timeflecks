@@ -14,12 +14,19 @@ import logging.GlobalLogger;
 public class FilteringManager implements TimeflecksEventResponder
 {
 	private ArrayList<Task> tasks;
+	
+	// Tag filtering
 	private TagFilterComparator tagFilterComparator;
 	private TagCollection tagCollection;
+	private SearchFilterComparator searchFilterComparator;
 	private Comparator<Task> taskComparator;
-
+	
+	// Search filtering
+	private String searchText; 
+	
 	public FilteringManager(TagFilterComparator tagFilterComparator,
-			TagCollection tagCollection)
+			TagCollection tagCollection,
+			SearchFilterComparator searchFilterComparator)
 	{
 		Objects.requireNonNull(tagFilterComparator);
 		Objects.requireNonNull(tagCollection);
@@ -27,11 +34,13 @@ public class FilteringManager implements TimeflecksEventResponder
 		this.taskComparator = Task.defaultComparator;
 		this.tagCollection = tagCollection;
 		this.tagFilterComparator = tagFilterComparator;
-		
+		this.searchFilterComparator = searchFilterComparator;
+
 		tasks = new ArrayList<Task>();
+		searchText = "";
 		
+		// Register to receive TimeflecksEvents
 		final FilteringManager thisFiltertingManager = this;
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			
@@ -65,7 +74,18 @@ public class FilteringManager implements TimeflecksEventResponder
 		Objects.requireNonNull(taskComparator);
 		this.taskComparator = taskComparator;
 	}
-
+	
+	/**
+	 * Sets the text to search by. "" searchText indicates search is off.
+	 * 
+	 * @param searchText the new text to search by
+	 */
+	public void setSearchText(String searchText) {
+		Objects.requireNonNull(searchText);
+		
+		this.searchText = searchText;
+	}
+	
 	/**
 	 * Repopulates the list of tasks to hold based on the tags the user has
 	 * selected.
@@ -88,6 +108,11 @@ public class FilteringManager implements TimeflecksEventResponder
 			allTasks = FilteringManager.filterTasks(allTasks, tags,
 					this.tagFilterComparator);
 		}
+		
+		// Filter by search 
+		if (!searchText.equals("")) {
+			allTasks = FilteringManager.filterTasks(allTasks, searchText, this.searchFilterComparator);
+		}
 
 		Collections.sort(allTasks, this.taskComparator);
 
@@ -107,25 +132,23 @@ public class FilteringManager implements TimeflecksEventResponder
 	 * @return the list of filtered Tasks
 	 */
 	private static <E> ArrayList<Task> filterTasks(ArrayList<Task> tasks,
-			final Iterable<E> filterItems,
+			final E filterItem,
 			final FilterComparator<E> filterMethod)
 	{
 		Objects.requireNonNull(tasks);
-		Objects.requireNonNull(filterItems);
+		Objects.requireNonNull(filterItem);
 		Objects.requireNonNull(filterMethod);
 
 		ArrayList<Task> filteredTasks = new ArrayList<Task>();
 
 		for (Task task : tasks)
 		{
-			for (E filterItem : filterItems)
+
+			if (filterMethod.matchesFilter(task, filterItem))
 			{
-				if (filterMethod.matchesFilter(task, filterItem))
-				{
-					filteredTasks.add(task);
-					break;
-				}
+				filteredTasks.add(task);
 			}
+			
 		}
 
 		return filteredTasks;
