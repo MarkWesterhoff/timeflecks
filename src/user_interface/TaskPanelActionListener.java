@@ -26,6 +26,15 @@ public class TaskPanelActionListener implements ActionListener
 	{
 
 		List<Task> selectedTasks = mainPanel.getSelectedTasks();
+		
+		if (selectedTasks.size() == 0)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
+					"editSelectedTask(TaskListTablePanel)",
+					"There are no rows selected to edit.");
+			return;
+		}
+		
 		for (Task task : selectedTasks)
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
@@ -58,14 +67,13 @@ public class TaskPanelActionListener implements ActionListener
 
 		if (selectedTasks.size() == 0)
 		{
-			// This happens if there are no tasks selected
-
 			// TODO Gray out the Delete Task Button if there are no tasks
 			// selected
 
 			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
 					"actionPerformed(ActionEvent)",
 					"There are no rows selected to delete.");
+			return;
 		}
 
 		// Perform delete for each Task the user selected

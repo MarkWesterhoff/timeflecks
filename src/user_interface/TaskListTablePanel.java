@@ -39,12 +39,16 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	private JList<String> tagSelector;
 	private JButton clearTagButton;
 	private Vector<String> tagSelectionChoices;
+	
+	private int tasksBeingEdited;
 
 	public TaskListTablePanel(TaskListTableModel taskListTableModel)
 	{
 		super();
 		Objects.requireNonNull(taskListTableModel);
-
+		
+		tasksBeingEdited = 0;
+		
 		ActionListener al = new TaskPanelActionListener(this);
 
 		setLayout(new BorderLayout());
@@ -264,7 +268,11 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"refresh()", "Refreshing TaskListTablePanel" + this.table);
-
+		
+		// Enable or disable edit and delete buttons based on number of Tasks
+		// currently being edited.
+		updateEditAndDeleteButtons();
+		
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
 	
@@ -336,7 +344,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		
 		return tasks;
 	}
-
+	
 	public JTable getTable()
 	{
 		return table;
@@ -346,19 +354,84 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	{
 		return comboMap;
 	}
+	
+	/**
+	 * Disables the Edit Task and Delete Task buttons if a task is currently
+	 * being edited.
+	 */
+	private void updateEditAndDeleteButtons()
+	{
+		if (tasksBeingEdited == 0)
+		{
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "updateEditAndDeleteButtons()",
+					"Setting Edit and Delete buttons to enabled");
+			
+			editTaskButton.setEnabled(true);
+			deleteTaskButton.setEnabled(true);
+		}
+		else if (tasksBeingEdited > 0)
+		{
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "updateEditAndDeleteButtons()",
+					"Setting Edit and Delete buttons to disabled");
+			
+			editTaskButton.setEnabled(false);
+			deleteTaskButton.setEnabled(false);
+		}
+		else
+		{
+			GlobalLogger.getLogger().logp(
+					Level.WARNING,
+					this.getClass().getName(),
+					"updateEditAndDeleteButtons()",
+					"Invalid value for tasksBeingEdited: "
+							+ Integer.toString(tasksBeingEdited));
+		}
+	}
 
 	@Override
 	public void eventPosted(TimeflecksEvent t)
 	{
 		// Changing possible tags means we must recreate the tag selector
-		if(t.equals(TimeflecksEvent.CHANGED_POSSIBLE_TAGS)) {
+		if (t.equals(TimeflecksEvent.CHANGED_POSSIBLE_TAGS))
+		{
 			GlobalLogger.getLogger().logp(Level.INFO,
 					this.getClass().getName(), "eventPosted(TimeflecksEvent)",
 					"Recreating tag selector");
 			refreshTagSelector();
 		}
-		else {
+		if (t.equals(TimeflecksEvent.CREATED_EDIT_PANEL))
+		{
+			tasksBeingEdited++;
+			
+			GlobalLogger.getLogger().logp(
+					Level.INFO,
+					this.getClass().getName(),
+					"eventPosted(TimeflecksEvent)",
+					"One more Task is being edited ("
+							+ Integer.toString(tasksBeingEdited)
+							+ " total Tasks)");
+			
+			updateEditAndDeleteButtons();
+		}
+		if (t.equals(TimeflecksEvent.DISMISSED_EDIT_PANEL))
+		{
+			tasksBeingEdited--;
+			
+			GlobalLogger.getLogger().logp(
+					Level.INFO,
+					this.getClass().getName(),
+					"eventPosted(TimeflecksEvent)",
+					"One less Task is being edited ("
+							+ Integer.toString(tasksBeingEdited)
+							+ " total Tasks)");
+			
+			updateEditAndDeleteButtons();
+		}
+		else
+		{
 			// Ignore other events
-		}		
+		}
 	}
 }

@@ -827,6 +827,13 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		// this.processWindowEvent(new WindowEvent(this,
 		// WindowEvent.WINDOW_CLOSING));
 
+		if (taskToEdit != null)
+		{
+			// Post notification that a Task is no longer being edited
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.DISMISSED_EDIT_PANEL);
+		}
+
 		// After it is done, we need to refresh everything
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
@@ -846,6 +853,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		else
 		{
 			this.setTitle("Timeflecks - Edit Task");
+			
+			//Post notification that a Task is being edited
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.CREATED_EDIT_PANEL);
 		}
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
