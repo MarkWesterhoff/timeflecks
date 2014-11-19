@@ -230,7 +230,6 @@ public class TaskPanelActionListener implements ActionListener
 						"TaskListTablePanel", "actionPerformed(ActionEvent)",
 						"Selected row is out of bounds for the current table.");
 			}
-
 		}
 		else
 		{

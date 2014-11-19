@@ -26,7 +26,8 @@ public class FilteringManager implements TimeflecksEventResponder
 
 		this.taskComparator = Task.defaultComparator;
 		this.tagCollection = tagCollection;
-
+		this.tagFilterComparator = tagFilterComparator;
+		
 		tasks = new ArrayList<Task>();
 		
 		final FilteringManager thisFiltertingManager = this;
@@ -84,7 +85,7 @@ public class FilteringManager implements TimeflecksEventResponder
 		// Filter by tags as long as at least one is selected.
 		if (!tags.isEmpty())
 		{
-			FilteringManager.filterTasks(allTasks, tags,
+			allTasks = FilteringManager.filterTasks(allTasks, tags,
 					this.tagFilterComparator);
 		}
 
@@ -127,8 +128,7 @@ public class FilteringManager implements TimeflecksEventResponder
 			}
 		}
 
-		tasks = filteredTasks;
-		return tasks;
+		return filteredTasks;
 	}
 
 	@Override

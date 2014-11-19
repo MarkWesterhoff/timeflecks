@@ -3,18 +3,23 @@ package user_interface;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.logging.Level;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
 import core.Task;
 import core.Timeflecks;
+import core.TimeflecksEvent;
+import core.TimeflecksEventResponder;
 
-public class TaskListTablePanel extends JPanel
+public class TaskListTablePanel extends JPanel implements TimeflecksEventResponder
 {
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +27,7 @@ public class TaskListTablePanel extends JPanel
 	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 40;
 	private static final int MIN_NAME_COLUMN_WIDTH = 30;
 	private static final int PREFERRED_NAME_COLUMN_WIDTH = 200;
-	
+
 	private final JTable table;
 
 	private LinkedHashMap<String, Comparator<Task>> comboMap;
@@ -31,6 +36,9 @@ public class TaskListTablePanel extends JPanel
 	private JButton deleteTaskButton;
 	private JButton upButton;
 	private JButton downButton;
+	private JList<String> tagSelector;
+	private JButton clearTagButton;
+	private Vector<String> tagSelectionChoices;
 
 	public TaskListTablePanel(TaskListTableModel taskListTableModel)
 	{
@@ -112,18 +120,87 @@ public class TaskListTablePanel extends JPanel
 		// topPanel.setPreferredSize(new Dimension(600, 50));
 
 		add(topPanel, BorderLayout.NORTH);
-		
-		/*
+
 		// Filtering panel
 		JPanel filterPanel = new JPanel(new FlowLayout());
+
+		JLabel tagLabel = new JLabel("Filter by Tag:");
+		filterPanel.add(tagLabel);
+
+		// Multiple tag selector list
+		tagSelectionChoices = new Vector<String>();
+		tagSelector = new JList<String>(tagSelectionChoices);
+		tagSelector
+				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		tagSelector.addListSelectionListener(new ListSelectionListener()
+		{
+
+			@Override
+			public void valueChanged(ListSelectionEvent e)
+			{
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "valueChanged",
+						"List selection has changed. Checking tags");
+
+				JList<String> tagSelect = (JList<String>) e.getSource();
+				for (int i = e.getFirstIndex(); i <= e.getLastIndex(); ++i)
+				{
+					String tag = tagSelectionChoices.get(i);
+					if (tagSelect.isSelectedIndex(i))
+					{
+						Timeflecks.getSharedApplication().getFilteringManager()
+								.getTagCollection().addTag(tag);
+					}
+					else
+					{
+						Timeflecks.getSharedApplication().getFilteringManager()
+								.getTagCollection().removeTag(tag);
+					}
+				}
+
+				// Post notification to repopulate the task list that's
+				// filtered by tag
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+			}
+		});
+		
+		refreshTagSelector();
+		
+		JScrollPane filterScrollPane = new JScrollPane(tagSelector);
+		filterScrollPane.setPreferredSize(new Dimension(50, 40));
+		filterPanel.add(filterScrollPane);
+
+		// Clear tags button
+		clearTagButton = new JButton("Clear tags");
+		clearTagButton.setActionCommand("Clear tag selection");
+		
+		// Use anonymous action listener instead of TaskPanelActionListener
+		// because we need access to the tagSelector.
+		clearTagButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if (e.getActionCommand().equals("Clear tag selection"))
+				{
+					GlobalLogger.getLogger().logp(Level.INFO,
+							this.getClass().getName(),
+							"actionPerformed(ActionEvent)",
+							"Clear tag button pressed. Clearing tag selection");
+					tagSelector.clearSelection();
+				}
+			}
+		});
+		filterPanel.add(clearTagButton);
+
+		// Search text field
 		JTextField filterField = new JTextField();
 		filterField.setPreferredSize(new Dimension(100, 20));
-		
 		filterPanel.add(filterField);
 
 		add(filterPanel, BorderLayout.CENTER);
-		*/
-		
+
 		// Actual table
 		table = new JTable(taskListTableModel);
 
@@ -140,7 +217,19 @@ public class TaskListTablePanel extends JPanel
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(false);
 		add(scroll, BorderLayout.SOUTH);
-
+		
+		// Register for Timeflecks events
+		final TaskListTablePanel thisTaskListTablePanel = this;
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				Timeflecks.getSharedApplication().registerForTimeflecksEvents(thisTaskListTablePanel);
+				
+			}
+		});
 	}
 
 	private JButton createIconedButton(String iconPath, String buttonName,
@@ -174,9 +263,41 @@ public class TaskListTablePanel extends JPanel
 	public void refresh()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"refresh()", "Refreshing TaskListTableModel" + this.table);
+				"refresh()", "Refreshing TaskListTablePanel" + this.table);
 
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
+	}
+	
+	/**
+	 * Re-creates the list of tags that is used by the tag selector.
+	 */
+	public void refreshTagSelector() {
+		// Find the tags that were selected before the refresh
+		HashSet<String> previouslySelected = new HashSet<String>();
+		for (int index : tagSelector.getSelectedIndices())
+		{
+			if (tagSelector.isSelectedIndex(index))
+			{
+				previouslySelected.add(tagSelector.getModel().getElementAt(
+						index));
+			}
+		}
+
+		// Refresh the tags in the selection list
+		// Get tags and sort alphabetically
+		Collection<String> tags = Timeflecks.getSharedApplication()
+				.getTaskList().getAllTags();
+		tagSelectionChoices = new Vector<String>(tags);
+		Collections.sort(tagSelectionChoices);
+		tagSelector.setListData(tagSelectionChoices);
+		tagSelector.clearSelection();
+		
+		// Select the tags that were selected before
+		for(int i = 0; i < tagSelectionChoices.size(); ++i) {
+			if(previouslySelected.contains(tagSelectionChoices.get(i))) {
+				tagSelector.addSelectionInterval(i, i);
+			}
+		}
 	}
 
 	public void setBumpButtonsVisibility(boolean visibility)
@@ -184,12 +305,14 @@ public class TaskListTablePanel extends JPanel
 		upButton.setEnabled(visibility);
 		downButton.setEnabled(visibility);
 	}
-	
-	public Task getSelectedTask() {
+
+	public Task getSelectedTask()
+	{
 		int row = table.getSelectedRow();
 		if (row >= 0 && row < table.getRowCount())
 		{
-			return Timeflecks.getSharedApplication().getFilteringManager().getFilteredTaskList().get(row);
+			return Timeflecks.getSharedApplication().getFilteringManager()
+					.getFilteredTaskList().get(row);
 		}
 		else
 		{
@@ -198,8 +321,8 @@ public class TaskListTablePanel extends JPanel
 			// TODO Grey out the Edit Task Button if there are no tasks
 			// selected
 
-			GlobalLogger.getLogger().logp(Level.WARNING,
-					"TaskListTablePanel", "getSelectedTask()",
+			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
+					"getSelectedTask()",
 					"Selected row is out of bounds for the current table.");
 			return null;
 		}
@@ -215,4 +338,18 @@ public class TaskListTablePanel extends JPanel
 		return comboMap;
 	}
 
+	@Override
+	public void eventPosted(TimeflecksEvent t)
+	{
+		// Changing possible tags means we must recreate the tag selector
+		if(t.equals(TimeflecksEvent.CHANGED_POSSIBLE_TAGS)) {
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "eventPosted(TimeflecksEvent)",
+					"Recreating tag selector");
+			refreshTagSelector();
+		}
+		else {
+			// Ignore other events
+		}		
+	}
 }

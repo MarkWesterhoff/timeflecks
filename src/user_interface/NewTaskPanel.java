@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -528,6 +527,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"ActionPerformed", "1302");
 				}
+				
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
 				
 				dismissPane();
 			}

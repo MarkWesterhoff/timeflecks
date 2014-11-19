@@ -78,6 +78,24 @@ public class TaskList
 				"Deleting task with id " + t.getId());
 		tasks.remove(t);
 	}
+
+	/**
+	 * Gets a Collection of all tags that are used by tags stored in this
+	 * TaskList.
+	 * 
+	 * @return the collection of tags
+	 */
+	public Collection<String> getAllTags()
+	{
+		HashSet<String> allTags = new HashSet<String>();
+
+		for (Task t : tasks)
+		{
+			allTags.addAll(t.getTags());
+		}
+
+		return allTags;
+	}
 	
 	/**
 	 * Saves all tasks to the database.
