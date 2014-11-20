@@ -25,7 +25,7 @@ public class CalendarTransferHandler extends TransferHandler
 		}
 		
 		// Check for Task flavor
-        if (!info.isDataFlavorSupported(new DataFlavor("core.Task", "Task"))) {
+        if (!info.isDataFlavorSupported(new DataFlavor(Task.class, "Task"))) {
             return false;
         }
         
@@ -91,7 +91,7 @@ public class CalendarTransferHandler extends TransferHandler
         Transferable t = info.getTransferable();
         Task taskRef;
         try {
-            taskRef = (Task)t.getTransferData(new DataFlavor("core.Task", "Task"));
+            taskRef = (Task)t.getTransferData(new DataFlavor(Task.class, "Task"));
         } 
         catch (Exception e) { return false; }
         
