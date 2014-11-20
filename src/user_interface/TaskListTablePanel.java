@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -39,6 +41,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	private JList<String> tagSelector;
 	private JButton clearTagButton;
 	private Vector<String> tagSelectionChoices;
+	private JTextField searchField;
 	
 	private int tasksBeingEdited;
 
@@ -125,12 +128,9 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 		add(topPanel, BorderLayout.NORTH);
 
-		// Filtering panel
-		JPanel filterPanel = new JPanel(new FlowLayout());
-
+		// Tag panel components
 		JLabel tagLabel = new JLabel("Filter by Tag:");
-		filterPanel.add(tagLabel);
-
+		
 		// Multiple tag selector list
 		tagSelectionChoices = new Vector<String>();
 		tagSelector = new JList<String>(tagSelectionChoices);
@@ -173,8 +173,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		
 		JScrollPane filterScrollPane = new JScrollPane(tagSelector);
 		filterScrollPane.setPreferredSize(new Dimension(250, 60));
-		filterPanel.add(filterScrollPane);
-
+		
 		// Clear tags button
 		clearTagButton = new JButton("Clear tags");
 		clearTagButton.setActionCommand("Clear tag selection");
@@ -196,13 +195,68 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 				}
 			}
 		});
-		filterPanel.add(clearTagButton);
+		
+		// FlowLayout JPanel for tag components
+		JPanel tagPanel = new JPanel(new FlowLayout());
+		tagPanel.add(tagLabel);
+		tagPanel.add(filterScrollPane);
+		tagPanel.add(clearTagButton);
+		
+		// Search text field
+		searchField = new JTextField();
+		searchField.setPreferredSize(new Dimension(100, 20));
+		searchField.addKeyListener(new KeyListener()
+		{
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+			}
 
-//		// Search text field
-//		JTextField filterField = new JTextField();
-//		filterField.setPreferredSize(new Dimension(100, 20));
-//		filterPanel.add(filterField);
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"Search button pressed.");
 
+				String searchText = searchField.getText();
+
+				// Either clearing the search or searching by the string,
+				// depending
+				// on if empty or not
+				String logMessage = (searchText.equals("")) ? "Clearing search."
+						: "Searching by text \"" + searchText + "\"";
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)", logMessage);
+
+				Timeflecks.getSharedApplication().getFilteringManager()
+						.setSearchText(searchText);
+
+				Timeflecks.getSharedApplication().postNotification(
+						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+			}
+		});
+		
+		//Search Label
+		JLabel searchLabel = new JLabel("Search Tasks");
+		
+		// Search Panel
+		JPanel searchPanel = new JPanel(new FlowLayout());
+		searchPanel.add(searchLabel);
+		searchPanel.add(searchField);
+		
+		// Filter panel to hold tag and search panels
+		JPanel filterPanel = new JPanel(new BorderLayout());
+		
+		filterPanel.add(tagPanel, BorderLayout.EAST);
+		filterPanel.add(searchPanel, BorderLayout.WEST);
+		
 		add(filterPanel, BorderLayout.SOUTH);
 
 		// Actual table
@@ -226,16 +280,20 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		final TaskListTablePanel thisTaskListTablePanel = this;
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			
 			@Override
 			public void run()
 			{
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(thisTaskListTablePanel);
-				
+				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
+						thisTaskListTablePanel);
+
 			}
 		});
 	}
 
+	public JTextField getSearchField() {
+		return searchField;
+	}
+	
 	private JButton createIconedButton(String iconPath, String buttonName,
 			ActionListener al)
 	{
