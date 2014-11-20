@@ -434,6 +434,12 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 
 	public Task getTaskUnderMouse(Point p)
 	{
+		if ( p == null)
+		{
+			return null;
+		}
+		
+		
 		for (Scheduleable t : itemsToPaint)
 		{
 			if (t instanceof Task)
