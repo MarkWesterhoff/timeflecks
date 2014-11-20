@@ -225,12 +225,12 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		hourSpinner.setMinimumSize(new Dimension(25, hourSpinner
 				.getMinimumSize().height));
-		hourSpinner.setPreferredSize(new Dimension(75, hourSpinner
+		hourSpinner.setPreferredSize(new Dimension(120, hourSpinner
 				.getPreferredSize().height));
 
 		minuteSpinner.setMinimumSize(new Dimension(25, minuteSpinner
 				.getMinimumSize().height));
-		minuteSpinner.setPreferredSize(new Dimension(75, minuteSpinner
+		minuteSpinner.setPreferredSize(new Dimension(120, minuteSpinner
 				.getPreferredSize().height));
 
 
