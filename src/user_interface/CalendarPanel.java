@@ -460,14 +460,25 @@ public class CalendarPanel extends JPanel implements MouseMotionListener, MouseL
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
 		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "mouseClicked", "mouse clicked.");
+		
+		// TODO maybe use taskComponent all through all of this
+		
+		if (e.getClickCount() == 2 && this.getTaskUnderMouse(this.getCurrentMousePoint()) != null){
+			Task toEdit = this.getTaskUnderMouse(this.getCurrentMousePoint());
+			if (toEdit != null)
+			{
+				// Check again in case the mouse moved
+				NewTaskPanel p = new NewTaskPanel(toEdit);
+				p.displayFrame();
+			}
+		}
+		e.consume();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
