@@ -115,7 +115,7 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 					Level.INFO,
 					"core.Task",
 					"core.Task.setStartTime(startTime)",
-					"Setting start time to task with id " + id + "as "
+					"Setting start time to task with id " + id + " as "
 							+ startTime.toString());
 		}
 		this.startTime = startTime;
@@ -163,6 +163,13 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 
 	public void setDuration(long duration)
 	{
+		GlobalLogger.getLogger().logp(
+				Level.INFO,
+				"core.Task",
+				"core.Task.setDuration(duration)",
+				"Setting duration to task with id " + id + " as "
+						+ duration);
+		
 		this.duration = duration;
 	}
 
@@ -319,22 +326,30 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 	@Override
 	public DataFlavor[] getTransferDataFlavors()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return new DataFlavor[]{new DataFlavor(Task.class, "Task")};
 	}
 
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		if (flavor.equals(new DataFlavor(Task.class, "Task")))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException
 	{
-		// TODO Auto-generated method stub
+		if (this.isDataFlavorSupported(flavor))
+		{
+			return this;
+		}
 		return null;
 	}
 }

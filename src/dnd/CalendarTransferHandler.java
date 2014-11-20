@@ -2,14 +2,18 @@ package dnd;
 
 import java.awt.Point;
 import java.awt.datatransfer.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
 import core.Task;
+import core.Timeflecks;
+import core.TimeflecksEvent;
 
 import javax.swing.*;
 
 import user_interface.CalendarPanel;
+import user_interface.ExceptionHandler;
 import logging.GlobalLogger;
 
 public class CalendarTransferHandler extends TransferHandler
@@ -24,7 +28,7 @@ public class CalendarTransferHandler extends TransferHandler
 			return false;
 		}
 		
-		// Check for Task flavor
+//		 Check for Task flavor
         if (!info.isDataFlavorSupported(new DataFlavor(Task.class, "Task"))) {
             return false;
         }
@@ -62,8 +66,22 @@ public class CalendarTransferHandler extends TransferHandler
     	// Get the object at the currently pointed at coordinates
     	// Get it's task
     	// Return a transferable that holds that task
-    	
-        return new Task("name");
+    	if (c instanceof CalendarPanel)
+        {
+        	CalendarPanel p = (CalendarPanel)c;
+        	
+        	Task t = p.getTaskUnderMouse(p.getCurrentMousePoint());
+        	
+        	if (t == null)
+        	{
+        		return null;
+        	}
+        	else
+        	{
+        		return t;
+        	}
+        }
+    	return null;
     }
     
     /**
@@ -97,8 +115,20 @@ public class CalendarTransferHandler extends TransferHandler
         
         if (taskRef == null)
         {
+        	GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler", "importData", "Failed to get task from import data");
         	return false;
         }
+        
+        ArrayList<Task> tasks = Timeflecks.getSharedApplication().getTaskList().getTasks();
+        for (Task t1 : tasks)
+        {
+        	if (t1.getId() == taskRef.getId())
+        	{
+        		taskRef = t1;
+        		break;
+        	}
+        }
+        
     	 // Now we just set the currently selected time from the dropLocation in the Task
     	Point selectedPoint = dl.getDropPoint();
     	
@@ -120,7 +150,28 @@ public class CalendarTransferHandler extends TransferHandler
     	
 		// We actually got the date, so we are good to go
 		taskRef.setStartTime(date);
-		taskRef.setDuration(1000 * 60 * 60); // Set the duration to 1 hr, which is 1000ms = 1s * 60 = 1 min * 60 = 1hr
+		
+		// Otherwise, let it keep its original duration
+		if (!taskRef.isScheduled())
+		{
+			taskRef.setDuration(1000 * 60 * 60); // Set the duration to 1 hr, which is 1000ms = 1s * 60 = 1 min * 60 = 1hr
+		}
+		
+		try
+		{
+			taskRef.saveToDatabase();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler.handleDatabaseSaveException(ex, this,
+					"importData", "2102");
+		}
+		
+		System.out.println("Time: " + taskRef.getStartTime());
+		
+		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+
+//		Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
 		
 		return true;
     }

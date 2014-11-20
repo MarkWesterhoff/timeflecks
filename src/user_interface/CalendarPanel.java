@@ -1,6 +1,9 @@
 package user_interface;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ import core.*;
 import dnd.CalendarTransferHandler;
 import logging.GlobalLogger;
 
-public class CalendarPanel extends JPanel
+public class CalendarPanel extends JPanel implements MouseMotionListener, MouseListener
 {
 	private boolean drawTimes;
 	private boolean drawRightSideLine;
@@ -23,6 +26,8 @@ public class CalendarPanel extends JPanel
 	private ArrayList<Scheduleable> itemsToPaint;
 	
 	int topInset;
+	
+	CalendarTransferHandler transferHandler;
 
 	/**
 	 * Auto generated default serial version UID
@@ -66,7 +71,12 @@ public class CalendarPanel extends JPanel
 		// math)
 		this.setMinimumSize(new Dimension(width, height));
 		
-		this.setTransferHandler(new CalendarTransferHandler());
+		transferHandler = new CalendarTransferHandler();
+		
+		this.setTransferHandler(transferHandler);
+		
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 		
 	}
 
@@ -149,6 +159,8 @@ public class CalendarPanel extends JPanel
 		FontRenderContext frc = g2.getFontRenderContext();
 		int fontHeight = (int) g2.getFont().getLineMetrics("12pm", frc)
 				.getHeight();
+		
+		this.topInset = d.height / 24 - (fontHeight / 2);
 
 		if (drawRightSideLine)
 		{
@@ -189,7 +201,7 @@ public class CalendarPanel extends JPanel
 		// Go through and draw any tasks at the appropriate place
 		for (Scheduleable t : itemsToPaint)
 		{
-			this.topInset = d.height / 24 - (fontHeight / 2);
+			
 
 			int hourIncrement = d.height / 24;
 
@@ -339,13 +351,12 @@ public class CalendarPanel extends JPanel
 		{
 			return null;
 		}
-		
-		
+				
 		Dimension d = this.getSize();
 			
 		double hourIncrement = d.height / 24;
 		
-		double hourValue = (p.getY() - topInset) / hourIncrement;
+		double hourValue = (p.getY() - topInset) / hourIncrement;// - 0.84;
 		
 		// Make returnDate with the proper day, now we need to set the hours, mins, and secs
 		Date returnDate = new Date(this.date.getTime());
@@ -362,7 +373,115 @@ public class CalendarPanel extends JPanel
 		
 		returnDate = c.getTime();
 		
+		
+		System.out.println("topInset: " + topInset + "\nhourIncrement: " + hourIncrement + "\nhourValue: " + hourValue + "\nreturnDate: " + returnDate + "\npreciseMinutes: " + preciseMinutes + "\nminutes: " + minutes + "\n");
+		
 		return returnDate;
 	}
+	
+	private MouseEvent firstMouseEvent = null;
 
+	@Override
+	public void mousePressed(MouseEvent e) {
+	    firstMouseEvent = e;
+	    e.consume();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	    if (firstMouseEvent != null) {
+	        e.consume();
+	        
+	        int action = TransferHandler.MOVE;
+
+	        int dx = Math.abs(e.getX() - firstMouseEvent.getX());
+	        int dy = Math.abs(e.getY() - firstMouseEvent.getY());
+	        //Arbitrarily define a 5-pixel shift as the
+	        //official beginning of a drag.
+	        if (dx > 5 || dy > 5) {
+	            //This is a drag, not a click.
+	            JComponent c = (JComponent)e.getSource();
+	            //Tell the transfer handler to initiate the drag.
+	            TransferHandler handler = c.getTransferHandler();
+	            handler.exportAsDrag(c, firstMouseEvent, action);
+	            firstMouseEvent = null;
+	        }
+	    }
+	}
+
+	private Point currentPoint;
+	
+	@Override
+	public void mouseMoved(MouseEvent e)
+	{
+		currentPoint = e.getPoint();
+		e.consume();
+	}
+	
+	public Point getCurrentMousePoint()
+	{
+		return currentPoint;
+	}
+	
+	public Task getTaskUnderMouse(Point p)
+	{
+		for (Scheduleable t : itemsToPaint)
+		{
+			if (t instanceof Task)
+			{
+				int insetFromLeft = 0; // See manual 10 later
+				int insetFromRight = 8;
+				
+				Dimension d = this.getSize();
+				
+				int hourIncrement = d.height / 24;
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(t.getStartTime());
+				double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+						+ (double) calendar.get(Calendar.MINUTE) / 60.0;
+
+				double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
+				
+				Rectangle frame = new Rectangle(insetFromLeft, this.topInset
+						+ (int) (taskHours * hourIncrement), d.width - insetFromRight
+						- insetFromLeft, (int) (durationInHours * hourIncrement));
+				
+				if(frame.contains(p))
+				{
+					// We already checked instanceof, so this is ok
+					return (Task) t;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "mouseClicked", "mouse clicked.");
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

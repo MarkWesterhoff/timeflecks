@@ -53,14 +53,6 @@ public class TaskComponent extends JComponent
 		super.paintComponent(g);
 
 		// Draw the rectangle first, so the string shows up on top of it
-//		if (item.isCompleted())
-//		{
-//			g.setColor(Color.getHSBColor(0f, 0f, .94f));
-//		}
-//		else
-//		{
-//			g.setColor(Color.white);
-//		}
 		
 		if (item instanceof Event)
 		{
