@@ -22,6 +22,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	private boolean showWeekView;
 	private Date mainDate;
+	
+	private Point lastScrollPosition = null;
 
 	public MainWindow()
 	{
@@ -160,6 +162,9 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		// TODO Remove this
 //		scrollPane.setPreferredSize(new Dimension(730, 420));
 		scrollPane.setPreferredSize(new Dimension(730, 490));
+		if(lastScrollPosition != null) {
+			scrollPane.getViewport().setViewPosition(lastScrollPosition);
+		}
 
 		calendarContainer.add(scrollPane, BorderLayout.SOUTH);
 	}
@@ -220,6 +225,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		this.calendarContainer.remove(scrollPane);
 
 		cpanels.clear();
+		lastScrollPosition = scrollPane.getViewport().getViewPosition();
 		scrollPane = null;
 
 		// TODO Fix for showing the current date
