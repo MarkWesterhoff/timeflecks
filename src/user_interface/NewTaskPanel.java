@@ -846,7 +846,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					TimeflecksEvent.CREATED_EDIT_PANEL);
 		}
 
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		this.pack();
 

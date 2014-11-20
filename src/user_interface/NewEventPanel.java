@@ -445,7 +445,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 			this.setTitle("Timeflecks - Edit Event");
 		}
 
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		this.pack();
 
