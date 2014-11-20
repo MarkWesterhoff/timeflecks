@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 
+import core.PlaceholderScheduleable;
 import core.Task;
 import core.Timeflecks;
 import core.TimeflecksEvent;
@@ -49,6 +50,22 @@ public class CalendarTransferHandler extends TransferHandler
 			}
 			else
 			{
+				// Check if there are any Tasks or Events that are under the
+				// current drop location
+				Transferable t = info.getTransferable();
+				if (t instanceof Task)
+				{
+					Date newTime = p.getDateForPoint(dropPoint);
+					
+					// Create a temporary Task to represent where the current one would be dropped
+					Task temp = (Task)t;
+					PlaceholderScheduleable hold = new PlaceholderScheduleable(temp.getName(), newTime, new Date(newTime.getTime() + temp.getDuration()));
+					
+					if (p.conflictingScheduleableExists(hold))
+					{
+						return false;
+					}
+				}
 				return true;
 			}
 		}

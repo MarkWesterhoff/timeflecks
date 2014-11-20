@@ -1,9 +1,7 @@
 package dnd;
 
-import java.awt.Point;
 import java.awt.datatransfer.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 
 import core.Task;
@@ -11,9 +9,7 @@ import core.Timeflecks;
 import core.TimeflecksEvent;
 
 import javax.swing.*;
-import javax.swing.TransferHandler.DropLocation;
 
-import user_interface.CalendarPanel;
 import user_interface.ExceptionHandler;
 import logging.GlobalLogger;
 
