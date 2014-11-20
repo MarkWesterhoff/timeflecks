@@ -383,6 +383,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 				{
 					Timeflecks.getSharedApplication().getDBConnector()
 							.delete(eventToEdit.getId());
+					dismissPane();
 				}
 				catch (Exception ex)
 				{
@@ -398,7 +399,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 						"actionPerformed(ActionEvent)",
 						"User cancelled Task deletion.");
 			}
-			dismissPane();
+
 		}
 	}
 
