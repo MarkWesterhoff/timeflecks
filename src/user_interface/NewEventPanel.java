@@ -338,51 +338,53 @@ public class NewEventPanel extends JFrame implements ActionListener
 		}
 		else if (e.getActionCommand().equals("Cancel"))
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
-					"actionPerformed",
-					"Cancel button pressed. Dismissing Panel.");
-
-			if (hasEnteredText())
-			{
-				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
-						"actionPerformed", "Event modified. Prompting user.");
-
-				Object[] options = { "Discard Event", "Cancel" };
-				int reply = JOptionPane
-						.showOptionDialog(
-								this,
-								"You have edited this event. Do you want to save your changes?",
-								"Event Changed", JOptionPane.DEFAULT_OPTION,
-								JOptionPane.WARNING_MESSAGE, null, options,
-								options[1]);
-
-				if (reply == JOptionPane.YES_OPTION)
-				{
-					// The user selected to discard the event
-					GlobalLogger
-							.getLogger()
-							.logp(Level.INFO, "NewEventPanel",
-									"actionPerformed",
-									"User elected to discard the event. Dismissing Panel.");
-
-					dismissPane();
-				}
-				else
-				{
-					// We simply return the user to editing
-					GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
-							"actionPerformed",
-							"User selected to continue editing the event.");
-				}
-			}
-			else
-			{
-				dismissPane();
-			}
+			tryToClose();
 		}
 		else
 		{
 
+		}
+	}
+
+	public void tryToClose()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
+				"actionPerformed", "Cancel button pressed. Dismissing Panel.");
+
+		if (hasEnteredText())
+		{
+			GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
+					"actionPerformed", "Event modified. Prompting user.");
+
+			Object[] options = { "Discard Event", "Cancel" };
+			int reply = JOptionPane
+					.showOptionDialog(
+							this,
+							"You have edited this event. Do you want to save your changes?",
+							"Event Changed", JOptionPane.DEFAULT_OPTION,
+							JOptionPane.WARNING_MESSAGE, null, options,
+							options[1]);
+
+			if (reply == JOptionPane.YES_OPTION)
+			{
+				// The user selected to discard the event
+				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
+						"actionPerformed",
+						"User elected to discard the event. Dismissing Panel.");
+
+				dismissPane();
+			}
+			else
+			{
+				// We simply return the user to editing
+				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
+						"actionPerformed",
+						"User selected to continue editing the event.");
+			}
+		}
+		else
+		{
+			dismissPane();
 		}
 	}
 
@@ -445,7 +447,17 @@ public class NewEventPanel extends JFrame implements ActionListener
 			this.setTitle("Timeflecks - Edit Event");
 		}
 
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowAdapter()
+		{
+
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				tryToClose();
+			}
+		});
+
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		this.pack();
 

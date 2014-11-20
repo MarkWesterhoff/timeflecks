@@ -233,7 +233,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		minuteSpinner.setPreferredSize(new Dimension(120, minuteSpinner
 				.getPreferredSize().height));
 
-
 		JPanel durationPanel = new JPanel();
 		FlowLayout panelLayout = new FlowLayout();
 		panelLayout.setHgap(0);
@@ -702,52 +701,51 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 		else if (e.getActionCommand().equals("Cancel"))
 		{
+			tryToClose();
+		}
+	}
+
+	public void tryToClose()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "tryToClose",
+				"Cancel button pressed. Dismissing Panel.");
+
+		if (hasEnteredText())
+		{
 			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-					"actionPerformed",
-					"Cancel button pressed. Dismissing Panel.");
+					"tryToClose", "Task modified. Prompting user.");
 
-			if (hasEnteredText())
+			Object[] options = { "Discard Task", "Cancel" };
+			int reply = JOptionPane
+					.showOptionDialog(
+							this,
+							"You have edited this task. Do you want to save your changes?",
+							"Task Changed", JOptionPane.DEFAULT_OPTION,
+							JOptionPane.WARNING_MESSAGE, null, options,
+							options[1]);
+
+			if (reply == JOptionPane.YES_OPTION)
 			{
+				// The user selected to discard the task
 				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-						"actionPerformed", "Task modified. Prompting user.");
+						"tryToClose",
+						"User elected to discard the task. Dismissing Panel.");
 
-				Object[] options = { "Discard Task", "Cancel" };
-				int reply = JOptionPane
-						.showOptionDialog(
-								this,
-								"You have edited this task. Do you want to save your changes?",
-								"Task Changed", JOptionPane.DEFAULT_OPTION,
-								JOptionPane.WARNING_MESSAGE, null, options,
-								options[1]);
-
-				if (reply == JOptionPane.YES_OPTION)
-				{
-					// The user selected to discard the task
-					GlobalLogger
-							.getLogger()
-							.logp(Level.INFO, "NewTaskPanel",
-									"actionPerformed",
-									"User elected to discard the task. Dismissing Panel.");
-
-					dismissPane();
-				}
-				else
-				{
-					// We simply return the user to editing
-					GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-							"actionPerformed",
-							"User selected to continue editing the task.");
-				}
+				dismissPane();
 			}
 			else
 			{
-				dismissPane();
+				// We simply return the user to editing
+				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+						"tryToClose",
+						"User selected to continue editing the task.");
 			}
 		}
 		else
 		{
-
+			dismissPane();
 		}
+
 	}
 
 	public boolean hasEnteredText()
@@ -840,13 +838,22 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		else
 		{
 			this.setTitle("Timeflecks - Edit Task");
-			
-			//Post notification that a Task is being edited
+
+			// Post notification that a Task is being edited
 			Timeflecks.getSharedApplication().postNotification(
 					TimeflecksEvent.CREATED_EDIT_PANEL);
 		}
+		this.addWindowListener(new WindowAdapter()
+		{
 
-		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				tryToClose();
+			}
+		});
+
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
 		this.pack();
 
