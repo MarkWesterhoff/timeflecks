@@ -26,7 +26,7 @@ public class TaskListTableTransferHandler extends TransferHandler
 	 */
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+		GlobalLogger.getLogger().logp(Level.FINE, this.getClass().getName(),
 				"canImport", "Can import called.");
 		if (!info.isDrop())
 		{

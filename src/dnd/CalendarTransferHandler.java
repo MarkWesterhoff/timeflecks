@@ -22,7 +22,7 @@ public class CalendarTransferHandler extends TransferHandler
 
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler",
+		GlobalLogger.getLogger().logp(Level.FINE, "CalendarTransferHandler",
 				"canImport", "Can import called.");
 		if (!info.isDrop())
 		{
