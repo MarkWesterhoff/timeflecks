@@ -470,7 +470,6 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-<<<<<<< Updated upstream
 		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "mouseClicked", "mouse clicked.");
 		
 		// TODO maybe use taskComponent all through all of this
@@ -485,22 +484,11 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 			}
 		}
 		e.consume();
-=======
-		// TODO Auto-generated method stub
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel",
-				"mouseClicked", "mouse clicked.");
->>>>>>> Stashed changes
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-<<<<<<< Updated upstream
-		
-=======
-		// TODO Auto-generated method stub
-
->>>>>>> Stashed changes
 	}
 
 	@Override
