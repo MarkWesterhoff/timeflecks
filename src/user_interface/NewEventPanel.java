@@ -111,11 +111,11 @@ public class NewEventPanel extends JFrame implements ActionListener
 		if (eventToEdit != null)
 		{
 			startDateChooser = new JDateChooser(eventToEdit.getStartTime(),
-					"MM/dd/yyyy hh:mm:ss a");
+					"MM/dd/yyyy hh:mm a");
 		}
 		else
 		{
-			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
 
 		startDateChooser.setMinimumSize(new Dimension(175, startDateChooser
@@ -140,11 +140,11 @@ public class NewEventPanel extends JFrame implements ActionListener
 		if (eventToEdit != null)
 		{
 			endDateChooser = new JDateChooser(eventToEdit.getStartTime(),
-					"MM/dd/yyyy hh:mm:ss a");
+					"MM/dd/yyyy hh:mm a");
 		}
 		else
 		{
-			endDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+			endDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
 
 		endDateChooser.setMinimumSize(new Dimension(175, endDateChooser

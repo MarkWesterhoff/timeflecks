@@ -28,7 +28,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			taskDescriptionLabel, tagListLabel;
 	private JTextField taskNameField, tagListField;
 	private JDateChooser startDateChooser, dueDateChooser;
-	private SpinnerModel hourModel, minuteModel, secondModel;
+	private SpinnerModel hourModel, minuteModel;
 	private JComboBox<String> taskPriorityComboBox;
 	private JTextArea taskDescriptionArea;
 	private JLabel recurrenceLabel;
@@ -135,11 +135,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit != null)
 		{
 			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
-					"MM/dd/yyyy hh:mm:ss a");
+					"MM/dd/yyyy hh:mm a");
 		}
 		else
 		{
-			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
 
 		startDateChooser.setMinimumSize(new Dimension(175, startDateChooser
@@ -165,11 +165,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit != null)
 		{
 			dueDateChooser = new JDateChooser(taskToEdit.getDueDate(),
-					"MM/dd/yyyy hh:mm:ss a");
+					"MM/dd/yyyy hh:mm a");
 		}
 		else
 		{
-			dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm:ss a");
+			dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
 
 		// HERE
@@ -202,12 +202,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		JLabel hours = new JLabel(" hrs  ");
 		JLabel minutes = new JLabel(" mins  ");
-		JLabel seconds = new JLabel(" secs");
 
 		if (taskToEdit != null)
 		{
 			long duration = taskToEdit.getDuration();
-			int durationSecs = (int) ((duration / 1000) % 60);
 			int durationMins = (int) ((duration / 1000 / 60) % 60);
 			int durationHours = (int) ((duration / 1000 / 60 / 60) % 24);
 
@@ -215,33 +213,26 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			hourModel = new SpinnerNumberModel(durationHours, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(durationMins, 0, 59, 1);
-			secondModel = new SpinnerNumberModel(durationSecs, 0, 59, 1);
 		}
 		else
 		{
 			hourModel = new SpinnerNumberModel(0, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(0, 0, 59, 1);
-			secondModel = new SpinnerNumberModel(0, 0, 59, 1);
 		}
 
 		JSpinner hourSpinner = new JSpinner(hourModel);
 		JSpinner minuteSpinner = new JSpinner(minuteModel);
-		JSpinner secondSpinner = new JSpinner(secondModel);
 
 		hourSpinner.setMinimumSize(new Dimension(25, hourSpinner
 				.getMinimumSize().height));
-		hourSpinner.setPreferredSize(new Dimension(75, hourSpinner
+		hourSpinner.setPreferredSize(new Dimension(120, hourSpinner
 				.getPreferredSize().height));
 
 		minuteSpinner.setMinimumSize(new Dimension(25, minuteSpinner
 				.getMinimumSize().height));
-		minuteSpinner.setPreferredSize(new Dimension(75, minuteSpinner
+		minuteSpinner.setPreferredSize(new Dimension(120, minuteSpinner
 				.getPreferredSize().height));
 
-		secondSpinner.setMinimumSize(new Dimension(25, secondSpinner
-				.getMinimumSize().height));
-		secondSpinner.setPreferredSize(new Dimension(75, secondSpinner
-				.getPreferredSize().height));
 
 		JPanel durationPanel = new JPanel();
 		FlowLayout panelLayout = new FlowLayout();
@@ -253,8 +244,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		durationPanel.add(hours);
 		durationPanel.add(minuteSpinner);
 		durationPanel.add(minutes);
-		durationPanel.add(secondSpinner);
-		durationPanel.add(seconds);
 
 		taskDurationLabel.setLabelFor(durationPanel);
 
@@ -498,7 +487,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				}
 
 				long duration = 0;
-				duration += (Integer) secondModel.getValue() * 1000;
 				duration += (Integer) minuteModel.getValue() * 60 * 1000;
 				duration += (Integer) hourModel.getValue() * 60 * 60 * 1000;
 
@@ -782,7 +770,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		}
 
 		long duration = 0;
-		duration += (Integer) secondModel.getValue() * 1000;
 		duration += (Integer) minuteModel.getValue() * 60 * 1000;
 		duration += (Integer) hourModel.getValue() * 60 * 60 * 1000;
 
