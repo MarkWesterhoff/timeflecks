@@ -336,6 +336,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			repeatComboBox.addItem("Weekly Until");
 			repeatComboBox.addItem("Every Weekday Until");
 			repeatComboBox.addItem("Monthly Until");
+			repeatComboBox.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					recurrenceEndDateChooser.setEnabled(repeatComboBox
+							.getSelectedIndex() > 0);
+				}
+			});
 
 			recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
 
@@ -349,7 +357,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			recurrencePanel.add(new JLabel("  "));
 
 			recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
-
+			recurrenceEndDateChooser.setEnabled(false);
 			recurrenceEndDateChooser.setMinimumSize(new Dimension(120,
 					startDateChooser.getMinimumSize().height));
 			recurrenceEndDateChooser.setPreferredSize(new Dimension(120,
