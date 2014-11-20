@@ -1,28 +1,45 @@
 package dnd;
 
+import java.awt.Point;
 import java.awt.datatransfer.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 
 import core.Task;
 import core.Timeflecks;
+import core.TimeflecksEvent;
 
 import javax.swing.*;
+import javax.swing.TransferHandler.DropLocation;
 
+import user_interface.CalendarPanel;
+import user_interface.ExceptionHandler;
 import logging.GlobalLogger;
 
 public class TaskListTableTransferHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
-	 * Can't import into the table.
+	 * Import into the table is allowed for all Tasks.
 	 */
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"canImport", "Can import called.");
+		if (!info.isDrop())
+		{
+			return false;
+		}
 
-		return false;
+		// Check for Task flavor
+		if (!info.isDataFlavorSupported(new DataFlavor(Task.class, "Task")))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -37,10 +54,11 @@ public class TaskListTableTransferHandler extends TransferHandler
 		// Get the object at the currently pointed at coordinates
 		// Get it's task
 		// Return a transferable that holds that task
-		JTable myTable = ((JTable)c);
+		JTable myTable = ((JTable) c);
 		int row = myTable.getSelectedRow();
-		Task task = Timeflecks.getSharedApplication().getFilteringManager().getFilteredTaskList().get(row);
-		
+		Task task = Timeflecks.getSharedApplication().getFilteringManager()
+				.getFilteredTaskList().get(row);
+
 		return task;
 	}
 
@@ -55,14 +73,67 @@ public class TaskListTableTransferHandler extends TransferHandler
 	}
 
 	/**
-	 * Can't import data into the table.
+	 * Importing data into the table unschedules the Task.
 	 */
 	public boolean importData(TransferHandler.TransferSupport info)
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"importData", "importData called.");
 
-		return false;
+		if (!info.isDrop())
+		{
+			return false;
+		}
+
+		// Get the task that is being dropped.
+		Transferable t = info.getTransferable();
+		Task taskRef;
+		try
+		{
+			taskRef = (Task) t.getTransferData(new DataFlavor(Task.class,
+					"Task"));
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+
+		if (taskRef == null)
+		{
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "importData",
+					"Failed to get task from import data");
+			return false;
+		}
+
+		ArrayList<Task> tasks = Timeflecks.getSharedApplication().getTaskList()
+				.getTasks();
+		for (Task t1 : tasks)
+		{
+			if (t1.getId() == taskRef.getId())
+			{
+				taskRef = t1;
+				break;
+			}
+		}
+
+		// Unschedule the Task
+		taskRef.setStartTime(null);
+
+		try
+		{
+			taskRef.saveToDatabase();
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler.handleDatabaseSaveException(ex, this,
+					"importData", "2102");
+		}
+
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
+
+		return true;
 	}
 
 	/**
