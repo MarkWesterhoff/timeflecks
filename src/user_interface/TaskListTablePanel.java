@@ -20,6 +20,7 @@ import core.Task;
 import core.Timeflecks;
 import core.TimeflecksEvent;
 import core.TimeflecksEventResponder;
+import dnd.TaskListTableTransferHandler;
 
 public class TaskListTablePanel extends JPanel implements TimeflecksEventResponder
 {
@@ -261,7 +262,10 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 		// Actual table
 		table = new JTable(taskListTableModel);
-
+		table.setDragEnabled(true);
+		table.setTransferHandler(new TaskListTableTransferHandler());
+		table.setDropMode(DropMode.USE_SELECTION);
+		
 		// Set column widths
 		table.getColumnModel().getColumn(0)
 				.setMinWidth(MIN_COMPLETED_COLUMN_WIDTH);
