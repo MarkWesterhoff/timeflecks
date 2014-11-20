@@ -153,7 +153,8 @@ public class Timeflecks
 
 		if (this.getMainWindow() != null)
 		{
-			this.getMainWindow().refresh();
+			this.postNotification(TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
+			this.postNotification(TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
 		}
 	}
 
