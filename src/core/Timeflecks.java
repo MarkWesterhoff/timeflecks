@@ -186,7 +186,7 @@ public class Timeflecks
 
 	public void setMainWindow(MainWindow mainWindow)
 	{
-		if (this.mainWindow != mainWindow)
+		if (this.mainWindow != mainWindow && this.mainWindow != null)
 		{
 			this.mainWindow.dispose();
 		}
