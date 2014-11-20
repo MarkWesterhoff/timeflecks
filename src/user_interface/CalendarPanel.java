@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import javax.swing.*;
 
 import core.*;
+import dnd.CalendarTransferHandler;
 import logging.GlobalLogger;
 
 public class CalendarPanel extends JPanel
@@ -20,6 +21,8 @@ public class CalendarPanel extends JPanel
 
 	private Date date;
 	private ArrayList<Scheduleable> itemsToPaint;
+	
+	int topInset;
 
 	/**
 	 * Auto generated default serial version UID
@@ -48,6 +51,7 @@ public class CalendarPanel extends JPanel
 
 		this.drawTimes = drawTimes;
 		this.drawRightSideLine = drawRightSideLine;
+		topInset = 0;
 
 		this.setDate(date);
 		setItemsToPaint(new ArrayList<Scheduleable>());
@@ -61,6 +65,9 @@ public class CalendarPanel extends JPanel
 		// TODO keep this from breaking if you make it too small (down in the
 		// math)
 		this.setMinimumSize(new Dimension(width, height));
+		
+		this.setTransferHandler(new CalendarTransferHandler());
+		
 	}
 
 	/**
@@ -182,7 +189,7 @@ public class CalendarPanel extends JPanel
 		// Go through and draw any tasks at the appropriate place
 		for (Scheduleable t : itemsToPaint)
 		{
-			int firstInset = d.height / 24 - (fontHeight / 2);
+			this.topInset = d.height / 24 - (fontHeight / 2);
 
 			int hourIncrement = d.height / 24;
 
@@ -193,7 +200,7 @@ public class CalendarPanel extends JPanel
 
 			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
 
-			Rectangle frame = new Rectangle(leftInset, firstInset
+			Rectangle frame = new Rectangle(leftInset, this.topInset
 					+ (int) (taskHours * hourIncrement), d.width - rightInset
 					- leftInset, (int) (durationInHours * hourIncrement));
 
@@ -319,6 +326,43 @@ public class CalendarPanel extends JPanel
 	public void setDate(Date date)
 	{
 		this.date = date;
+	}
+	
+	public Date getDateForPoint(Point p)
+	{
+		if (!this.contains(p))
+		{
+			return null;
+		}
+		
+		if(p.getY() < topInset)
+		{
+			return null;
+		}
+		
+		
+		Dimension d = this.getSize();
+			
+		double hourIncrement = d.height / 24;
+		
+		double hourValue = (p.getY() - topInset) / hourIncrement;
+		
+		// Make returnDate with the proper day, now we need to set the hours, mins, and secs
+		Date returnDate = new Date(this.date.getTime());
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(returnDate);
+		c.set(Calendar.HOUR_OF_DAY, (int)hourValue);
+		
+		double preciseMinutes = ((hourValue - (int)hourValue) * 60.0);
+		int minutes = (int)((hourValue - (int)hourValue) * 60.0);
+		
+		c.set(Calendar.MINUTE, minutes);
+		c.set(Calendar.SECOND, (int)((preciseMinutes - minutes) * 60.0));
+		
+		returnDate = c.getTime();
+		
+		return returnDate;
 	}
 
 }
