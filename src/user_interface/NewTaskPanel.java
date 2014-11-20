@@ -340,7 +340,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					recurrenceEndDateChooser.setEnabled(repeatComboBox
+					recurrenceEndDateChooser.setVisible(repeatComboBox
 							.getSelectedIndex() > 0);
 				}
 			});
@@ -357,7 +357,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			recurrencePanel.add(new JLabel("  "));
 
 			recurrenceEndDateChooser = new JDateChooser(null, "MM/dd/yyyy");
-			recurrenceEndDateChooser.setEnabled(false);
+			recurrenceEndDateChooser.setVisible(false);
 			recurrenceEndDateChooser.setMinimumSize(new Dimension(120,
 					startDateChooser.getMinimumSize().height));
 			recurrenceEndDateChooser.setPreferredSize(new Dimension(120,
