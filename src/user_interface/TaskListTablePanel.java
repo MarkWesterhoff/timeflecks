@@ -348,7 +348,9 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 						index));
 			}
 		}
-
+		
+		tagSelector.clearSelection();
+		
 		// Refresh the tags in the selection list
 		// Get tags and sort alphabetically
 		Collection<String> tags = Timeflecks.getSharedApplication()
