@@ -25,7 +25,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 	private JDateChooser startDateChooser, endDateChooser;
 	private JTextArea eventDescriptionArea;
 
-	private JButton saveButton, cancelButton;
+	private JButton saveButton, cancelButton, deleteButton;
 
 	public NewEventPanel()
 	{
@@ -209,13 +209,23 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		cancelButton.addActionListener(this);
 
+
+		
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new BorderLayout());
 		subpanel.setBorder(new EmptyBorder(10, 12, 10, 12));
+		((BorderLayout) subpanel.getLayout()).setHgap(50);
 
 		subpanel.add(saveButton, BorderLayout.EAST);
 		subpanel.add(cancelButton, BorderLayout.WEST);
 
+		if(eventToEdit != null) {
+			deleteButton = new JButton("Delete");
+			deleteButton.setActionCommand("Delete");
+			deleteButton.addActionListener(this);
+			subpanel.add(deleteButton, BorderLayout.CENTER);
+		}
+		
 		this.getContentPane().add(subpanel, BorderLayout.SOUTH);
 
 	}
@@ -340,9 +350,57 @@ public class NewEventPanel extends JFrame implements ActionListener
 		{
 			tryToClose();
 		}
-		else
+		else if (e.getActionCommand().equals("Delete"))
 		{
+			Object[] options = { "Delete Event", "Cancel" };
 
+			int reply = JOptionPane.showOptionDialog(this,
+					"Are you sure you wish to delete the event \"" + eventToEdit.getName()
+							+ "\"?", "Confirm Delete",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					null, options, options[1]);
+
+			if (reply == JOptionPane.YES_OPTION)
+			{
+				// The user selected to delete the Task
+				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
+						"actionPerformed",
+						"User elected to delete Event " + eventToEdit.getName());
+
+				boolean removed = Timeflecks.getSharedApplication()
+						.getTaskList().getEvents().remove(eventToEdit);
+
+				if (!removed)
+				{
+					GlobalLogger
+							.getLogger()
+							.logp(Level.WARNING, "NewEventPanel",
+									"actionPerformed(ActionEvent)",
+									"Selected Event for deletion does not exist in application's EventList.");
+				}
+
+				try
+				{
+					Timeflecks.getSharedApplication().getDBConnector()
+							.delete(eventToEdit.getId());
+				}
+				catch (Exception ex)
+				{
+					ExceptionHandler.handleDatabaseDeleteException(ex,
+							"TaskPanelActionListener",
+							"actionPerformed(ActionEvent)", "1102");
+				}
+			}
+			else
+			{
+				// User selected to not delete task
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"User cancelled Task deletion.");
+			}
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.EVERYTHING_NEEDS_REFRESH); //FIX THIS
+			dismissPane();
 		}
 	}
 
