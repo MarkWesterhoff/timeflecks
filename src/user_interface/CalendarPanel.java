@@ -545,13 +545,12 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		for (Scheduleable existingItem : itemsToPaint)
 		{
 			// Don't return true if we intersect with ourself.
-			if (s == existingItem)
-			 
+			if (s.getName().equals( existingItem.getName()))
 			{
 				continue;
 			}
 			
-			Rectangle existingFrame = getDrawRectangle(s);
+			Rectangle existingFrame = getDrawRectangle(existingItem);
 			if (inputFrame.intersects(existingFrame))
 			{
 				return true;
