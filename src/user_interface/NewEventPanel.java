@@ -399,7 +399,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 						"User cancelled Task deletion.");
 			}
 			Timeflecks.getSharedApplication().postNotification(
-					TimeflecksEvent.EVERYTHING_NEEDS_REFRESH); //FIX THIS
+					TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED); //FIX THIS
 			dismissPane();
 		}
 	}
