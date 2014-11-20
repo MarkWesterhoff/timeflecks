@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import javax.swing.*;
 
 import core.*;
+import core.Event;
 import dnd.CalendarTransferHandler;
 import logging.GlobalLogger;
 
@@ -431,43 +432,96 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 	{
 		return currentPoint;
 	}
-
+	
+	/**
+	 * Gets the Task under the point, if it exists.
+	 * 
+	 * @param p
+	 *            the point
+	 * @return a reference to the Task under the point if it exists, null
+	 *         otherwise
+	 */
 	public Task getTaskUnderMouse(Point p)
 	{
-		if ( p == null)
+		if (p == null)
 		{
 			return null;
 		}
-		
-		
+		Scheduleable item = getScheduleableUnderMouse(p);
+
+		// Return null if there is no item under the mouse or it is a non-Task
+		if (item == null || !(item instanceof Task))
+		{
+			return null;
+		}
+
+		return (Task) item;
+	}
+
+	/**
+	 * Gets the Event under the point, if it exists.
+	 * 
+	 * @param p
+	 *            the point
+	 * @return a reference to the Event under the point if it exists, null
+	 *         otherwise
+	 */
+	public Event getEventUnderMouse(Point p)
+	{
+		if (p == null)
+		{
+			return null;
+		}
+		Scheduleable item = getScheduleableUnderMouse(p);
+
+		// Return null if there is no item under the mouse or it is a non-Event
+		if (item == null || !(item instanceof Event))
+		{
+			return null;
+		}
+
+		return (Event) item;
+	}
+
+	/**
+	 * Gets the Scheduleable under the point using math.
+	 * 
+	 * @param p
+	 *            the point
+	 * @return a Scheduleable object if one exists under p, null otherwise
+	 */
+	private Scheduleable getScheduleableUnderMouse(Point p)
+	{
+		if (p == null)
+		{
+			return null;
+		}
+
 		for (Scheduleable t : itemsToPaint)
 		{
-			if (t instanceof Task)
+			int insetFromLeft = 0; // See manual 10 later
+			int insetFromRight = 8;
+
+			Dimension d = this.getSize();
+
+			int hourIncrement = d.height / 24;
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(t.getStartTime());
+			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
+
+			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
+
+			Rectangle frame = new Rectangle(insetFromLeft, this.topInset
+					+ (int) (taskHours * hourIncrement), d.width
+					- insetFromRight - insetFromLeft,
+					(int) (durationInHours * hourIncrement));
+
+			if (frame.contains(p))
 			{
-				int insetFromLeft = 0; // See manual 10 later
-				int insetFromRight = 8;
-
-				Dimension d = this.getSize();
-
-				int hourIncrement = d.height / 24;
-
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(t.getStartTime());
-				double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
-						+ (double) calendar.get(Calendar.MINUTE) / 60.0;
-
-				double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
-
-				Rectangle frame = new Rectangle(insetFromLeft, this.topInset
-						+ (int) (taskHours * hourIncrement), d.width
-						- insetFromRight - insetFromLeft,
-						(int) (durationInHours * hourIncrement));
-
-				if (frame.contains(p))
-				{
-					// We already checked instanceof, so this is ok
-					return (Task) t;
-				}
+				// We already checked instanceof, so this is ok
+				return t;
 			}
 		}
 		return null;
@@ -476,17 +530,35 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel", "mouseClicked", "mouse clicked.");
-		
+		GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel",
+				"mouseClicked", "mouse clicked.");
+
 		// TODO maybe use taskComponent all through all of this
-		
-		if (e.getClickCount() == 2 && this.getTaskUnderMouse(this.getCurrentMousePoint()) != null){
-			Task toEdit = this.getTaskUnderMouse(this.getCurrentMousePoint());
-			if (toEdit != null)
+
+		if (e.getClickCount() == 2)
+		{
+			Task toEditTask = this.getTaskUnderMouse(this
+					.getCurrentMousePoint());
+			if (toEditTask != null)
 			{
-				// Check again in case the mouse moved
-				NewTaskPanel p = new NewTaskPanel(toEdit);
+				GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel",
+						"mouseClicked",
+						"Double clicked on Task. Opening NewTaskPanel");
+				NewTaskPanel p = new NewTaskPanel(toEditTask);
 				p.displayFrame();
+				return;
+			}
+
+			Event toEditEvent = this.getEventUnderMouse(this
+					.getCurrentMousePoint());
+			if (toEditEvent != null)
+			{
+				GlobalLogger.getLogger().logp(Level.INFO, "CalendarPanel",
+						"mouseClicked",
+						"Double clicked on Event. Opening NewTaskPanel");
+				NewEventPanel p = new NewEventPanel(toEditEvent);
+				p.displayFrame();
+				return;
 			}
 		}
 		e.consume();
