@@ -139,7 +139,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		if (eventToEdit != null)
 		{
-			endDateChooser = new JDateChooser(eventToEdit.getStartTime(),
+			endDateChooser = new JDateChooser(eventToEdit.getEndTime(),
 					"MM/dd/yyyy hh:mm a");
 		}
 		else
