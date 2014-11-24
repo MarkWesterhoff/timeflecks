@@ -1,7 +1,9 @@
 /bin
+/build
 /.settings
 .classpath
 .project
 .DS_Store
 *.class
 *.db
+*.jar
