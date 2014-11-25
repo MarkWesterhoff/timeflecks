@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="jar-notest" name="Create Runnable Jar for Project timeflecks">
-    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
+<project default="jar" name="Create Runnable Jar for Project timeflecks">
 
-	<path id = "deps_classpath">
+    <!-- ANT 1.7 is required -->
+
+	<path id = "deps_classpath-test">
 		<pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
 		<pathelement path="lib/junit-4.11.jar" />
 		<pathelement path="lib/jcalendar-1.4.jar" />
@@ -14,20 +14,24 @@
 		<pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
 		<pathelement path="lib/jcalendar-1.4.jar" />
 	</path>
+
     <property name="jarname" value="Timeflecks.jar" />
 
+    <!-- remove all build files -->
 	<target name="clean">
 		<delete dir="bin"/>
         <delete file="${jarname}"/>
 	</target>
 	
-	<target name="compile">
+    <!-- build all .class files, including jUnit tests -->
+	<target name="compile-test">
 		<mkdir dir="bin"/>
 		<javac srcdir="src" destdir="bin" includeantruntime="false">
-			<classpath refid="deps_classpath" />
+			<classpath refid="deps_classpath-test" />
 		</javac>
 	</target>
 
+    <!-- build all .class files, except jUnit tests -->
     <target name="compile-notest">
 		<mkdir dir="bin"/>
 		<javac srcdir="src" destdir="bin" includeantruntime="false">
@@ -36,16 +40,8 @@
 		</javac>
 	</target>
 	
-	<target name="jar" depends="compile">
-		<jar destfile="${jarname}" basedir="bin">
-            <zipgroupfileset dir="lib" includes="*.jar" />
-			<manifest>
-	            <attribute name="Main-Class" value="core.Timeflecks"/>
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="jar-notest" depends="compile-notest">
+    <!-- output executable jar file -->
+	<target name="jar" depends="compile-notest">
 		<jar destfile="${jarname}" basedir="bin">
             <zipgroupfileset dir="lib" includes="*.jar" excludes="junit*.jar,hamcrest*.jar" />
 			<manifest>
@@ -53,4 +49,21 @@
 			</manifest>
 		</jar>
 	</target>
+
+<!-- Insert classname for main error-checker here -->
+    <property name="jUnitMain" value="core.Timeflecks" />
+
+    <!-- run jUnit tests -->
+    <target name="test" depends="compile-test">
+        <java classname="${jUnitMain}" fork="true">
+            <classpath>
+                <pathelement path="bin/" />
+                <pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
+                <pathelement path="lib/junit-4.11.jar" />
+                <pathelement path="lib/jcalendar-1.4.jar" />
+                <pathelement path="lib/hamcrest-core-1.3.jar" />
+            </classpath>
+        </java>
+    </target>
+
 </project>
