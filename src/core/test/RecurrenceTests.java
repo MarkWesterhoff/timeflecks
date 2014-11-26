@@ -31,6 +31,10 @@ public class RecurrenceTests
 				, "Testing with end date " + c.getTime().toString());
 		
 		Recurrence r = new WeeklyRecurrence(t,c.getTime());
+		for(Task ta : r.getTasks()) {
+			Timeflecks.getSharedApplication().getTaskList()
+			.addTask(ta); 
+		}
 		assertEquals("Recurrence should add 15 new tasks for weekly",
 				Timeflecks.getSharedApplication().getTaskList().getTasks().size(),15 + currentTaskNum);
 		currentTaskNum += 15;
@@ -39,6 +43,10 @@ public class RecurrenceTests
 					.get(currentTaskNum-1).getDueDate().compareTo(c.getTime()) < 1);
 		
 		Recurrence r2 = new DailyRecurrence(t,c.getTime());
+		for(Task ta : r2.getTasks()) {
+			Timeflecks.getSharedApplication().getTaskList()
+			.addTask(ta); 
+		}
 		assertEquals("Recurrence should add 101 new tasks for daily",
 				Timeflecks.getSharedApplication().getTaskList().getTasks().size(),101 + currentTaskNum);
 		currentTaskNum += 101;
@@ -47,6 +55,10 @@ public class RecurrenceTests
 					.get(currentTaskNum-1).getDueDate().compareTo(c.getTime()) < 1);
 		
 		Recurrence r3 = new MonthlyRecurrence(t,c.getTime());
+		for(Task ta : r3.getTasks()) {
+			Timeflecks.getSharedApplication().getTaskList()
+			.addTask(ta); 
+		}
 		assertEquals("Recurrence should add 4 new tasks for Monthly",
 				Timeflecks.getSharedApplication().getTaskList().getTasks().size(),4 + currentTaskNum);
 		currentTaskNum += 4;
@@ -55,6 +67,10 @@ public class RecurrenceTests
 					.get(currentTaskNum-1).getDueDate().compareTo(c.getTime()) < 1);
 		
 		Recurrence r4 = new WeekDayRecurrence(t,c.getTime());
+		for(Task ta : r4.getTasks()) {
+			Timeflecks.getSharedApplication().getTaskList()
+			.addTask(ta); 
+		}
 		assertEquals("Recurrence should add 72 new tasks for WeekDays",
 				Timeflecks.getSharedApplication().getTaskList().getTasks().size() - currentTaskNum, 72);
 		currentTaskNum += 72;
