@@ -241,7 +241,7 @@ public class Timeflecks
 	{
 		// This variable is not used. Simply creating the application is
 		// sufficient to run the application.
-		@SuppressWarnings("unused")
+//		@SuppressWarnings("unused")
 		Timeflecks application = Timeflecks.getSharedApplication();
 		application.postLaunchSetUp();
 	}
