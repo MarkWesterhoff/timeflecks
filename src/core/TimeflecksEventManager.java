@@ -1,6 +1,7 @@
 package core;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
@@ -18,6 +19,8 @@ public class TimeflecksEventManager
 	 */
 	public void addListener(TimeflecksEventResponder toAdd)
 	{
+		Objects.requireNonNull(toAdd);
+		
 		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
 				"addListener", "Adding listener " + toAdd);
 		listeners.add(toAdd);
@@ -32,8 +35,12 @@ public class TimeflecksEventManager
 	 */
 	public void removeListener(TimeflecksEventResponder toRemove)
 	{
+		Objects.requireNonNull(toRemove);
+		
 		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
 				"removeListener", "Removing listener " + toRemove);
+		
+		listeners.remove(toRemove);
 	}
 
 	/**
@@ -47,6 +54,8 @@ public class TimeflecksEventManager
 	 */
 	public void postEvent(TimeflecksEvent e)
 	{
+		Objects.requireNonNull(e);
+		
 		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
 				"postEvent", "Posting event " + e + " to all listeners.");
 

@@ -52,8 +52,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		// When it is created, the main window will register itself as a
 		// listener for TimeflecksEvents
-		Timeflecks.getSharedApplication().registerForTimeflecksEvents(
-				Timeflecks.getSharedApplication().getMainWindow());
+		MainWindow mainWindow = this;
+		Timeflecks.getSharedApplication().registerForTimeflecksEvents(mainWindow);
 
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.GENERAL_REFRESH);

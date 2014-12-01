@@ -154,9 +154,6 @@ public final class SQLiteConnector
 				"getConnection",
 				"Establishing conenction with database " + databasePath);
 		
-		//TODO: remove (debugging)
-		Thread.dumpStack();
-		
 		String connectionString = "jdbc:sqlite:" + databasePath;
 		return DriverManager.getConnection(connectionString);
 	}
