@@ -48,10 +48,11 @@ public class Timeflecks
 
 		taskList = new TaskList();
 
-		// NOTE: A call to postLaunchSetup() must come after the constructor
+		// NOTE: The actual application is launched by calling launchDisplay()
+		// after the constructor, which is necessary to avoid invokeLater.
 	}
 
-	public void postLaunchSetUp()
+	public void launchDisplay()
 	{
 		// Registers for timeflecks events
 		this.filteringManager = new FilteringManager(new TagFilterComparator(),
@@ -239,11 +240,8 @@ public class Timeflecks
 
 	public static void main(String[] args)
 	{
-		// This variable is not used. Simply creating the application is
-		// sufficient to run the application.
-//		@SuppressWarnings("unused")
 		Timeflecks application = Timeflecks.getSharedApplication();
-		application.postLaunchSetUp();
+		application.launchDisplay();
 	}
 
 }
