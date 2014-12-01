@@ -14,10 +14,10 @@ public class NewTaskPanelTest
 	@Test
 	public void newPanelTest()
 	{
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable()
+//		{
+//			public void run()
+//			{
 
 				try
 				{
@@ -44,8 +44,8 @@ public class NewTaskPanelTest
 					e.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Unable to " + e);
 				}
-			}
-		});
+//			}
+//		});
 	}
 	
 	@Test

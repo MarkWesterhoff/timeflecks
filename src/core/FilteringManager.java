@@ -41,16 +41,16 @@ public class FilteringManager implements TimeflecksEventResponder
 		
 		// Register to receive TimeflecksEvents
 		final FilteringManager thisFiltertingManager = this;
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			
-			@Override
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable()
+//		{
+//			
+//			@Override
+//			public void run()
+//			{
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(thisFiltertingManager);
 				
-			}
-		});
+//			}
+//		});
 	}
 
 	public ArrayList<Task> getFilteredTaskList()

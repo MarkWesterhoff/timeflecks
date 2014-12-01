@@ -41,13 +41,19 @@ public class Timeflecks
 	private MainWindow mainWindow;
 	private TimeflecksEventManager eventManager;
 	private FilteringManager filteringManager;
-	
+
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
 
 		taskList = new TaskList();
-		
+
+		// NOTE: A call to postLaunchSetup() must come after the constructor
+	}
+
+	public void postLaunchSetUp()
+	{
+		// Registers for timeflecks events
 		this.filteringManager = new FilteringManager(new TagFilterComparator(),
 				new TagCollection(), new SearchFilterComparator());
 
@@ -87,6 +93,7 @@ public class Timeflecks
 		}
 
 		setMainWindow(new MainWindow());
+
 	}
 
 	public TaskList getTaskList()
@@ -99,11 +106,12 @@ public class Timeflecks
 		Objects.requireNonNull(taskList);
 		this.taskList = taskList;
 	}
-	
-	public FilteringManager getFilteringManager() {
+
+	public FilteringManager getFilteringManager()
+	{
 		return this.filteringManager;
 	}
-	
+
 	public SQLiteConnector getDBConnector()
 	{
 		return dbConnector;
@@ -118,13 +126,13 @@ public class Timeflecks
 	{
 		return idGenerator;
 	}
-	
+
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
 		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
-	
+
 	public File getCurrentFile()
 	{
 		return currentFile;
@@ -235,6 +243,7 @@ public class Timeflecks
 		// sufficient to run the application.
 		@SuppressWarnings("unused")
 		Timeflecks application = Timeflecks.getSharedApplication();
+		application.postLaunchSetUp();
 	}
 
 }

@@ -37,10 +37,10 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		showWeekView = true;
 		mainDate = new Date();
 
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable()
+//		{
+//			public void run()
+//			{
 				setTitle("Timeflecks");
 
 				// Set the layout manager
@@ -61,8 +61,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 				Timeflecks.getSharedApplication().postNotification(
 						TimeflecksEvent.GENERAL_REFRESH);
-			}
-		});
+//			}
+//		});
 
 	}
 

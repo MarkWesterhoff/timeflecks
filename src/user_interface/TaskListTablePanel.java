@@ -282,16 +282,16 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		
 		// Register for Timeflecks events
 		final TaskListTablePanel thisTaskListTablePanel = this;
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable()
+//		{
+//			@Override
+//			public void run()
+//			{
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
 						thisTaskListTablePanel);
 
-			}
-		});
+//			}
+//		});
 	}
 
 	public JTextField getSearchField() {

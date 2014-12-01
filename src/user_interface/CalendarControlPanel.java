@@ -42,14 +42,14 @@ public class CalendarControlPanel extends JPanel implements
 
 		final CalendarControlPanel cp = this;
 
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			public void run()
-			{
+//		SwingUtilities.invokeLater(new Runnable()
+//		{
+//			public void run()
+//			{
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
 						cp);
-			}
-		});
+//			}
+//		});
 	}
 
 	public void addDayWeekToggle(boolean showWeekView)
