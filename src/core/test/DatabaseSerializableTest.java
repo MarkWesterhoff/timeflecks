@@ -21,10 +21,10 @@ public class DatabaseSerializableTest
 	public void testIDs()
 	{
 		// Reset the application
-		Timeflecks.resetSharedApplication();
+		// Timeflecks.resetSharedApplication();
 
-		// Timeflecks application = Timeflecks.getSharedApplication();
-		// application.launchDisplay();
+		Timeflecks application = Timeflecks.getSharedApplication();
+		application.launchDisplay();
 
 		DatabaseSerializable s1 = new Task("Task 1");
 		long first_id = s1.getId();
@@ -51,8 +51,6 @@ public class DatabaseSerializableTest
 		DatabaseSerializable s5 = new Task("Task 4");
 		assertEquals("Set ordering should not disrupt ID creation",
 				((DatabaseSerializable) s5).getId(), 4 + first_id);
-
-		
 
 	}
 }
