@@ -18,32 +18,28 @@ public class NewTaskPanelTest
 		{
 			public void run()
 			{
+				//TODO: remove (debug)
+				System.out.println("HELLO! 5");
+				JFrame newFrame = new JFrame("Timeflecks - Add New Task");
+				Container c = newFrame.getContentPane();
 
-				try
-				{
-					JFrame newFrame = new JFrame("Timeflecks - Add New Task");
-					Container c = newFrame.getContentPane();
+				NewTaskPanel p = new NewTaskPanel();
 
-					NewTaskPanel p = new NewTaskPanel();
+				c.add(p, BorderLayout.CENTER);
 
-					c.add(p, BorderLayout.CENTER);
+				newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-					newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				newFrame.pack();
 
-					newFrame.pack();
+				// newFrame.setSize(374, 450);
+				newFrame.setAutoRequestFocus(true);
+				newFrame.setResizable(false);
 
-					// newFrame.setSize(374, 450);
-					newFrame.setAutoRequestFocus(true);
-					newFrame.setResizable(false);
+				newFrame.setVisible(true);
 
-					newFrame.setVisible(true);
-
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Unable to " + e);
-				}
+				// Clean up
+				newFrame.dispose();
+				System.out.println("END 5");
 			}
 		});
 	}
@@ -58,5 +54,9 @@ public class NewTaskPanelTest
 
 		p.displayFrame();
 		p1.displayFrame();
+		
+		// Clean up
+		p.dispose();
+		p1.dispose();
 	}
 }

@@ -11,7 +11,9 @@ public class MainWindowTest
 	public void showMainWindowTest()
 	{
 		MainWindow window = new MainWindow();
-
 		window.setVisible(true);
+		
+		// Clean up
+		window.dispose();
 	}
 }

@@ -14,24 +14,19 @@ public class MenuBarTest
 	{
 		MenuBar menu = new MenuBar();
 
-		try
-		{
-			JFrame newFrame = new JFrame("Menu Bar Test");
+		JFrame newFrame = new JFrame("Menu Bar Test");
 
-			newFrame.setJMenuBar(menu);
+		newFrame.setJMenuBar(menu);
 
-			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-			newFrame.setSize(400, 400);
-			newFrame.setAutoRequestFocus(true);
-			newFrame.setResizable(true);
+		newFrame.setSize(400, 400);
+		newFrame.setAutoRequestFocus(true);
+		newFrame.setResizable(true);
 
-			newFrame.setVisible(true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to " + e);
-		}
+		newFrame.setVisible(true);
+		
+		// Clean up
+		newFrame.dispose();
 	}
 }

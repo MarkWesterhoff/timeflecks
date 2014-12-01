@@ -46,8 +46,11 @@ public class CalendarControlPanel extends JPanel implements
 		{
 			public void run()
 			{
+				//TODO: remove (debug)
+				System.out.println("HELLO! 2");
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
 						cp);
+				System.out.println("END 2");
 			}
 		});
 	}

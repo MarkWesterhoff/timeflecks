@@ -83,6 +83,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		// Clean up
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 		new File("testConstructor.db").delete();
 	}
 	
@@ -143,6 +144,7 @@ public class SQLiteConnectorTest {
 		// Negative tests
 		
 		// Clean up
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 		new File("testSaveAndLoad.db").delete();
 	}
 	
@@ -179,6 +181,7 @@ public class SQLiteConnectorTest {
 		}
 		
 		// Clean up
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 		new File("testDelete.db").delete();
 	}
 	
@@ -206,6 +209,7 @@ public class SQLiteConnectorTest {
 		assertEquals("Max ID should be equal to highestID", t2.getId(), maxId);
 		
 		// Clean up
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 		new File("testGetHighestId.db").delete();
 	}
 	
@@ -269,6 +273,7 @@ public class SQLiteConnectorTest {
 					+ Float.toString(numTasks*2/((float)time2/1000)));
 		
 		// Clean up and delete file
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 		new File("stressTestSerialization.db").delete();
 	}
 }

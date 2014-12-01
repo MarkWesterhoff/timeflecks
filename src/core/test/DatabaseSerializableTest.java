@@ -18,6 +18,9 @@ public class DatabaseSerializableTest
 	@Test
 	public void testIDs()
 	{
+		// Reset the application
+		Timeflecks.resetSharedApplication();
+		
 		DatabaseSerializable s1 = new Task("Task 1");
 		long first_id = s1.getId();
 		assertEquals("The IDs should start at 0.", s1.getId(), 0 + first_id);
@@ -27,12 +30,13 @@ public class DatabaseSerializableTest
 				s2.getId(), 1 + first_id);
 
 		DatabaseSerializable s3 = new Event("Event 1", new Date(
-				System.currentTimeMillis()), new Date(System.currentTimeMillis()+60000));
-		assertEquals("Events should keep the same ID counting scheue as Tasks",
+				System.currentTimeMillis()), new Date(
+				System.currentTimeMillis() + 60000));
+		assertEquals("Events should keep the same ID counting scheme as Tasks",
 				s3.getId(), 2 + first_id);
 
 		Task t4 = new Task("Task 3");
-		assertEquals("Tasks should keep the same ID counting scheue as Events",
+		assertEquals("Tasks should keep the same ID counting scheme as Events",
 				((DatabaseSerializable) t4).getId(), 3 + first_id);
 
 		t4.setOrdering(0);
@@ -42,5 +46,8 @@ public class DatabaseSerializableTest
 		DatabaseSerializable s5 = new Task("Task 4");
 		assertEquals("Set ordering should not disrupt ID creation",
 				((DatabaseSerializable) s5).getId(), 4 + first_id);
+
+		// Reset the application
+		Timeflecks.resetSharedApplication();
 	}
 }

@@ -47,8 +47,10 @@ public class FilteringManager implements TimeflecksEventResponder
 			@Override
 			public void run()
 			{
+				//TODO: remove (debug)
+				System.out.println("HELLO! 1");
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(thisFiltertingManager);
-				
+				System.out.println("END! 1");
 			}
 		});
 	}

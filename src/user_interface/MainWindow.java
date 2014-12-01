@@ -41,6 +41,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		{
 			public void run()
 			{
+				//TODO: remove (debug)
+				System.out.println("HELLO! 3");
 				setTitle("Timeflecks");
 
 				// Set the layout manager
@@ -61,6 +63,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 				Timeflecks.getSharedApplication().postNotification(
 						TimeflecksEvent.GENERAL_REFRESH);
+				System.out.println("END 3");
 			}
 		});
 

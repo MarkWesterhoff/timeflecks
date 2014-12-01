@@ -287,9 +287,11 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 			@Override
 			public void run()
 			{
+				//TODO: remove (debug)
+				System.out.println("HELLO! 4");
 				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
 						thisTaskListTablePanel);
-
+				System.out.println("END 4");
 			}
 		});
 	}
