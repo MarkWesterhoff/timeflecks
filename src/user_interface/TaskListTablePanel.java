@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.logging.Level;
+import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -87,8 +88,9 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		sortSet.add(spacer);
 
 		// Up and down bump buttons
-		upButton = createIconedButton("resources/up.png", "Move Up", al);
-		downButton = createIconedButton("resources/down.png", "Move Down", al);
+
+		upButton = createIconedButton(getClass().getResource("/resources/up.png"), "Move Up", al);
+		downButton = createIconedButton(getClass().getResource("/resources/down.png"), "Move Down", al);
 
 		// Goes with buttons
 		sortSet.add(upButton);
@@ -298,12 +300,15 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		return searchField;
 	}
 	
-	private JButton createIconedButton(String iconPath, String buttonName,
+	private JButton createIconedButton(URL iconURL, String buttonName,
 			ActionListener al)
 	{
-		ImageIcon buttonIcon = new ImageIcon(iconPath);
-		JButton button;
-		if (buttonIcon.getImageLoadStatus() == java.awt.MediaTracker.COMPLETE)
+        JButton button = null;
+        ImageIcon buttonIcon = null;
+        if(iconURL != null) {
+		    buttonIcon = new ImageIcon(iconURL);
+        }
+		if (buttonIcon != null && buttonIcon.getImageLoadStatus() == java.awt.MediaTracker.COMPLETE)
 		{
 			button = new JButton(buttonIcon);
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTabelPanel",
