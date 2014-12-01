@@ -32,6 +32,17 @@ public class Timeflecks
 
 		return instance;
 	}
+	
+	public static void resetSharedApplication()
+	{
+		synchronized (initializerLock)
+		{
+			if (instance != null)
+			{
+				instance.reset();
+			}
+		}
+	}
 
 	// Instance
 	private TaskList taskList;
@@ -237,7 +248,42 @@ public class Timeflecks
 
 		eventManager.postEvent(e);
 	}
+	
+	/**
+	 * Resets the application, including destroying the database.
+	 */
+	private void reset()
+	{
+		GlobalLogger.getLogger().logp(Level.INFO, "Timeflecks", "reset()",
+				"Resetting the application");
+		
+		// Wipe the database
+		try
+		{
+			getDBConnector().dropSerializeTable();
+		}
+		catch (SQLException e)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
+					"resetSharedApplication()", "Unable to drop DB table");
+		}
 
+		// Get rid of all parts of the application.
+		taskList = null;
+		dbConnector = null;
+		idGenerator = null;
+		currentFile = null;
+
+		if (mainWindow != null)
+		{
+			mainWindow.dispose();
+			mainWindow = null;
+		}
+
+		eventManager = null;
+		filteringManager = null;
+	}
+	
 	public static void main(String[] args)
 	{
 		Timeflecks application = Timeflecks.getSharedApplication();

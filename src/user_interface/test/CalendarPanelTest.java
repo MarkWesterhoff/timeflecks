@@ -1,7 +1,5 @@
 package user_interface.test;
 
-import static org.junit.Assert.fail;
-
 import java.awt.FlowLayout;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -24,67 +22,61 @@ public class CalendarPanelTest
 	@Test
 	public void testCalendarPanel()
 	{
-		try
+		JFrame newFrame = new JFrame("Calendar Test");
+		JPanel container = new JPanel();
+
+		FlowLayout panelLayout = new FlowLayout();
+		panelLayout.setHgap(0);
+		panelLayout.setVgap(0);
+		container.setLayout(panelLayout);
+
+		JScrollPane s = new JScrollPane(container);
+
+		int width = 150;
+		int height = 1000;
+
+		for (int i = 0; i < 7; i++)
 		{
-			JFrame newFrame = new JFrame("Calendar Test");
-			JPanel container = new JPanel();
-
-			FlowLayout panelLayout = new FlowLayout();
-			panelLayout.setHgap(0);
-			panelLayout.setVgap(0);
-			container.setLayout(panelLayout);
-
-			JScrollPane s = new JScrollPane(container);
-
-			int width = 150;
-			int height = 1000;
-
-			for (int i = 0; i < 7; i++)
+			CalendarPanel p;
+			if (i == 0)
 			{
-				CalendarPanel p;
-				if (i == 0)
-				{
-					p = new CalendarPanel(new Date(), true, true, width, height);
-				}
-				else if (i == 6)
-				{
-					p = new CalendarPanel(new Date(), false, false, width,
-							height);
-				}
-				else
-				{
-					p = new CalendarPanel(new Date(), false, true, width,
-							height);
-				}
-
-				container.add(p);
-
+				p = new CalendarPanel(new Date(), true, true, width, height);
+			}
+			else if (i == 6)
+			{
+				p = new CalendarPanel(new Date(), false, false, width,
+						height);
+			}
+			else
+			{
+				p = new CalendarPanel(new Date(), false, true, width,
+						height);
 			}
 
-			// container.setSize(400,400);
+			container.add(p);
 
-			newFrame.getContentPane().add(s);
-
-			newFrame.pack();
-
-			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-			newFrame.setSize(400, 400);
-			newFrame.setAutoRequestFocus(true);
-			newFrame.setResizable(true);
-
-			newFrame.setVisible(true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to " + e);
 		}
 
+		// container.setSize(400,400);
+
+		newFrame.getContentPane().add(s);
+
+		newFrame.pack();
+
+		newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		newFrame.setSize(400, 400);
+		newFrame.setAutoRequestFocus(true);
+		newFrame.setResizable(true);
+
+		newFrame.setVisible(true);
+		
+		// Clean up
+		newFrame.dispose();
 	}
 	
 	@Test
-	public void testCalendarPanelWithEvents()
+	public void testCalendarPanelWithEvents() throws SQLException, IOException
 	{
 		Timeflecks.getSharedApplication().getTaskList()
 				.setEvents(new ArrayList<Event>());
@@ -103,63 +95,37 @@ public class CalendarPanelTest
 		Event testEvent = new Event("Test", d, f);
 
 		Timeflecks.getSharedApplication().getTaskList().addEvent(testEvent);
-
-		try
-		{
-			Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
-		}
-		catch (SQLException e)
-		{
-			e.printStackTrace();
-			fail("Unexpected SQLException.");
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			fail("Unexpected IOException.");
-		}
-
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-			fail("Unexpected InterruptedException.");
-		}
+		
+		Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
 
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.EVERYTHING_NEEDS_REFRESH);
+		
+		// Clean up
+		Timeflecks.getSharedApplication().getMainWindow().dispose();
 	}
 
 	@Test
 	public void testCalendarPanelLarge()
 	{
-		try
-		{
-			JFrame newFrame = new JFrame("Calendar Test");
+		JFrame newFrame = new JFrame("Calendar Test");
 
-			CalendarPanel p = new CalendarPanel(new Date(), true, true, 400,
-					400);
+		CalendarPanel p = new CalendarPanel(new Date(), true, true, 400,
+				400);
 
-			newFrame.getContentPane().add(p);
+		newFrame.getContentPane().add(p);
 
-			newFrame.pack();
+		newFrame.pack();
 
-			newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		newFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-			newFrame.setSize(400, 400);
-			newFrame.setAutoRequestFocus(true);
-			newFrame.setResizable(true);
+		newFrame.setSize(400, 400);
+		newFrame.setAutoRequestFocus(true);
+		newFrame.setResizable(true);
 
-			newFrame.setVisible(true);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Unable to " + e);
-		}
+		newFrame.setVisible(true);
+		
+		// Clean up
+		newFrame.dispose();
 	}
-
 }

@@ -121,5 +121,10 @@ public class TaskTest
 		assertEquals("End time is calculated incorrectly.", test.getEndTime(),c.getTime());
 		assertTrue("scheduled tasks should return true in isScheduled()", test.isScheduled());
 	}
+	
+	@Test
+	public void testFailing() {
+		throw new IllegalArgumentException();
+	}
 
 }

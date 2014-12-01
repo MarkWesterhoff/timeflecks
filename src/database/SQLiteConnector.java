@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 import core.Task;
 import core.Event;
+import core.Timeflecks;
 import logging.GlobalLogger;
 import utility.ByteUtility;
 import utility.FileUtility;
@@ -41,8 +42,6 @@ public final class SQLiteConnector
 			+ "'type' CHAR(1) NOT NULL,"
 			+ "'serialized_time_object' BLOB NOT NULL )";
 
-	// This is intentionally not used.
-	@SuppressWarnings("unused")
 	private static final String SQL_CLEAR_SERIALIZE_TABLE = "DELETE FROM 'serialized_time_objects'";
 
 	private static final String SQL_INSERT_OR_REPLACE_SERIALIZED_OBJECT = "INSERT OR REPLACE "
@@ -154,6 +153,10 @@ public final class SQLiteConnector
 		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
 				"getConnection",
 				"Establishing conenction with database " + databasePath);
+		
+		//TODO: remove (debugging)
+		Thread.dumpStack();
+		
 		String connectionString = "jdbc:sqlite:" + databasePath;
 		return DriverManager.getConnection(connectionString);
 	}
@@ -166,8 +169,7 @@ public final class SQLiteConnector
 	 * @throws SQLException
 	 *             when there is a problem dropping the table
 	 */
-	@SuppressWarnings("unused")
-	private void dropSerializeTable() throws SQLException
+	public void dropSerializeTable() throws SQLException
 	{
 		Connection c = this.getConnection();
 		try
