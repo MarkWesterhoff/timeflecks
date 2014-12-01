@@ -14,16 +14,16 @@ import logging.GlobalLogger;
 public class FilteringManager implements TimeflecksEventResponder
 {
 	private ArrayList<Task> tasks;
-	
+
 	// Tag filtering
 	private TagFilterComparator tagFilterComparator;
 	private TagCollection tagCollection;
 	private SearchFilterComparator searchFilterComparator;
 	private Comparator<Task> taskComparator;
-	
+
 	// Search filtering
-	private String searchText; 
-	
+	private String searchText;
+
 	public FilteringManager(TagFilterComparator tagFilterComparator,
 			TagCollection tagCollection,
 			SearchFilterComparator searchFilterComparator)
@@ -38,19 +38,12 @@ public class FilteringManager implements TimeflecksEventResponder
 
 		tasks = new ArrayList<Task>();
 		searchText = "";
-		
+
 		// Register to receive TimeflecksEvents
 		final FilteringManager thisFiltertingManager = this;
-//		SwingUtilities.invokeLater(new Runnable()
-//		{
-//			
-//			@Override
-//			public void run()
-//			{
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(thisFiltertingManager);
-				
-//			}
-//		});
+
+		Timeflecks.getSharedApplication().registerForTimeflecksEvents(
+				thisFiltertingManager);
 	}
 
 	public ArrayList<Task> getFilteredTaskList()
@@ -74,18 +67,20 @@ public class FilteringManager implements TimeflecksEventResponder
 		Objects.requireNonNull(taskComparator);
 		this.taskComparator = taskComparator;
 	}
-	
+
 	/**
 	 * Sets the text to search by. "" searchText indicates search is off.
 	 * 
-	 * @param searchText the new text to search by
+	 * @param searchText
+	 *            the new text to search by
 	 */
-	public void setSearchText(String searchText) {
+	public void setSearchText(String searchText)
+	{
 		Objects.requireNonNull(searchText);
-		
+
 		this.searchText = searchText;
 	}
-	
+
 	/**
 	 * Repopulates the list of tasks to hold based on the tags the user has
 	 * selected.
@@ -108,10 +103,12 @@ public class FilteringManager implements TimeflecksEventResponder
 			allTasks = FilteringManager.filterTasks(allTasks, tags,
 					this.tagFilterComparator);
 		}
-		
-		// Filter by search 
-		if (!searchText.equals("")) {
-			allTasks = FilteringManager.filterTasks(allTasks, searchText, this.searchFilterComparator);
+
+		// Filter by search
+		if (!searchText.equals(""))
+		{
+			allTasks = FilteringManager.filterTasks(allTasks, searchText,
+					this.searchFilterComparator);
 		}
 
 		Collections.sort(allTasks, this.taskComparator);
@@ -132,8 +129,7 @@ public class FilteringManager implements TimeflecksEventResponder
 	 * @return the list of filtered Tasks
 	 */
 	private static <E> ArrayList<Task> filterTasks(ArrayList<Task> tasks,
-			final E filterItem,
-			final FilterComparator<E> filterMethod)
+			final E filterItem, final FilterComparator<E> filterMethod)
 	{
 		Objects.requireNonNull(tasks);
 		Objects.requireNonNull(filterItem);
@@ -148,7 +144,7 @@ public class FilteringManager implements TimeflecksEventResponder
 			{
 				filteredTasks.add(task);
 			}
-			
+
 		}
 
 		return filteredTasks;
@@ -157,11 +153,14 @@ public class FilteringManager implements TimeflecksEventResponder
 	@Override
 	public void eventPosted(TimeflecksEvent t)
 	{
-		if(t.equals(TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST)) {
+		if (t.equals(TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST))
+		{
 			this.repopulateFilteredTasks();
-			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.GENERAL_REFRESH);
 		}
-		else {
+		else
+		{
 			// Don't care about other events
 		}
 	}

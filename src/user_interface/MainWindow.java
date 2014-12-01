@@ -17,12 +17,12 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	private TaskListTablePanel panel;
 	private ArrayList<CalendarPanel> cpanels;
-	private	JPanel calendarContainer;
+	private JPanel calendarContainer;
 	private JScrollPane scrollPane;
 
 	private boolean showWeekView;
 	private Date mainDate;
-	
+
 	private Point lastScrollPosition = null;
 
 	public MainWindow()
@@ -37,33 +37,26 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		showWeekView = true;
 		mainDate = new Date();
 
-//		SwingUtilities.invokeLater(new Runnable()
-//		{
-//			public void run()
-//			{
-				setTitle("Timeflecks");
+		setTitle("Timeflecks");
 
-				// Set the layout manager
-				setLayout(new FlowLayout());
+		// Set the layout manager
+		setLayout(new FlowLayout());
 
-				addComponents();
-				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
-						"MainWindow", "Added components");
+		addComponents();
+		GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "MainWindow",
+				"Added components");
 
-				displayFrame();
-				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
-						"MainWindow", "Displaying frame");
+		displayFrame();
+		GlobalLogger.getLogger().logp(Level.INFO, "MainWindow", "MainWindow",
+				"Displaying frame");
 
-				// When it is created, the main window will register itself as a
-				// listener for TimeflecksEvents
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
-						Timeflecks.getSharedApplication().getMainWindow());
+		// When it is created, the main window will register itself as a
+		// listener for TimeflecksEvents
+		Timeflecks.getSharedApplication().registerForTimeflecksEvents(
+				Timeflecks.getSharedApplication().getMainWindow());
 
-				Timeflecks.getSharedApplication().postNotification(
-						TimeflecksEvent.GENERAL_REFRESH);
-//			}
-//		});
-
+		Timeflecks.getSharedApplication().postNotification(
+				TimeflecksEvent.GENERAL_REFRESH);
 	}
 
 	public void addComponents()
@@ -77,17 +70,17 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		panel = new TaskListTablePanel(taskListTableModel);
 
 		getContentPane().add(panel);
-		
+
 		calendarContainer = new JPanel();
 		calendarContainer.setLayout(new BorderLayout());
-		
+
 		CalendarControlPanel controlPanel = new CalendarControlPanel(
 				showWeekView);
 		calendarContainer.add(controlPanel, BorderLayout.NORTH);
 
 		// Add the calendar & controlPanel
 		addCalendar(showWeekView, mainDate);
-		
+
 		getContentPane().add(calendarContainer);
 	}
 
@@ -160,9 +153,10 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		}
 
 		// TODO Remove this
-//		scrollPane.setPreferredSize(new Dimension(730, 420));
+		// scrollPane.setPreferredSize(new Dimension(730, 420));
 		scrollPane.setPreferredSize(new Dimension(730, 490));
-		if(lastScrollPosition != null) {
+		if (lastScrollPosition != null)
+		{
 			scrollPane.getViewport().setViewPosition(lastScrollPosition);
 		}
 
@@ -189,7 +183,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		// Refresh all calendar panels
 		// Could also store in the list
-		
+
 		for (CalendarPanel p : cpanels)
 		{
 			p.refresh();

@@ -42,14 +42,7 @@ public class CalendarControlPanel extends JPanel implements
 
 		final CalendarControlPanel cp = this;
 
-//		SwingUtilities.invokeLater(new Runnable()
-//		{
-//			public void run()
-//			{
-				Timeflecks.getSharedApplication().registerForTimeflecksEvents(
-						cp);
-//			}
-//		});
+		Timeflecks.getSharedApplication().registerForTimeflecksEvents(cp);
 	}
 
 	public void addDayWeekToggle(boolean showWeekView)
@@ -144,7 +137,7 @@ public class CalendarControlPanel extends JPanel implements
 		dateLeftButton = new JButton("<");
 		dateTodayButton = new JButton("Today");
 		dateRightButton = new JButton(">");
-		
+
 		dateWeekLeftButton = new JButton("<<");
 		dateWeekRightButton = new JButton(">>");
 
@@ -180,7 +173,7 @@ public class CalendarControlPanel extends JPanel implements
 						TimeflecksEvent.DATE_RIGHT_ONE_BUTTON);
 			}
 		});
-		
+
 		dateWeekLeftButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -189,7 +182,7 @@ public class CalendarControlPanel extends JPanel implements
 						TimeflecksEvent.DATE_LEFT_SEVEN_BUTTON);
 			}
 		});
-		
+
 		dateWeekRightButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
