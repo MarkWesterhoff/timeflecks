@@ -41,6 +41,9 @@ public class Timeflecks
 			{
 				instance.reset();
 			}
+			
+			instance = new Timeflecks();
+			instance.launchDisplay();
 		}
 	}
 
@@ -252,7 +255,7 @@ public class Timeflecks
 	/**
 	 * Resets the application, including destroying the database.
 	 */
-	private void reset()
+	public void reset()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "Timeflecks", "reset()",
 				"Resetting the application");

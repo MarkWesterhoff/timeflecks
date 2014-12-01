@@ -10,6 +10,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
+import core.Timeflecks;
 import core.test.*;
 import database.test.*;
 import user_interface.test.*;

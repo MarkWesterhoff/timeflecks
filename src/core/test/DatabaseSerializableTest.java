@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
+import javax.swing.SwingUtilities;
+
 import org.junit.Test;
 
 import core.*;
@@ -20,7 +22,10 @@ public class DatabaseSerializableTest
 	{
 		// Reset the application
 		Timeflecks.resetSharedApplication();
-		
+
+		// Timeflecks application = Timeflecks.getSharedApplication();
+		// application.launchDisplay();
+
 		DatabaseSerializable s1 = new Task("Task 1");
 		long first_id = s1.getId();
 		assertEquals("The IDs should start at 0.", s1.getId(), 0 + first_id);
@@ -47,7 +52,7 @@ public class DatabaseSerializableTest
 		assertEquals("Set ordering should not disrupt ID creation",
 				((DatabaseSerializable) s5).getId(), 4 + first_id);
 
-		// Reset the application
-		Timeflecks.resetSharedApplication();
+		
+
 	}
 }
