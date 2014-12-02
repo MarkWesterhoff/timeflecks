@@ -46,7 +46,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		// Set the sizing information all in one place
 		// Note that the minimum size is larger because it refers to the outer
 		// frame, not just the content pane.
-		
+
 		// Use the recommended way to detect OS X
 		// Linux has already been adjusted for in a way that makes windows look
 		// *okay*
@@ -321,10 +321,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 							endDateChooser.getDate());
 				}
 
-				if (eventDescriptionArea.getText().length() != 0)
-				{
-					event.setDescription(eventDescriptionArea.getText());
-				}
+				event.setDescription(eventDescriptionArea.getText());
 
 				// Actually create the event and add it to the list
 				if (eventToEdit == null)

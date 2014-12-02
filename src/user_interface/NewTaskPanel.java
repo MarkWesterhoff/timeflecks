@@ -491,15 +491,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					task = new Task(taskNameField.getText());
 				}
 
-				if (startDateChooser.getDate() != null)
-				{
-					task.setStartTime(startDateChooser.getDate());
-				}
+				// We stop checking for null here so that we can remove dates.
 
-				if (dueDateChooser.getDate() != null)
-				{
-					task.setDueDate(dueDateChooser.getDate());
-				}
+				task.setStartTime(startDateChooser.getDate());
+
+				task.setDueDate(dueDateChooser.getDate());
 
 				long duration = 0;
 				duration += (Integer) minuteModel.getValue() * 60 * 1000;
@@ -531,6 +527,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					{
 						task.setPriority(Priority.LOW_PRIORITY);
 					}
+				} else
+				{
+					task.setPriority(Priority.NO_PRIORITY_SELECTED);
 				}
 
 				// If there are not tags present, this will give an empty
@@ -559,10 +558,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 				task.setTags(tags);
 
-				if (taskDescriptionArea.getText().length() != 0)
-				{
-					task.setDescription(taskDescriptionArea.getText());
-				}
+				task.setDescription(taskDescriptionArea.getText());
 
 				// Now the task is all set up, let's add however many tasks we
 				// need to.
