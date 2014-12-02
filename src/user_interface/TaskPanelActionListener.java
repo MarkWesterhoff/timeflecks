@@ -86,7 +86,7 @@ public class TaskPanelActionListener implements ActionListener
 
 			int reply = JOptionPane.showOptionDialog(
 					mainPanel,
-					"Are you sure you wish to delete "
+					"Are you sure you wish to delete these "
 							+ Integer.toString(selectedTasks.size())
 							+ " Tasks?", "Confirm Delete",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
@@ -152,34 +152,7 @@ public class TaskPanelActionListener implements ActionListener
 				}
 			}
 
-			// The user selected to delete the Task
-			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-					"deleteSelectedTasks(TaskListTablePanel)",
-					"User elected to delete Task " + task.getName());
-
-			boolean removed = Timeflecks.getSharedApplication().getTaskList()
-					.getTasks().remove(task);
-
-			if (!removed)
-			{
-				GlobalLogger
-						.getLogger()
-						.logp(Level.WARNING, "TaskPanelActionListener",
-								"actionPerformed(ActionEvent)",
-								"Selected Task for deletion does not exist in application's TaskList.");
-			}
-
-			try
-			{
-				Timeflecks.getSharedApplication().getDBConnector()
-						.delete(task.getId());
-			}
-			catch (Exception ex)
-			{
-				ExceptionHandler.handleDatabaseDeleteException(ex,
-						"TaskPanelActionListener",
-						"actionPerformed(ActionEvent)", "1102");
-			}
+			deleteTask(task);
 		}
 
 		Timeflecks.getSharedApplication().postNotification(
@@ -188,7 +161,38 @@ public class TaskPanelActionListener implements ActionListener
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
 	}
+	
+	public static void deleteTask(Task task) {
+		// The user selected to delete the Task
+		GlobalLogger.getLogger().logp(Level.INFO, "TaskPanelActionListener",
+				"deleteTask(Task)",
+				"User elected to delete Task " + task.getName());
 
+		boolean removed = Timeflecks.getSharedApplication().getTaskList()
+				.getTasks().remove(task);
+
+		if (!removed)
+		{
+			GlobalLogger
+					.getLogger()
+					.logp(Level.WARNING, "TaskPanelActionListener",
+							"deleteTask(Task)",
+							"Selected Task for deletion does not exist in application's TaskList.");
+		}
+
+		try
+		{
+			Timeflecks.getSharedApplication().getDBConnector()
+					.delete(task.getId());
+		}
+		catch (Exception ex)
+		{
+			ExceptionHandler.handleDatabaseDeleteException(ex,
+					"TaskPanelActionListener",
+					"deleteTask(Task)", "1102");
+		}
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("dropdownsort"))
