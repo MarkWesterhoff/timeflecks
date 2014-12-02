@@ -73,10 +73,10 @@ public class MenuBar extends JMenuBar
 
 		// Save menu item
 
-		menuItem = new JMenuItem("Save", KeyEvent.VK_S);
+		menuItem = new JMenuItem("Save Database File", KeyEvent.VK_S);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				InputEvent.CTRL_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription("Save file");
+		menuItem.getAccessibleContext().setAccessibleDescription("Save Database File");
 		menuItem.addActionListener(mb);
 
 		filemenu.add(menuItem);
@@ -86,16 +86,17 @@ public class MenuBar extends JMenuBar
 
 		// Save as... menu item
 
-		menuItem = new JMenuItem("Save As...");
+		menuItem = new JMenuItem("Change Save Location...");
 		menuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(KeyEvent.VK_A));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK));
+		menuItem.getAccessibleContext().setAccessibleDescription("Change Save Location for File");
 		menuItem.addActionListener(mb);
 
 		filemenu.add(menuItem);
 
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-				"createAndAddFileMenu", "Added save as... menu");
+				"createAndAddFileMenu", "Added change save location... menu");
 
 		GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
 				"createAndAddFileMenu", "File menu generation complete");

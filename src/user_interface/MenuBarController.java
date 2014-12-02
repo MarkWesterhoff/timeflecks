@@ -38,16 +38,16 @@ public class MenuBarController implements ActionListener
 					"actionPerformed", "Open menu item selected");
 			performOpenCommand();
 		}
-		else if (cmd.equalsIgnoreCase("Save"))
+		else if (cmd.equalsIgnoreCase("Save Database File"))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-					"actionPerformed", "Save menu item selected");
+					"actionPerformed", "Save Database File menu item selected");
 			performSaveCommand();
 		}
-		else if (cmd.equalsIgnoreCase("Save As..."))
+		else if (cmd.equalsIgnoreCase("Change Save Location..."))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-					"actionPerformed", "Save as... menu item selected");
+					"actionPerformed", "Change Save Location... menu item selected");
 			performSaveAsCommand();
 		}
 		else if (cmd.equalsIgnoreCase("New Task..."))
