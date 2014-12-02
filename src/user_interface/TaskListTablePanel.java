@@ -26,10 +26,10 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 {
 	private static final long serialVersionUID = 1L;
 
-	private static final int MIN_COMPLETED_COLUMN_WIDTH = 60;
-	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 40;
-	private static final int MIN_NAME_COLUMN_WIDTH = 30;
-	private static final int PREFERRED_NAME_COLUMN_WIDTH = 200;
+	private static final int MIN_COMPLETED_COLUMN_WIDTH = 80;
+	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 80;
+	private static final int MIN_NAME_COLUMN_WIDTH = 200;
+	private static final int PREFERRED_NAME_COLUMN_WIDTH = 500;
 
 	private final JTable table;
 
