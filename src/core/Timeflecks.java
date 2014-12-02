@@ -32,6 +32,12 @@ public class Timeflecks
 
 		return instance;
 	}
+	
+	public static boolean isMac()
+	{
+		String osName = System.getProperty("os.name");
+		return osName.contains("OS X");
+	}
 
 	// Instance
 	private TaskList taskList;
