@@ -572,14 +572,10 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 	@Override
 	public void mouseEntered(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e)
 	{
-		// TODO Auto-generated method stub
-
 	}
 }

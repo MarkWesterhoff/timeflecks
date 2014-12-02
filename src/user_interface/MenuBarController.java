@@ -14,6 +14,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import logging.GlobalLogger;
 import utility.FileUtility;
 import core.Timeflecks;
+import core.TimeflecksEvent;
 
 public class MenuBarController implements ActionListener
 {
@@ -187,8 +188,7 @@ public class MenuBarController implements ActionListener
 								"Database Error", JOptionPane.ERROR_MESSAGE);
 			}
 
-			// TODO Check that this makes a full repaint
-			menu.getTopLevelAncestor().invalidate();
+			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
 		}
 	}
 

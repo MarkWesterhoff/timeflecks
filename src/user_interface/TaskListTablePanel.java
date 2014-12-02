@@ -223,8 +223,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 				String searchText = searchField.getText();
 
 				// Either clearing the search or searching by the string,
-				// depending
-				// on if empty or not
+				// depending on if empty or not
 				String logMessage = (searchText.equals("")) ? "Clearing search."
 						: "Searching by text \"" + searchText + "\"";
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
@@ -325,7 +324,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	public void refresh()
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-				"refresh()", "Refreshing TaskListTablePanel" + this.table);
+				"refresh()", "Refreshing TaskListTablePanel");
 		
 		// Enable or disable edit and delete buttons based on number of Tasks
 		// currently being edited.

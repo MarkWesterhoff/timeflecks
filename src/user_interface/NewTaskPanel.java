@@ -808,9 +808,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public void dismissPane()
 	{
-		// this.processWindowEvent(new WindowEvent(this,
-		// WindowEvent.WINDOW_CLOSING));
-
 		if (taskToEdit != null)
 		{
 			// Post notification that a Task is no longer being edited

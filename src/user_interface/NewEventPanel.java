@@ -483,9 +483,6 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 	public void dismissPane()
 	{
-		// this.processWindowEvent(new WindowEvent(this,
-		// WindowEvent.WINDOW_CLOSING));
-
 		// After it is done, we need to refresh everything
 		// Dismissing a newEventPanel causes a refresh
 		Timeflecks.getSharedApplication().postNotification(
