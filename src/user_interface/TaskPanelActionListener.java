@@ -75,65 +75,110 @@ public class TaskPanelActionListener implements ActionListener
 					"There are no rows selected to delete.");
 			return;
 		}
+		
+		boolean deleteAll = false;
+		// Option to delete all Tasks without being asked individually
+		if (selectedTasks.size() > 1)
+		{
+			Object[] options = {
+					"Delete " + Integer.toString(selectedTasks.size())
+							+ " Tasks", "Cancel All", "Confirm Individually" };
 
+			int reply = JOptionPane.showOptionDialog(
+					mainPanel,
+					"Are you sure you wish to delete "
+							+ Integer.toString(selectedTasks.size())
+							+ " Tasks?", "Confirm Delete",
+					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+					null, options, options[1]);
+			if (reply == 0)
+			{
+				// Delete all Tasks without promtping was selected
+				GlobalLogger.getLogger().logp(
+						Level.INFO,
+						"TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"Deleting " + Integer.toString(selectedTasks.size())
+								+ " Tasks without further promtping.");
+
+				deleteAll = true;
+			}
+			else if (reply == 1)
+			{
+				// Cancel all deletions was selected
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"User cancelled deletion of Tasks.");
+
+				return;
+			}
+			else if (reply == 2)
+			{
+				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+						"actionPerformed(ActionEvent)",
+						"User selected to be prompted individually.");
+			}
+		}
+		
 		// Perform delete for each Task the user selected
 		for (Task task : selectedTasks)
 		{
-
-			GlobalLogger
-					.getLogger()
-					.logp(Level.INFO, "TaskListTablePanel",
-							"actionPerformed(ActionEvent)",
-							"Delete task button pressed. Prompting for currently selected task.");
-
-			// Prompt the user to see if they are sure they want to delete the
-			// task.
-
-			Object[] options = { "Delete Task", "Cancel" };
-
-			int reply = JOptionPane.showOptionDialog(mainPanel,
-					"Are you sure you wish to delete the task \"" + task.getName()
-							+ "\"?", "Confirm Delete",
-					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-					null, options, options[1]);
-
-			if (reply == JOptionPane.YES_OPTION)
+			if (!deleteAll)
 			{
-				// The user selected to delete the Task
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-						"deleteSelectedTasks(TaskListTablePanel)",
-						"User elected to delete Task " + task.getName());
+				// Prompt the user to see if they are sure they want to delete
+				// the task.
+				GlobalLogger
+						.getLogger()
+						.logp(Level.INFO, "TaskListTablePanel",
+								"actionPerformed(ActionEvent)",
+								"Delete task button pressed. Prompting for currently selected task.");
 
-				boolean removed = Timeflecks.getSharedApplication()
-						.getTaskList().getTasks().remove(task);
+				Object[] options = { "Delete Task", "Cancel" };
 
-				if (!removed)
+				int reply = JOptionPane.showOptionDialog(
+						mainPanel,
+						"Are you sure you wish to delete the task \""
+								+ task.getName() + "\"?", "Confirm Delete",
+						JOptionPane.DEFAULT_OPTION,
+						JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+				if (reply == JOptionPane.NO_OPTION)
 				{
-					GlobalLogger
-							.getLogger()
-							.logp(Level.WARNING, "TaskPanelActionListener",
-									"actionPerformed(ActionEvent)",
-									"Selected Task for deletion does not exist in application's TaskList.");
-				}
-
-				try
-				{
-					Timeflecks.getSharedApplication().getDBConnector()
-							.delete(task.getId());
-				}
-				catch (Exception ex)
-				{
-					ExceptionHandler.handleDatabaseDeleteException(ex,
-							"TaskPanelActionListener",
-							"actionPerformed(ActionEvent)", "1102");
+					// User selected to not delete task
+					GlobalLogger.getLogger().logp(Level.INFO,
+							"TaskListTablePanel",
+							"actionPerformed(ActionEvent)",
+							"User cancelled Task deletion.");
+					continue;
 				}
 			}
-			else
+
+			// The user selected to delete the Task
+			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
+					"deleteSelectedTasks(TaskListTablePanel)",
+					"User elected to delete Task " + task.getName());
+
+			boolean removed = Timeflecks.getSharedApplication().getTaskList()
+					.getTasks().remove(task);
+
+			if (!removed)
 			{
-				// User selected to not delete task
-				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
-						"actionPerformed(ActionEvent)",
-						"User cancelled Task deletion.");
+				GlobalLogger
+						.getLogger()
+						.logp(Level.WARNING, "TaskPanelActionListener",
+								"actionPerformed(ActionEvent)",
+								"Selected Task for deletion does not exist in application's TaskList.");
+			}
+
+			try
+			{
+				Timeflecks.getSharedApplication().getDBConnector()
+						.delete(task.getId());
+			}
+			catch (Exception ex)
+			{
+				ExceptionHandler.handleDatabaseDeleteException(ex,
+						"TaskPanelActionListener",
+						"actionPerformed(ActionEvent)", "1102");
 			}
 		}
 
