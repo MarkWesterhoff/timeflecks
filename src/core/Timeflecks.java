@@ -9,6 +9,7 @@ import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
+import user_interface.ExceptionHandler;
 import user_interface.MainWindow;
 import logging.GlobalLogger;
 import database.*;
@@ -41,13 +42,13 @@ public class Timeflecks
 	private MainWindow mainWindow;
 	private TimeflecksEventManager eventManager;
 	private FilteringManager filteringManager;
-	
+
 	public Timeflecks()
 	{
 		eventManager = new TimeflecksEventManager();
 
 		taskList = new TaskList();
-		
+
 		this.filteringManager = new FilteringManager(new TagFilterComparator(),
 				new TagCollection(), new SearchFilterComparator());
 
@@ -55,35 +56,10 @@ public class Timeflecks
 		{
 			openDatabaseFile(new File("calendar1.db"));
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
-					"Timeflecks",
-					"Open command generated SQLException. Showing dialog.");
-
-			JOptionPane.showMessageDialog(getMainWindow(),
-					"Database Error. (1600)\nCould not create new database.",
-					"Database Error", JOptionPane.ERROR_MESSAGE);
-		}
-		catch (IOException e)
-		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "Timeflecks",
-					"Timeflecks",
-					"Open command generated IOException. Showing dialog.");
-
-			// Trouble serializing objects
-			JOptionPane
-					.showMessageDialog(
-							getMainWindow(),
-							"Object Serialization Error. (1601)\nCould not save empty database file.",
-							"Database Error", JOptionPane.ERROR_MESSAGE);
-		}
-		catch (ClassNotFoundException e)
-		{
-			GlobalLogger
-					.getLogger()
-					.logp(Level.WARNING, "Timeflecks", "Timeflecks",
-							"ClassNotFoundException. Could not read objects out from database.");
+			ExceptionHandler.handleDatabaseOpenException(e, this.getClass()
+					.getName(), "Timeflecks", "1600");
 		}
 
 		setMainWindow(new MainWindow());
@@ -99,11 +75,12 @@ public class Timeflecks
 		Objects.requireNonNull(taskList);
 		this.taskList = taskList;
 	}
-	
-	public FilteringManager getFilteringManager() {
+
+	public FilteringManager getFilteringManager()
+	{
 		return this.filteringManager;
 	}
-	
+
 	public SQLiteConnector getDBConnector()
 	{
 		return dbConnector;
@@ -118,13 +95,13 @@ public class Timeflecks
 	{
 		return idGenerator;
 	}
-	
+
 	public void setIdGenerator(IDGenerator idGenerator)
 	{
 		Objects.requireNonNull(idGenerator);
 		this.idGenerator = idGenerator;
 	}
-	
+
 	public File getCurrentFile()
 	{
 		return currentFile;
