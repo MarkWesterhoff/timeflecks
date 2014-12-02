@@ -29,7 +29,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	private static final int MIN_COMPLETED_COLUMN_WIDTH = 80;
 	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 80;
 	private static final int MIN_NAME_COLUMN_WIDTH = 200;
-	private static final int PREFERRED_NAME_COLUMN_WIDTH = 500;
+	private static final int PREFERRED_NAME_COLUMN_WIDTH = 400;
 
 	private final JTable table;
 
@@ -245,18 +245,14 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		});
 		
 		//Search Label
-		JLabel searchLabel = new JLabel("Search Tasks");
+		JLabel searchLabel = new JLabel("Search Tasks:");
 		
 		// Search Panel
-		JPanel searchPanel = new JPanel(new FlowLayout());
-		searchPanel.add(searchLabel);
-		searchPanel.add(searchField);
-		
-		// Filter panel to hold tag and search panels
-		JPanel filterPanel = new JPanel(new BorderLayout());
-		
-		filterPanel.add(tagPanel, BorderLayout.EAST);
-		filterPanel.add(searchPanel, BorderLayout.WEST);
+		JPanel filterPanel = new JPanel(new FlowLayout());
+		filterPanel.add(searchLabel);
+		filterPanel.add(searchField);
+		filterPanel.add(new JLabel("      "));
+		filterPanel.add(tagPanel);
 		
 		add(filterPanel, BorderLayout.SOUTH);
 
