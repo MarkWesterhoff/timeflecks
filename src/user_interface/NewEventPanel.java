@@ -42,7 +42,24 @@ public class NewEventPanel extends JFrame implements ActionListener
 		}
 
 		this.getContentPane().setLayout(new BorderLayout());
-		this.getContentPane().setPreferredSize(new Dimension(350, 280));
+
+		// Set the sizing information all in one place
+		// Note that the minimum size is larger because it refers to the outer
+		// frame, not just the content pane.
+		
+		// Use the recommended way to detect OS X
+		// Linux has already been adjusted for in a way that makes windows look
+		// *okay*
+		String osName = System.getProperty("os.name");
+		if (osName.contains("OS X"))
+		{
+			this.getContentPane().setPreferredSize(new Dimension(360, 290));
+			this.setMinimumSize(new Dimension(390, 320));
+		} else
+		{
+			this.getContentPane().setPreferredSize(new Dimension(350, 280));
+			this.setMinimumSize(new Dimension(380, 310));
+		}
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 				"NewEventPanel", "Beginning interface setup");
@@ -112,8 +129,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		{
 			startDateChooser = new JDateChooser(eventToEdit.getStartTime(),
 					"MM/dd/yyyy hh:mm a");
-		}
-		else
+		} else
 		{
 			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -141,8 +157,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		{
 			endDateChooser = new JDateChooser(eventToEdit.getEndTime(),
 					"MM/dd/yyyy hh:mm a");
-		}
-		else
+		} else
 		{
 			endDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -209,8 +224,6 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		cancelButton.addActionListener(this);
 
-
-		
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new BorderLayout());
 		subpanel.setBorder(new EmptyBorder(10, 12, 10, 12));
@@ -219,13 +232,14 @@ public class NewEventPanel extends JFrame implements ActionListener
 		subpanel.add(saveButton, BorderLayout.EAST);
 		subpanel.add(cancelButton, BorderLayout.WEST);
 
-		if(eventToEdit != null) {
+		if (eventToEdit != null)
+		{
 			deleteButton = new JButton("Delete");
 			deleteButton.setActionCommand("Delete");
 			deleteButton.addActionListener(this);
 			subpanel.add(deleteButton, BorderLayout.CENTER);
 		}
-		
+
 		this.getContentPane().add(subpanel, BorderLayout.SOUTH);
 
 	}
@@ -236,8 +250,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		if (eventToEdit == null)
 		{
 			titleLabel = new JLabel("New Event");
-		}
-		else
+		} else
 		{
 			titleLabel = new JLabel("Edit Event");
 		}
@@ -265,8 +278,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 				JOptionPane.showMessageDialog(this,
 						"You must specify a name for this event.",
 						"Name Required", JOptionPane.WARNING_MESSAGE);
-			}
-			else if (startDateChooser.getDate() == null
+			} else if (startDateChooser.getDate() == null
 					|| endDateChooser.getDate() == null)
 			{
 				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
@@ -278,8 +290,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 								this,
 								"You must specify a start and end time for this event.",
 								"Name Required", JOptionPane.WARNING_MESSAGE);
-			}
-			else if (startDateChooser.getDate().compareTo(
+			} else if (startDateChooser.getDate().compareTo(
 					endDateChooser.getDate()) > 0)
 			{
 				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
@@ -304,8 +315,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 					event.setName(eventNameField.getText());
 					event.setStartTime(startDateChooser.getDate());
 					event.setEndTime(endDateChooser.getDate());
-				}
-				else
+				} else
 				{
 					event = new core.Event(eventNameField.getText(),
 							startDateChooser.getDate(),
@@ -336,8 +346,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 					GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 							"actionPerformed", "Saved event to database.");
-				}
-				catch (Exception ex)
+				} catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"ActionPerformed", "1302");
@@ -345,27 +354,28 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 				dismissPane();
 			}
-		}
-		else if (e.getActionCommand().equals("Cancel"))
+		} else if (e.getActionCommand().equals("Cancel"))
 		{
 			tryToClose();
-		}
-		else if (e.getActionCommand().equals("Delete"))
+		} else if (e.getActionCommand().equals("Delete"))
 		{
 			Object[] options = { "Delete Event", "Cancel" };
 
 			int reply = JOptionPane.showOptionDialog(this,
-					"Are you sure you wish to delete the event \"" + eventToEdit.getName()
-							+ "\"?", "Confirm Delete",
+					"Are you sure you wish to delete the event \""
+							+ eventToEdit.getName() + "\"?", "Confirm Delete",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, options, options[1]);
 
 			if (reply == JOptionPane.YES_OPTION)
 			{
 				// The user selected to delete the Task
-				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
-						"actionPerformed",
-						"User elected to delete Event " + eventToEdit.getName());
+				GlobalLogger.getLogger()
+						.logp(Level.INFO,
+								"NewEventPanel",
+								"actionPerformed",
+								"User elected to delete Event "
+										+ eventToEdit.getName());
 
 				boolean removed = Timeflecks.getSharedApplication()
 						.getTaskList().getEvents().remove(eventToEdit);
@@ -384,15 +394,13 @@ public class NewEventPanel extends JFrame implements ActionListener
 					Timeflecks.getSharedApplication().getDBConnector()
 							.delete(eventToEdit.getId());
 					dismissPane();
-				}
-				catch (Exception ex)
+				} catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseDeleteException(ex,
 							"TaskPanelActionListener",
 							"actionPerformed(ActionEvent)", "1102");
 				}
-			}
-			else
+			} else
 			{
 				// User selected to not delete task
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
@@ -430,16 +438,14 @@ public class NewEventPanel extends JFrame implements ActionListener
 						"User elected to discard the event. Dismissing Panel.");
 
 				dismissPane();
-			}
-			else
+			} else
 			{
 				// We simply return the user to editing
 				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
 						"actionPerformed",
 						"User selected to continue editing the event.");
 			}
-		}
-		else
+		} else
 		{
 			dismissPane();
 		}
@@ -498,8 +504,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		if (eventToEdit == null)
 		{
 			this.setTitle("Timeflecks - New Event");
-		}
-		else
+		} else
 		{
 			this.setTitle("Timeflecks - Edit Event");
 		}
@@ -520,7 +525,6 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		this.setAutoRequestFocus(true);
 		this.setResizable(true);
-		this.setMinimumSize(new Dimension(380, 310));
 
 		this.setVisible(true);
 	}

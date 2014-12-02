@@ -59,13 +59,32 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit != null)
 		{
 			// Smaller pane
-			this.getContentPane().setPreferredSize(new Dimension(350, 405));
-			this.setMinimumSize(new Dimension(380, 450));
-		}
-		else
+			// OS specific sizing is necessary because UI elements are different
+			// sizes based upon platform.
+			String osName = System.getProperty("os.name");
+			if (osName.contains("OS X"))
+			{
+				this.getContentPane().setPreferredSize(new Dimension(380, 455));
+				this.setMinimumSize(new Dimension(410, 500));
+			} else
+			{
+				this.getContentPane().setPreferredSize(new Dimension(350, 405));
+				this.setMinimumSize(new Dimension(380, 450));
+			}
+		} else
 		{
-			this.getContentPane().setPreferredSize(new Dimension(350, 450));
-			this.setMinimumSize(new Dimension(380, 495));
+			// OS specific sizing is necessary because UI elements are different
+			// sizes based upon platform.
+			String osName = System.getProperty("os.name");
+			if (osName.contains("OS X"))
+			{
+				this.getContentPane().setPreferredSize(new Dimension(380, 500));
+				this.setMinimumSize(new Dimension(406, 532));
+			} else
+			{
+				this.getContentPane().setPreferredSize(new Dimension(350, 450));
+				this.setMinimumSize(new Dimension(380, 495));
+			}
 		}
 
 		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
@@ -136,8 +155,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
 					"MM/dd/yyyy hh:mm a");
-		}
-		else
+		} else
 		{
 			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -166,8 +184,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			dueDateChooser = new JDateChooser(taskToEdit.getDueDate(),
 					"MM/dd/yyyy hh:mm a");
-		}
-		else
+		} else
 		{
 			dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -213,8 +230,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			hourModel = new SpinnerNumberModel(durationHours, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(durationMins, 0, 59, 1);
-		}
-		else
+		} else
 		{
 			hourModel = new SpinnerNumberModel(0, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(0, 0, 59, 1);
@@ -274,16 +290,13 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("High");
-			}
-			else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
+			} else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("Medium");
-			}
-			else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
+			} else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("Low");
-			}
-			else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
+			} else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
 			{
 				taskPriorityComboBox.setSelectedItem("Not Set");
 			}
@@ -437,8 +450,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit == null)
 		{
 			titleLabel = new JLabel("New Task");
-		}
-		else
+		} else
 		{
 			titleLabel = new JLabel("Edit Task");
 		}
@@ -466,8 +478,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				JOptionPane.showMessageDialog(this,
 						"You must specify a name for this task.",
 						"Name Required", JOptionPane.WARNING_MESSAGE);
-			}
-			else
+			} else
 			{
 				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 						"actionPerformed", "Save button pressed. Saving task.");
@@ -477,8 +488,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				{
 					task = taskToEdit;
 					task.setName(taskNameField.getText());
-				}
-				else
+				} else
 				{
 					task = new Task(taskNameField.getText());
 				}
@@ -516,12 +526,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					if (taskPriorityComboBox.getSelectedIndex() == 1)
 					{
 						task.setPriority(Priority.HIGH_PRIORITY);
-					}
-					else if (taskPriorityComboBox.getSelectedIndex() == 2)
+					} else if (taskPriorityComboBox.getSelectedIndex() == 2)
 					{
 						task.setPriority(Priority.MEDIUM_PRIORITY);
-					}
-					else if (taskPriorityComboBox.getSelectedIndex() == 3)
+					} else if (taskPriorityComboBox.getSelectedIndex() == 3)
 					{
 						task.setPriority(Priority.LOW_PRIORITY);
 					}
@@ -544,8 +552,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					if (tag.equals(""))
 					{
 						tags.remove(i);
-					}
-					else
+					} else
 					{
 						tags.set(i, tag);
 						i++;
@@ -590,24 +597,20 @@ public class NewTaskPanel extends JFrame implements ActionListener
 							{
 								r = new DailyRecurrence(task, endDate);
 								tasks = r.getTasks();
-							}
-							else if (repeatComboBox.getSelectedIndex() == 2)
+							} else if (repeatComboBox.getSelectedIndex() == 2)
 							{
 								r = new WeeklyRecurrence(task, endDate);
 								tasks = r.getTasks();
-							}
-							else if (repeatComboBox.getSelectedIndex() == 3)
+							} else if (repeatComboBox.getSelectedIndex() == 3)
 							{
 								r = new WeekDayRecurrence(task, endDate);
 								tasks = r.getTasks();
-							}
-							else if (repeatComboBox.getSelectedIndex() == 4)
+							} else if (repeatComboBox.getSelectedIndex() == 4)
 							{
 								r = new MonthlyRecurrence(task, endDate);
 								tasks = r.getTasks();
 							}
-						}
-						catch (IllegalArgumentException e1)
+						} catch (IllegalArgumentException e1)
 						{
 							// If the task did not have a due date, then we need
 							// to put the user back to be editing.
@@ -634,8 +637,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						// Tasks are all created. Now we just need to add them
 						// to the list
 
-					}
-					else
+					} else
 					{
 						// We require an end date for the recurrence, so we
 						// will have an error here and alert the user
@@ -656,8 +658,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						// Now we just return the user to editing
 						return;
 					}
-				}
-				else
+				} else
 				{
 					// We add the task to the list of tasks, since we are just
 					// going to save that later.
@@ -693,8 +694,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 								"NewTaskPanel", "actionPerformed",
 								"Saved task to database.\n" + t);
 					}
-				}
-				catch (Exception ex)
+				} catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseSaveException(ex, this,
 							"ActionPerformed", "1302");
@@ -706,8 +706,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				// We're done with this pane, let's get rid of it now
 				dismissPane();
 			}
-		}
-		else if (e.getActionCommand().equals("Cancel"))
+		} else if (e.getActionCommand().equals("Cancel"))
 		{
 			tryToClose();
 		}
@@ -740,16 +739,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						"User elected to discard the task. Dismissing Panel.");
 
 				dismissPane();
-			}
-			else
+			} else
 			{
 				// We simply return the user to editing
 				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
 						"tryToClose",
 						"User selected to continue editing the task.");
 			}
-		}
-		else
+		} else
 		{
 			dismissPane();
 		}
@@ -842,8 +839,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit == null)
 		{
 			this.setTitle("Timeflecks - New Task");
-		}
-		else
+		} else
 		{
 			this.setTitle("Timeflecks - Edit Task");
 
