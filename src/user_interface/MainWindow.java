@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -17,12 +18,12 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	private TaskListTablePanel panel;
 	private ArrayList<CalendarPanel> cpanels;
-	private	JPanel calendarContainer;
+	private JPanel calendarContainer;
 	private JScrollPane scrollPane;
 
 	private boolean showWeekView;
 	private Date mainDate;
-	
+
 	private Point lastScrollPosition = null;
 
 	public MainWindow()
@@ -50,6 +51,10 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Added components");
 
+				addIcon();
+				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
+						"MainWindow", "Added icon.");
+
 				displayFrame();
 				GlobalLogger.getLogger().logp(Level.INFO, "MainWindow",
 						"MainWindow", "Displaying frame");
@@ -68,26 +73,30 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	public void addComponents()
 	{
-		// Add the menu bar
-		MenuBar menu = new MenuBar();
-		setJMenuBar(menu);
+		// Only add the menu bar on non mac
+		if (!Timeflecks.isMac())
+		{
+			// Add the menu bar
+			MenuBar menu = new MenuBar();
+			setJMenuBar(menu);
+		}
 
 		// Add the task list panel
 		TaskListTableModel taskListTableModel = new TaskListTableModel();
 		panel = new TaskListTablePanel(taskListTableModel);
 
 		getContentPane().add(panel);
-		
+
 		calendarContainer = new JPanel();
 		calendarContainer.setLayout(new BorderLayout());
-		
+
 		CalendarControlPanel controlPanel = new CalendarControlPanel(
 				showWeekView);
 		calendarContainer.add(controlPanel, BorderLayout.NORTH);
 
 		// Add the calendar & controlPanel
 		addCalendar(showWeekView, mainDate);
-		
+
 		getContentPane().add(calendarContainer);
 	}
 
@@ -160,9 +169,10 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		}
 
 		// TODO Remove this
-//		scrollPane.setPreferredSize(new Dimension(730, 420));
+		// scrollPane.setPreferredSize(new Dimension(730, 420));
 		scrollPane.setPreferredSize(new Dimension(730, 490));
-		if(lastScrollPosition != null) {
+		if (lastScrollPosition != null)
+		{
 			scrollPane.getViewport().setViewPosition(lastScrollPosition);
 		}
 
@@ -171,7 +181,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	public void displayFrame()
 	{
-		// TODO: Remove this
 		setSize(1330, 520);
 		setMinimumSize(new Dimension(1330, 520));
 
@@ -179,6 +188,41 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+	}
+
+	private void addIcon()
+	{
+		// Add the icon to the application
+		try
+		{
+			ImageIcon icon = new ImageIcon("resources/icon.png");
+			if (icon != null)
+			{
+				// Mac OS X has different icon system for applications
+				if (Timeflecks.isMac())
+				{
+					// We can either use an external library to fake this for
+					// compilation on Windows, or we can just leave it out.
+
+//					com.apple.eawt.Application.getApplication()
+//							.setDockIconImage(icon.getImage());
+//
+//					com.apple.eawt.Application.getApplication()
+//							.setDefaultMenuBar(new MenuBar());
+				}
+				else
+				{
+					// Windows
+					this.setIconImage(icon.getImage());
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			GlobalLogger.getLogger().logp(Level.WARNING, "MainWindow",
+					"addIcon()", "Problem setting icon. No icon will be set.");
+		}
+
 	}
 
 	public void refresh()
@@ -189,7 +233,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 		// Refresh all calendar panels
 		// Could also store in the list
-		
+
 		for (CalendarPanel p : cpanels)
 		{
 			p.refresh();
