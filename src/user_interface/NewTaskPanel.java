@@ -821,8 +821,6 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		// After it is done, we need to refresh everything
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
-		Timeflecks.getSharedApplication().postNotification(
-				TimeflecksEvent.GENERAL_REFRESH);
 
 		this.setVisible(false);
 		this.dispose();
