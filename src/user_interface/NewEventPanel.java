@@ -50,8 +50,7 @@ public class NewEventPanel extends JFrame implements ActionListener
 		// Use the recommended way to detect OS X
 		// Linux has already been adjusted for in a way that makes windows look
 		// *okay*
-		String osName = System.getProperty("os.name");
-		if (osName.contains("OS X"))
+		if (Timeflecks.isMac())
 		{
 			this.getContentPane().setPreferredSize(new Dimension(360, 290));
 			this.setMinimumSize(new Dimension(390, 320));

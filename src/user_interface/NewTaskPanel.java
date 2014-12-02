@@ -61,11 +61,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			// Smaller pane
 			// OS specific sizing is necessary because UI elements are different
 			// sizes based upon platform.
-			String osName = System.getProperty("os.name");
-			if (osName.contains("OS X"))
+			if (Timeflecks.isMac())
 			{
-				this.getContentPane().setPreferredSize(new Dimension(380, 455));
-				this.setMinimumSize(new Dimension(410, 500));
+				this.getContentPane().setPreferredSize(new Dimension(370, 445));
+				this.setMinimumSize(new Dimension(400, 490));
 			} else
 			{
 				this.getContentPane().setPreferredSize(new Dimension(350, 405));
@@ -75,8 +74,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			// OS specific sizing is necessary because UI elements are different
 			// sizes based upon platform.
-			String osName = System.getProperty("os.name");
-			if (osName.contains("OS X"))
+			if (Timeflecks.isMac())
 			{
 				this.getContentPane().setPreferredSize(new Dimension(380, 500));
 				this.setMinimumSize(new Dimension(406, 532));
