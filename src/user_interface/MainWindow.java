@@ -1,7 +1,6 @@
 package user_interface;
 
 import java.awt.*;
-import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 
