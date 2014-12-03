@@ -194,7 +194,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		// Add the icon to the application
 		try
 		{
-			ImageIcon icon = new ImageIcon("/resources/icon.png");
+			ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
 			if (icon != null)
 			{
 				// Mac OS X has different icon system for applications
