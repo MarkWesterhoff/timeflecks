@@ -26,7 +26,7 @@ public class TaskPanelActionListener implements ActionListener
 	{
 
 		List<Task> selectedTasks = mainPanel.getSelectedTasks();
-		
+
 		if (selectedTasks.size() == 0)
 		{
 			GlobalLogger.getLogger().logp(Level.WARNING, "TaskListTablePanel",
@@ -34,7 +34,7 @@ public class TaskPanelActionListener implements ActionListener
 					"There are no rows selected to edit.");
 			return;
 		}
-		
+
 		for (Task task : selectedTasks)
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
@@ -91,9 +91,10 @@ public class TaskPanelActionListener implements ActionListener
 
 			Object[] options = { "Delete Task", "Cancel" };
 
-			int reply = JOptionPane.showOptionDialog(mainPanel,
-					"Are you sure you wish to delete the task \"" + task.getName()
-							+ "\"?", "Confirm Delete",
+			int reply = JOptionPane.showOptionDialog(
+					mainPanel,
+					"Are you sure you wish to delete the task \""
+							+ task.getName() + "\"?", "Confirm Delete",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, options, options[1]);
 
@@ -196,8 +197,8 @@ public class TaskPanelActionListener implements ActionListener
 				}
 				catch (Exception ex)
 				{
-					ExceptionHandler.handleDatabaseSaveException(ex, this,
-							"actionPerformed", "1603");
+					ExceptionHandler.handleDatabaseSaveException(ex, this
+							.getClass().getName(), "actionPerformed", "1603");
 				}
 			}
 		}
@@ -237,8 +238,8 @@ public class TaskPanelActionListener implements ActionListener
 				}
 				catch (Exception ex)
 				{
-					ExceptionHandler.handleDatabaseSaveException(ex, this,
-							"actionPerformed", "1605");
+					ExceptionHandler.handleDatabaseSaveException(ex, this
+							.getClass().getName(), "actionPerformed", "1605");
 				}
 			}
 		}

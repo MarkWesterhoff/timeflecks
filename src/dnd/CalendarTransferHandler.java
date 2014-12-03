@@ -184,8 +184,8 @@ public class CalendarTransferHandler extends TransferHandler
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler.handleDatabaseSaveException(ex, this,
-					"importData", "2102");
+			ExceptionHandler.handleDatabaseSaveException(ex, this.getClass()
+					.getName(), "importData", "2102");
 		}
 
 		// System.out.println("Time: " + taskRef.getStartTime());

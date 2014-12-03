@@ -209,8 +209,6 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		cancelButton.addActionListener(this);
 
-
-		
 		JPanel subpanel = new JPanel();
 		subpanel.setLayout(new BorderLayout());
 		subpanel.setBorder(new EmptyBorder(10, 12, 10, 12));
@@ -219,13 +217,14 @@ public class NewEventPanel extends JFrame implements ActionListener
 		subpanel.add(saveButton, BorderLayout.EAST);
 		subpanel.add(cancelButton, BorderLayout.WEST);
 
-		if(eventToEdit != null) {
+		if (eventToEdit != null)
+		{
 			deleteButton = new JButton("Delete");
 			deleteButton.setActionCommand("Delete");
 			deleteButton.addActionListener(this);
 			subpanel.add(deleteButton, BorderLayout.CENTER);
 		}
-		
+
 		this.getContentPane().add(subpanel, BorderLayout.SOUTH);
 
 	}
@@ -339,8 +338,8 @@ public class NewEventPanel extends JFrame implements ActionListener
 				}
 				catch (Exception ex)
 				{
-					ExceptionHandler.handleDatabaseSaveException(ex, this,
-							"ActionPerformed", "1302");
+					ExceptionHandler.handleDatabaseSaveException(ex, this
+							.getClass().getName(), "ActionPerformed", "1302");
 				}
 
 				dismissPane();
@@ -355,17 +354,20 @@ public class NewEventPanel extends JFrame implements ActionListener
 			Object[] options = { "Delete Event", "Cancel" };
 
 			int reply = JOptionPane.showOptionDialog(this,
-					"Are you sure you wish to delete the event \"" + eventToEdit.getName()
-							+ "\"?", "Confirm Delete",
+					"Are you sure you wish to delete the event \""
+							+ eventToEdit.getName() + "\"?", "Confirm Delete",
 					JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 					null, options, options[1]);
 
 			if (reply == JOptionPane.YES_OPTION)
 			{
 				// The user selected to delete the Task
-				GlobalLogger.getLogger().logp(Level.INFO, "NewEventPanel",
-						"actionPerformed",
-						"User elected to delete Event " + eventToEdit.getName());
+				GlobalLogger.getLogger()
+						.logp(Level.INFO,
+								"NewEventPanel",
+								"actionPerformed",
+								"User elected to delete Event "
+										+ eventToEdit.getName());
 
 				boolean removed = Timeflecks.getSharedApplication()
 						.getTaskList().getEvents().remove(eventToEdit);
