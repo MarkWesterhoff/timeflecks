@@ -1,21 +1,24 @@
 package logging;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
+import java.util.logging.*;
 
 /**
  * Singleton class to hold to global logger for the TimeFlecks application.
- * @author Andrew
+ * 
  */
-public class GlobalLogger {
+public class GlobalLogger
+{
 	private static Logger logger;
 
-	private GlobalLogger() { }
+	private GlobalLogger()
+	{
+	}
 
-	public static Logger getLogger() {
-		if (logger == null) {
+	public static Logger getLogger()
+	{
+		if (logger == null)
+		{
 			logger = Logger.getLogger(GlobalLogger.class.getName());
-			//logger.setLevel(Level.OFF);
 			logger.setLevel(Level.INFO);
 		}
 		return logger;
