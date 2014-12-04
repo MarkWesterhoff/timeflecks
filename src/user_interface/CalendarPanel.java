@@ -205,7 +205,6 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		// Go through and draw any tasks at the appropriate place
 		for (Scheduleable t : itemsToPaint)
 		{
-
 			int hourIncrement = d.height / 24;
 
 			Calendar calendar = Calendar.getInstance();
@@ -497,26 +496,10 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 			return null;
 		}
 
+		// Check if each Scheduleable is painted over the Point p
 		for (Scheduleable t : itemsToPaint)
 		{
-			int insetFromLeft = 0; // See manual 10 later
-			int insetFromRight = 8;
-
-			Dimension d = this.getSize();
-
-			int hourIncrement = d.height / 24;
-
-			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(t.getStartTime());
-			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
-					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
-
-			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
-
-			Rectangle frame = new Rectangle(insetFromLeft, this.topInset
-					+ (int) (taskHours * hourIncrement), d.width
-					- insetFromRight - insetFromLeft,
-					(int) (durationInHours * hourIncrement));
+			Rectangle frame = getDrawRectangle(t);
 
 			if (frame.contains(p))
 			{
@@ -563,7 +546,60 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		}
 		e.consume();
 	}
+	
+	public boolean conflictingScheduleableExists(Scheduleable s)
+	{
+		Rectangle inputFrame = getDrawRectangle(s);
 
+		// Check where each Scheduleable is drawn. If any are drawn
+		// intersecting, return true.
+		for (Scheduleable existingItem : itemsToPaint)
+		{
+			// Don't return true if we intersect with ourself.
+			if (s.getName().equals( existingItem.getName()))
+			{
+				continue;
+			}
+			
+			Rectangle existingFrame = getDrawRectangle(existingItem);
+			if (inputFrame.intersects(existingFrame))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	
+	/**
+	 * Gets the Rectangle where Scheduleable would be drawn.
+	 * 
+	 * @param s the Scheduleable
+	 * @return a Rectangle of where to draw the Scheduleable
+	 */
+	private Rectangle getDrawRectangle(Scheduleable s) {
+		int insetFromLeft = 0; // See manual 10 later
+		int insetFromRight = 8;
+
+		Dimension d = this.getSize();
+
+		int hourIncrement = d.height / 24;
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(s.getStartTime());
+		double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+				+ (double) calendar.get(Calendar.MINUTE) / 60.0;
+
+		double durationInHours = (s.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
+
+		Rectangle frame = new Rectangle(insetFromLeft, this.topInset
+				+ (int) (taskHours * hourIncrement), d.width
+				- insetFromRight - insetFromLeft,
+				(int) (durationInHours * hourIncrement));
+		
+		return frame;
+	}
+	
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
