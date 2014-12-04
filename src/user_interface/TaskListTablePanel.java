@@ -28,7 +28,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 	private static final int MIN_COMPLETED_COLUMN_WIDTH = 80;
 	private static final int PREFERRED_COMPLETED_COLUMN_WIDTH = 80;
-	private static final int MIN_NAME_COLUMN_WIDTH = 200;
+	private static final int MIN_NAME_COLUMN_WIDTH = 400;
 	private static final int PREFERRED_NAME_COLUMN_WIDTH = 400;
 
 	private final JTable table;
@@ -84,7 +84,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 		sortSet.add(sortLabel);
 		sortSet.add(sortList);
-		sortSet.add(spacer);
+//		sortSet.add(spacer);
 
 		// Up and down bump buttons
 		upButton = createIconedButton("resources/up.png", "Move Up", al);
@@ -119,7 +119,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		newButtonPanel.add(editTaskButton);
 		newButtonPanel.add(deleteTaskButton);
 
-		JLabel spacer2 = new JLabel("        ");
+		JLabel spacer2 = new JLabel("  ");
 		newButtonPanel.add(spacer2);
 
 		topPanel.add(newButtonPanel, BorderLayout.WEST);
@@ -173,7 +173,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		refreshTagSelector();
 		
 		JScrollPane filterScrollPane = new JScrollPane(tagSelector);
-		filterScrollPane.setPreferredSize(new Dimension(250, 60));
+		filterScrollPane.setPreferredSize(new Dimension(150, 60));
 		
 		// Clear tags button
 		clearTagButton = new JButton("Clear tags");
@@ -250,7 +250,6 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		JPanel filterPanel = new JPanel(new FlowLayout());
 		filterPanel.add(searchLabel);
 		filterPanel.add(searchField);
-		filterPanel.add(new JLabel("      "));
 		filterPanel.add(tagPanel);
 		
 		add(filterPanel, BorderLayout.SOUTH);
