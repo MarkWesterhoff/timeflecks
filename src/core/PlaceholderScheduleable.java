@@ -1,29 +1,28 @@
 package core;
 
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Class to represent the block of time that a current Scheduleable holds.
- * @author Andrew
- *
+ * 
  */
 public class PlaceholderScheduleable implements Scheduleable
 {
 	private String name;
 	private Date startTime;
 	private Date endTime;
-	
-	public PlaceholderScheduleable(String name, Date startTime, Date endTime) {
+
+	public PlaceholderScheduleable(String name, Date startTime, Date endTime)
+	{
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(startTime);
 		Objects.requireNonNull(endTime);
-		
+
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}
-	
+
 	@Override
 	public String getName()
 	{
@@ -59,5 +58,4 @@ public class PlaceholderScheduleable implements Scheduleable
 	{
 		return false;
 	}
-
 }

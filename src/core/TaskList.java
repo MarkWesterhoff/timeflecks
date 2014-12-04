@@ -14,7 +14,6 @@ public class TaskList
 
 	private ArrayList<Task> tasks;
 	private ArrayList<Event> events;
-	
 
 	public TaskList()
 	{
@@ -56,8 +55,8 @@ public class TaskList
 	{
 		Objects.requireNonNull(e);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.addEvent(e)",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"addEvent(Event)",
 				"Adding new event with id " + e.getId() + " to event list");
 		events.add(e);
 	}
@@ -65,17 +64,17 @@ public class TaskList
 	public void addTask(Task t)
 	{
 		Objects.requireNonNull(t);
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.addTask(e)",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"addTask(Task)",
 				"Adding new task with id " + t.getId() + " to task list");
 		tasks.add(t);
 	}
-	
-	public void removeTask(Task t) {
+
+	public void removeTask(Task t)
+	{
 		Objects.requireNonNull(t);
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.deleteTask(e)",
-				"Deleting task with id " + t.getId());
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"deleteTask(Task)", "Deleting task with id " + t.getId());
 		tasks.remove(t);
 	}
 
@@ -96,7 +95,7 @@ public class TaskList
 
 		return allTags;
 	}
-	
+
 	/**
 	 * Saves all tasks to the database.
 	 * 
@@ -105,16 +104,14 @@ public class TaskList
 	 */
 	public void saveAllTasksAndEvents() throws SQLException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "core.TaskList",
-				"core.TaskList.saveAllTasksAndEvents",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"saveAllTasksAndEvents()",
 				"saving all tasks and events to database");
-		
+
 		Timeflecks.getSharedApplication().getDBConnector()
 				.serializeAndSave(this.tasks);
 
 		Timeflecks.getSharedApplication().getDBConnector()
-		.serializeAndSave(this.events);
+				.serializeAndSave(this.events);
 	}
-
-
 }

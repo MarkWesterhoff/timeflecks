@@ -1,8 +1,6 @@
 package core;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 public class MonthlyRecurrence extends Recurrence
 {
@@ -19,5 +17,4 @@ public class MonthlyRecurrence extends Recurrence
 		c.add(Calendar.MONTH, 1);
 		return c.getTime();
 	}
-
 }

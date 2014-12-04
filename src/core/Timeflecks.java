@@ -1,16 +1,11 @@
 package core;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
-import javax.swing.JOptionPane;
-
-import user_interface.ExceptionHandler;
-import user_interface.MainWindow;
+import user_interface.*;
 import logging.GlobalLogger;
 import database.*;
 
@@ -33,7 +28,7 @@ public class Timeflecks
 
 		return instance;
 	}
-	
+
 	public static boolean isMac()
 	{
 		String osName = System.getProperty("os.name");
@@ -183,8 +178,9 @@ public class Timeflecks
 	{
 		if (eventManager == null)
 		{
-			GlobalLogger.getLogger().logp(Level.SEVERE, "Timeflecks",
-					"registerForTimeflecksEvents",
+			GlobalLogger.getLogger().logp(Level.SEVERE,
+					this.getClass().getName(),
+					"registerForTimeflecksEvents(TimeflecksEventResponder)",
 					"ERROR: eventManager was null.");
 		}
 		eventManager.addListener(t);
@@ -214,10 +210,6 @@ public class Timeflecks
 
 	public static void main(String[] args)
 	{
-		// This variable is not used. Simply creating the application is
-		// sufficient to run the application.
-		@SuppressWarnings("unused")
-		Timeflecks application = Timeflecks.getSharedApplication();
+		Timeflecks.getSharedApplication();
 	}
-
 }

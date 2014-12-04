@@ -4,8 +4,6 @@ package core;
  * Abstract class defining contract for objects used to do filtering on lists of
  * tasks.
  * 
- * @author Andrew
- * 
  * @param <E>
  *            The object type to filter by
  */

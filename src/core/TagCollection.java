@@ -1,9 +1,11 @@
 package core;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
+/**
+ * Represents a collection of tags to filter by.
+ * 
+ */
 public class TagCollection
 {
 	private HashSet<String> tags;
@@ -42,6 +44,7 @@ public class TagCollection
 	 */
 	public boolean removeTag(String tag)
 	{
+		Objects.requireNonNull(tag);
 		return tags.remove(tag);
 	}
 

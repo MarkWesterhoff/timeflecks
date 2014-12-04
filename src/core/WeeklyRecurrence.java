@@ -1,9 +1,11 @@
 package core;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
+/**
+ * A recurrence every week.
+ *
+ */
 public class WeeklyRecurrence extends Recurrence
 {
 

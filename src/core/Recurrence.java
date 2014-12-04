@@ -1,20 +1,29 @@
 package core;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 
 import logging.GlobalLogger;
 
-//look up static interface...?
+/**
+ * A class to generate recurring Tasks.
+ * 
+ */
 public abstract class Recurrence
 {
 	ArrayList<Task> tasks;
 
-	// ASSUMES PROTOTYPE DATE FOLLOWS PATTERN
+	/**
+	 * Note: Assumes prototype date follows pattern.
+	 * 
+	 * @param protoTask
+	 * @param toDate
+	 * @throws IllegalArgumentException
+	 */
 	public Recurrence(Task protoTask, Date toDate)
-			throws IllegalArgumentException
 	{
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"Recurrence(Task,  Date)", "Constructing Recurrence");
 		tasks = new ArrayList<Task>();
 		if (protoTask.getDueDate() == null && protoTask.getStartTime() == null)
 		{
@@ -43,9 +52,7 @@ public abstract class Recurrence
 				nextTask.setDueDate(getNextTime(currentTask.getDueDate()));
 			}
 
-			GlobalLogger.getLogger().logp(
-					Level.INFO,
-					"core.Recurrence",
+			GlobalLogger.getLogger().logp(Level.INFO, "core.Recurrence",
 					"Recurrence(Task, Date)",
 					"created new task: " + nextTask.getId());
 

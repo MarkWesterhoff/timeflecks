@@ -1,8 +1,6 @@
 package core;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 public class DailyRecurrence extends Recurrence
 {

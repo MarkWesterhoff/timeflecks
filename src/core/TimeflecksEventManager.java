@@ -5,6 +5,10 @@ import java.util.logging.Level;
 
 import logging.GlobalLogger;
 
+/**
+ * Receives events and sends them to TimeflecksEventResponders.
+ * 
+ */
 public class TimeflecksEventManager
 {
 	ArrayList<TimeflecksEventResponder> listeners = new ArrayList<TimeflecksEventResponder>();
@@ -18,8 +22,9 @@ public class TimeflecksEventManager
 	 */
 	public void addListener(TimeflecksEventResponder toAdd)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
-				"addListener", "Adding listener " + toAdd);
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"addListener(TimeflecksEventResponder)",
+				"Adding listener " + toAdd);
 		listeners.add(toAdd);
 	}
 
@@ -32,8 +37,9 @@ public class TimeflecksEventManager
 	 */
 	public void removeListener(TimeflecksEventResponder toRemove)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
-				"removeListener", "Removing listener " + toRemove);
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"removeListener(TimeflecksEventResponder)",
+				"Removing listener " + toRemove);
 	}
 
 	/**
@@ -47,11 +53,14 @@ public class TimeflecksEventManager
 	 */
 	public void postEvent(TimeflecksEvent e)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TimeflecksEventManager",
-				"postEvent", "Posting event " + e + " to all listeners.");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"postEvent(TimeflecksEvent)",
+				"Posting event " + e + " to all listeners.");
 
 		// Notify everyone who is listening
 		for (TimeflecksEventResponder r : listeners)
+		{
 			r.eventPosted(e);
+		}
 	}
 }

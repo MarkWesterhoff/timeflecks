@@ -1,5 +1,9 @@
 package core;
 
+/**
+ * An event that occurs within the Timeflecks application.
+ * 
+ */
 public enum TimeflecksEvent
 {
 	EVERYTHING_NEEDS_REFRESH,
@@ -11,7 +15,7 @@ public enum TimeflecksEvent
 	DATE_LEFT_SEVEN_BUTTON,
 	DATE_RIGHT_SEVEN_BUTTON,
 	CHANGED_POSSIBLE_TAGS,
-	INVALIDATED_FILTERED_TASK_LIST, 
-	CREATED_EDIT_PANEL, 
+	INVALIDATED_FILTERED_TASK_LIST,
+	CREATED_EDIT_PANEL,
 	DISMISSED_EDIT_PANEL
 }

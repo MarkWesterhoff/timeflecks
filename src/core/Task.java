@@ -1,27 +1,19 @@
 package core;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 
 import utility.StringUtility;
-import database.DatabaseSerializable;
-import database.SerializableType;
+import database.*;
 import logging.GlobalLogger;
 
 /**
- * 
  * Represents a single Scheduleable task -- the heart of the application.
  * 
  */
-
 public class Task implements Scheduleable, DatabaseSerializable, Transferable
 {
 	private static final long serialVersionUID = 1L;
@@ -57,21 +49,23 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 		tags = new ArrayList<String>();
 	}
 
-	// We don't want this warning, we know what it will be and we don't need to check below. 
+	// We don't want this warning, we know what it will be and we don't need to
+	// check below.
 	@SuppressWarnings("unchecked")
 	public Task(Task t)
 	{
 		Objects.requireNonNull(t);
+
 		id = Timeflecks.getSharedApplication().getIdGenerator().getNextID();
 		setOrdering(id);
-		// TODO: Research copy constructors in Java (why isn't this a thing...?)
+		
 		this.name = t.name;
 		this.completed = t.completed;
 		this.description = t.description;
 		this.priority = t.priority;
 		this.duration = t.duration;
 		this.description = t.description;
-		
+
 		this.tags = (ArrayList<String>) t.getTags().clone();
 	}
 
@@ -163,13 +157,10 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 
 	public void setDuration(long duration)
 	{
-		GlobalLogger.getLogger().logp(
-				Level.INFO,
-				"core.Task",
+		GlobalLogger.getLogger().logp(Level.INFO, "core.Task",
 				"core.Task.setDuration(duration)",
-				"Setting duration to task with id " + id + " as "
-						+ duration);
-		
+				"Setting duration to task with id " + id + " as " + duration);
+
 		this.duration = duration;
 	}
 
@@ -326,7 +317,7 @@ public class Task implements Scheduleable, DatabaseSerializable, Transferable
 	@Override
 	public DataFlavor[] getTransferDataFlavors()
 	{
-		return new DataFlavor[]{new DataFlavor(Task.class, "Task")};
+		return new DataFlavor[] { new DataFlavor(Task.class, "Task") };
 	}
 
 	@Override

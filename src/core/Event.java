@@ -2,11 +2,10 @@ package core;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
-import database.DatabaseSerializable;
-import database.SerializableType;
+
+import database.*;
 import logging.GlobalLogger;
 
 /**
@@ -33,8 +32,9 @@ public class Event implements Scheduleable, DatabaseSerializable
 		this.name = name;
 		this.startTime = startTime;
 		this.endTime = endTime;
-		GlobalLogger.getLogger().logp(Level.INFO, "core.Event", "core.Event()",
-				"Creating event " + this.name + " with id " + id);
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"Event()",
+				"Creating event " + this.name + " with id " + this.id);
 	}
 
 	public long getId()
@@ -62,8 +62,8 @@ public class Event implements Scheduleable, DatabaseSerializable
 	{
 		if (startTime == null)
 		{
-			GlobalLogger.getLogger().logp(Level.WARNING, "core.Event",
-					"core.Event.setStartTime()",
+			GlobalLogger.getLogger().logp(Level.WARNING,
+					this.getClass().getName(), "core.Event.setStartTime()",
 					"Start time should not be set to null for events");
 			throw new IllegalArgumentException(
 					"Events should not have a null start time.");
@@ -87,6 +87,7 @@ public class Event implements Scheduleable, DatabaseSerializable
 
 	public void setDescription(String description)
 	{
+		Objects.requireNonNull(description);
 		this.description = description;
 	}
 
@@ -110,9 +111,8 @@ public class Event implements Scheduleable, DatabaseSerializable
 	 */
 	public void saveToDatabase() throws SQLException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "core.Event",
-				"core.Event.saveToDatabase()",
-				"Saving " + this.name + " to database.");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"saveToDatabase()", "Saving " + this.name + " to database.");
 
 		Timeflecks.getSharedApplication().getDBConnector()
 				.serializeAndSave(this);
@@ -141,7 +141,6 @@ public class Event implements Scheduleable, DatabaseSerializable
 		}
 		else
 		{
-			// We should always return true from this method.
 			return true;
 		}
 	}

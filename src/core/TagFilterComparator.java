@@ -1,12 +1,10 @@
 package core;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Concrete extension of FilterComparator for tags.
  * 
- * @author Andrew
  */
 public class TagFilterComparator extends FilterComparator<Collection<String>>
 {
@@ -23,7 +21,7 @@ public class TagFilterComparator extends FilterComparator<Collection<String>>
 	{
 		Objects.requireNonNull(task);
 		Objects.requireNonNull(tags);
-		
+
 		// If the Task is tagged with any of the tags in the list, it matches
 		for (String tag : tags)
 		{
@@ -34,5 +32,4 @@ public class TagFilterComparator extends FilterComparator<Collection<String>>
 		}
 		return false;
 	}
-
 }
