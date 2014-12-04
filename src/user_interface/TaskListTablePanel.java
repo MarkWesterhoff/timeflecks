@@ -22,7 +22,8 @@ import core.TimeflecksEvent;
 import core.TimeflecksEventResponder;
 import dnd.TaskListTableTransferHandler;
 
-public class TaskListTablePanel extends JPanel implements TimeflecksEventResponder
+public class TaskListTablePanel extends JPanel implements
+		TimeflecksEventResponder
 {
 	private static final long serialVersionUID = 1L;
 
@@ -43,16 +44,16 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	private JButton clearTagButton;
 	private Vector<String> tagSelectionChoices;
 	private JTextField searchField;
-	
+
 	private int tasksBeingEdited;
 
 	public TaskListTablePanel(TaskListTableModel taskListTableModel)
 	{
 		super();
 		Objects.requireNonNull(taskListTableModel);
-		
+
 		tasksBeingEdited = 0;
-		
+
 		ActionListener al = new TaskPanelActionListener(this);
 
 		setLayout(new BorderLayout());
@@ -67,12 +68,11 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		comboMap.put("Name", Task.nameComparator);
 		comboMap.put("Due Date", Task.dueDateComparator);
 		comboMap.put("Priority", Task.priorityComparator);
-		JComboBox<String> sortList = new JComboBox<String>(comboMap.keySet()
-				.toArray(new String[comboMap.size()]));
+		JComboBox<String> sortList =
+				new JComboBox<String>(comboMap.keySet().toArray(
+						new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(al);
-
-		JLabel spacer = new JLabel("    ");
 
 		JLabel sortLabel = new JLabel("Sort By: ");
 
@@ -84,7 +84,6 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 		sortSet.add(sortLabel);
 		sortSet.add(sortList);
-//		sortSet.add(spacer);
 
 		// Up and down bump buttons
 		upButton = createIconedButton("resources/up.png", "Move Up", al);
@@ -131,7 +130,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 		// Tag panel components
 		JLabel tagLabel = new JLabel("Filter by Tag:");
-		
+
 		// Multiple tag selector list
 		tagSelectionChoices = new Vector<String>();
 		tagSelector = new JList<String>(tagSelectionChoices);
@@ -169,16 +168,16 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 						TimeflecksEvent.INVALIDATED_FILTERED_TASK_LIST);
 			}
 		});
-		
+
 		refreshTagSelector();
-		
+
 		JScrollPane filterScrollPane = new JScrollPane(tagSelector);
 		filterScrollPane.setPreferredSize(new Dimension(150, 60));
-		
+
 		// Clear tags button
 		clearTagButton = new JButton("Clear tags");
 		clearTagButton.setActionCommand("Clear tag selection");
-		
+
 		// Use anonymous action listener instead of TaskPanelActionListener
 		// because we need access to the tagSelector.
 		clearTagButton.addActionListener(new ActionListener()
@@ -196,13 +195,13 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 				}
 			}
 		});
-		
+
 		// FlowLayout JPanel for tag components
 		JPanel tagPanel = new JPanel(new FlowLayout());
 		tagPanel.add(tagLabel);
 		tagPanel.add(filterScrollPane);
 		tagPanel.add(clearTagButton);
-		
+
 		// Search text field
 		searchField = new JTextField();
 		searchField.setPreferredSize(new Dimension(100, 20));
@@ -224,8 +223,9 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 
 				// Either clearing the search or searching by the string,
 				// depending on if empty or not
-				String logMessage = (searchText.equals("")) ? "Clearing search."
-						: "Searching by text \"" + searchText + "\"";
+				String logMessage =
+						(searchText.equals("")) ? "Clearing search."
+								: "Searching by text \"" + searchText + "\"";
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed(ActionEvent)", logMessage);
 
@@ -242,16 +242,16 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 			{
 			}
 		});
-		
-		//Search Label
+
+		// Search Label
 		JLabel searchLabel = new JLabel("Search Tasks:");
-		
+
 		// Search Panel
 		JPanel filterPanel = new JPanel(new FlowLayout());
 		filterPanel.add(searchLabel);
 		filterPanel.add(searchField);
 		filterPanel.add(tagPanel);
-		
+
 		add(filterPanel, BorderLayout.SOUTH);
 
 		// Actual table
@@ -259,7 +259,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		table.setDragEnabled(true);
 		table.setTransferHandler(new TaskListTableTransferHandler());
 		table.setDropMode(DropMode.USE_SELECTION);
-		
+
 		// Set column widths
 		table.getColumnModel().getColumn(0)
 				.setMinWidth(MIN_COMPLETED_COLUMN_WIDTH);
@@ -273,7 +273,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		table.setFillsViewportHeight(true);
 		table.setAutoCreateRowSorter(false);
 		add(scroll, BorderLayout.CENTER);
-		
+
 		// Register for Timeflecks events
 		final TaskListTablePanel thisTaskListTablePanel = this;
 		SwingUtilities.invokeLater(new Runnable()
@@ -288,10 +288,11 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		});
 	}
 
-	public JTextField getSearchField() {
+	public JTextField getSearchField()
+	{
 		return searchField;
 	}
-	
+
 	private JButton createIconedButton(String iconPath, String buttonName,
 			ActionListener al)
 	{
@@ -324,18 +325,19 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	{
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 				"refresh()", "Refreshing TaskListTablePanel");
-		
+
 		// Enable or disable edit and delete buttons based on number of Tasks
 		// currently being edited.
 		updateEditAndDeleteButtons();
-		
+
 		((AbstractTableModel) table.getModel()).fireTableDataChanged();
 	}
-	
+
 	/**
 	 * Re-creates the list of tags that is used by the tag selector.
 	 */
-	public void refreshTagSelector() {
+	public void refreshTagSelector()
+	{
 		// Find the tags that were selected before the refresh
 		HashSet<String> previouslySelected = new HashSet<String>();
 		for (int index : tagSelector.getSelectedIndices())
@@ -346,21 +348,23 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 						index));
 			}
 		}
-		
+
 		tagSelector.clearSelection();
-		
+
 		// Refresh the tags in the selection list
 		// Get tags and sort alphabetically
-		Collection<String> tags = Timeflecks.getSharedApplication()
-				.getTaskList().getAllTags();
+		Collection<String> tags =
+				Timeflecks.getSharedApplication().getTaskList().getAllTags();
 		tagSelectionChoices = new Vector<String>(tags);
 		Collections.sort(tagSelectionChoices);
 		tagSelector.setListData(tagSelectionChoices);
 		tagSelector.clearSelection();
-		
+
 		// Select the tags that were selected before
-		for(int i = 0; i < tagSelectionChoices.size(); ++i) {
-			if(previouslySelected.contains(tagSelectionChoices.get(i))) {
+		for (int i = 0; i < tagSelectionChoices.size(); ++i)
+		{
+			if (previouslySelected.contains(tagSelectionChoices.get(i)))
+			{
 				tagSelector.addSelectionInterval(i, i);
 			}
 		}
@@ -371,7 +375,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		upButton.setEnabled(visibility);
 		downButton.setEnabled(visibility);
 	}
-	
+
 	/**
 	 * Gets the Tasks that have been selected based on the table rows that have
 	 * been selected.
@@ -399,10 +403,10 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 								+ " is out of bounds for the current table.");
 			}
 		}
-		
+
 		return tasks;
 	}
-	
+
 	public JTable getTable()
 	{
 		return table;
@@ -412,7 +416,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 	{
 		return comboMap;
 	}
-	
+
 	/**
 	 * Disables the Edit Task and Delete Task buttons if a task is currently
 	 * being edited.
@@ -424,7 +428,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 			GlobalLogger.getLogger().logp(Level.INFO,
 					this.getClass().getName(), "updateEditAndDeleteButtons()",
 					"Setting Edit and Delete buttons to enabled");
-			
+
 			editTaskButton.setEnabled(true);
 			deleteTaskButton.setEnabled(true);
 		}
@@ -433,7 +437,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 			GlobalLogger.getLogger().logp(Level.INFO,
 					this.getClass().getName(), "updateEditAndDeleteButtons()",
 					"Setting Edit and Delete buttons to disabled");
-			
+
 			editTaskButton.setEnabled(false);
 			deleteTaskButton.setEnabled(false);
 		}
@@ -462,7 +466,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 		if (t.equals(TimeflecksEvent.CREATED_EDIT_PANEL))
 		{
 			tasksBeingEdited++;
-			
+
 			GlobalLogger.getLogger().logp(
 					Level.INFO,
 					this.getClass().getName(),
@@ -470,13 +474,13 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 					"One more Task is being edited ("
 							+ Integer.toString(tasksBeingEdited)
 							+ " total Tasks)");
-			
+
 			updateEditAndDeleteButtons();
 		}
 		if (t.equals(TimeflecksEvent.DISMISSED_EDIT_PANEL))
 		{
 			tasksBeingEdited--;
-			
+
 			GlobalLogger.getLogger().logp(
 					Level.INFO,
 					this.getClass().getName(),
@@ -484,7 +488,7 @@ public class TaskListTablePanel extends JPanel implements TimeflecksEventRespond
 					"One less Task is being edited ("
 							+ Integer.toString(tasksBeingEdited)
 							+ " total Tasks)");
-			
+
 			updateEditAndDeleteButtons();
 		}
 		else

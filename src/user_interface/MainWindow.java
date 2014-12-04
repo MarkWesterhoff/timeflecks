@@ -180,8 +180,11 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 
 	public void displayFrame()
 	{
-		setSize(1300, 595);
-		setMinimumSize(new Dimension(1300, 595));
+		int width = 1300;
+		int height = 555;
+		
+		setSize(width, height);
+		setMinimumSize(new Dimension(width, height));
 
 		pack();
 
