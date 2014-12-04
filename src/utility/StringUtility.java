@@ -1,21 +1,28 @@
 package utility;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
-public class StringUtility {
-	
+/**
+ * Utility class for interacting with String objects.
+ * 
+ */
+public class StringUtility
+{
+
 	/**
 	 * Checks if the string only contains alphanumeric characters.
 	 * 
-	 * @param str the string to check
+	 * @param str
+	 *            the string to check
 	 * @return true if string is alphanumeric, false otherwise
 	 */
-	public static boolean isAlphaNumeric(String str) {
+	public static boolean isAlphaNumeric(String str)
+	{
 		Objects.requireNonNull(str);
-		
+
 		String pattern = "^[a-zA-Z0-9]+$";
-		if(str.matches(pattern)) {
+		if (str.matches(pattern))
+		{
 			return true;
 		}
 		return false;
@@ -29,21 +36,23 @@ public class StringUtility {
 	 */
 	public void requiresNotNullOrEmpty(String str)
 	{
-		if (str == null )
+		if (str == null)
 		{
 			throw new NullPointerException(str);
 		}
-		
+
 		if (str.equals(""))
 		{
 			throw new IllegalArgumentException(str);
 		}
 	}
 
-	public static String join(ArrayList<String> strings, char joinChar) {
+	public static String join(ArrayList<String> strings, char joinChar)
+	{
 		StringBuilder sb = new StringBuilder();
 		String joinString = "";
-		for(String s : strings) {
+		for (String s : strings)
+		{
 			sb.append(joinString);
 			sb.append(s);
 			joinString = String.valueOf(joinChar);

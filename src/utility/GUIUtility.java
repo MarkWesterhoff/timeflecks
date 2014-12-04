@@ -1,24 +1,34 @@
 package utility;
 
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.Objects;
 
-public class GUIUtility {
+/**
+ * Utility class for Graphics.
+ * 
+ */
+public class GUIUtility
+{
 	/**
-	 * Draws the specified string on the specified graphics wrapped to the specified width.
+	 * Draws the specified string on the specified graphics wrapped to the
+	 * specified width.
 	 * 
-	 * @param g The graphics on which to draw the string
-	 * @param s	The string to draw
-	 * @param x	The x coordinate to start the top left part of the string at
-	 * @param y	The y coordinate to start the top left part of the string at
-	 * @param width The width of the string to be drawn / wrapped
+	 * @param g
+	 *            The graphics on which to draw the string
+	 * @param s
+	 *            The string to draw
+	 * @param x
+	 *            The x coordinate to start the top left part of the string at
+	 * @param y
+	 *            The y coordinate to start the top left part of the string at
+	 * @param width
+	 *            The width of the string to be drawn / wrapped
 	 */
 	public static void drawString(Graphics g, String s, int x, int y, int width)
 	{
 		Objects.requireNonNull(g);
 		Objects.requireNonNull(s);
-		
+
 		FontMetrics fm = g.getFontMetrics();
 
 		int lineHeight = fm.getHeight();
