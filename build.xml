@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="jar" name="Create Runnable Jar for Project timeflecks">
+
+    <!-- ANT 1.7 is required -->
+
+	<path id = "deps_classpath-test">
+		<pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
+		<pathelement path="lib/junit-4.11.jar" />
+		<pathelement path="lib/jcalendar-1.4.jar" />
+		<pathelement path="lib/hamcrest-core-1.3.jar" />
+	</path>
+
+	<path id = "deps_classpath-notest">
+		<pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
+		<pathelement path="lib/jcalendar-1.4.jar" />
+	</path>
+
+    <path id = "testing_classpath">
+        <pathelement path="bin/" />
+        <pathelement path="lib/sqlite-jdbc-3.8.6.jar" />
+        <pathelement path="lib/junit-4.11.jar" />
+        <pathelement path="lib/jcalendar-1.4.jar" />
+        <pathelement path="lib/hamcrest-core-1.3.jar" />
+    </path>
+
+
+    <property name="jarname" value="Timeflecks.jar" />
+
+    <!-- remove all build files -->
+	<target name="clean">
+		<delete dir="bin"/>
+        <delete file="${jarname}"/>
+	</target>
+	
+    <!-- build all .class files, including jUnit tests -->
+	<target name="compile-test">
+		<mkdir dir="bin"/>
+		<javac srcdir="src" destdir="bin" includeantruntime="false">
+			<classpath refid="deps_classpath-test" />
+		</javac>
+	</target>
+
+    <!-- build all .class files, except jUnit tests -->
+    <target name="compile-notest">
+		<mkdir dir="bin"/>
+        <copy todir="bin/resources">
+            <fileset dir="src/resources" />
+        </copy>
+		<javac srcdir="src" destdir="bin" includeantruntime="false">
+            <exclude name="*/test/" />
+			<classpath refid="deps_classpath-notest" />
+		</javac>
+	</target>
+	
+    <!-- output executable jar file -->
+	<target name="jar" depends="compile-notest">
+		<jar destfile="${jarname}" basedir="bin">
+            <zipgroupfileset dir="lib" includes="*.jar" excludes="junit*.jar,hamcrest*.jar" />
+			<manifest>
+	            <attribute name="Main-Class" value="core.Timeflecks"/>
+                <attribute name="Class-Path" value="."/>
+			</manifest>
+		</jar>
+	</target>
+
+    <!-- run jUnit tests -->
+    <target name="test" depends="compile-test">
+        <junit printsummary="yes" fork="yes">
+            <classpath refid="testing_classpath" />
+            <batchtest fork="yes">
+                <fileset dir="src/">
+                    <include name="**/test/*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+</project>
