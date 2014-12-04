@@ -58,9 +58,19 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		if (taskToEdit != null)
 		{
-			// Smaller pane
-			this.getContentPane().setPreferredSize(new Dimension(350, 405));
-			this.setMinimumSize(new Dimension(380, 450));
+			if (Timeflecks.isMac())
+			{
+				// Smaller pane, but bigger for mac
+				this.getContentPane().setPreferredSize(new Dimension(380, 450));
+				this.setMinimumSize(new Dimension(406, 480));
+			}
+			else
+			{
+				// Smaller pane
+				this.getContentPane().setPreferredSize(new Dimension(350, 405));
+				this.setMinimumSize(new Dimension(380, 450));
+			}
+			
 		}
 		else
 		{
