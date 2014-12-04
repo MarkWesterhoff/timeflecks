@@ -6,9 +6,7 @@ import java.util.Date;
 
 import org.junit.Test;
 
-import core.Event;
-import core.Task;
-import core.TaskList;
+import core.*;
 
 public class TaskListTest
 {

@@ -2,14 +2,11 @@ package core.test;
 
 import static org.junit.Assert.*;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 import org.junit.Test;
 
-import core.Priority;
-import core.Task;
+import core.*;
 
 public class TaskTest
 {
@@ -100,7 +97,9 @@ public class TaskTest
 				test.getDueDate(), null);
 		Date currentTime = new Date();
 		test.setDueDate(currentTime);
-		assertEquals("adding a due date should change it to the value passed in",test.getDueDate(),currentTime);
+		assertEquals(
+				"adding a due date should change it to the value passed in",
+				test.getDueDate(), currentTime);
 	}
 
 	@Test
@@ -115,11 +114,15 @@ public class TaskTest
 		c.setTime(currentDate);
 		c.add(Calendar.MINUTE, 60);
 		test.setStartTime(currentDate);
-		assertEquals("added start time should equal value passed in",test.getStartTime(),currentDate);
+		assertEquals("added start time should equal value passed in",
+				test.getStartTime(), currentDate);
 		test.setDuration(60 * 60 * 1000);
-		assertEquals("added duration should be set to value passed in",test.getDuration(),60*60*1000);
-		assertEquals("End time is calculated incorrectly.", test.getEndTime(),c.getTime());
-		assertTrue("scheduled tasks should return true in isScheduled()", test.isScheduled());
+		assertEquals("added duration should be set to value passed in",
+				test.getDuration(), 60 * 60 * 1000);
+		assertEquals("End time is calculated incorrectly.", test.getEndTime(),
+				c.getTime());
+		assertTrue("scheduled tasks should return true in isScheduled()",
+				test.isScheduled());
 	}
 
 }
