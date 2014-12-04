@@ -4,15 +4,17 @@ import java.awt.datatransfer.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
 import javax.swing.*;
 
 import user_interface.ExceptionHandler;
 import logging.GlobalLogger;
 
+/**
+ * Handles transfer of Tasks to and from the TaskList.
+ *
+ */
 public class TaskListTableTransferHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 1L;

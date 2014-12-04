@@ -2,29 +2,29 @@ package dnd;
 
 import java.awt.Point;
 import java.awt.datatransfer.*;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 
-import core.PlaceholderScheduleable;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
 import javax.swing.*;
 
-import user_interface.CalendarPanel;
-import user_interface.ExceptionHandler;
+import user_interface.*;
 import logging.GlobalLogger;
 
+/**
+ * Handles transferring of Tasks to and from the Calendar.
+ * 
+ */
 public class CalendarTransferHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{
-		GlobalLogger.getLogger().logp(Level.FINE, "CalendarTransferHandler",
-				"canImport", "Can import called.");
+		GlobalLogger.getLogger().logp(Level.FINE, this.getClass().getName(),
+				"canImport(TransferSupport)", "Can import called.");
 		if (!info.isDrop())
 		{
 			return false;
@@ -56,22 +56,25 @@ public class CalendarTransferHandler extends TransferHandler
 				Task taskRef;
 				try
 				{
-					taskRef = (Task) t.getTransferData(new DataFlavor(Task.class,
-							"Task"));
+					taskRef = (Task) t.getTransferData(new DataFlavor(
+							Task.class, "Task"));
 				}
 				catch (Exception e)
 				{
 					return false;
 				}
-				
+
 				if (taskRef instanceof Task)
 				{
 					Date newTime = p.getDateForPoint(dropPoint);
-					
-					// Create a temporary Task to represent where the current one would be dropped
-					Task temp = (Task)taskRef;
-					PlaceholderScheduleable hold = new PlaceholderScheduleable(temp.getName(), newTime, new Date(newTime.getTime() + temp.getDuration()));
-					
+
+					// Create a temporary Task to represent where the current
+					// one would be dropped
+					Task temp = (Task) taskRef;
+					PlaceholderScheduleable hold = new PlaceholderScheduleable(
+							temp.getName(), newTime, new Date(newTime.getTime()
+									+ temp.getDuration()));
+
 					if (p.conflictingScheduleableExists(hold))
 					{
 						return false;
@@ -92,8 +95,8 @@ public class CalendarTransferHandler extends TransferHandler
 	protected Transferable createTransferable(JComponent c)
 	{
 
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler",
-				"createTransferable", "createTransferable called.");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"createTransferable(JComponent)", "createTransferable called.");
 
 		// Get the object at the currently pointed at coordinates
 		// Get it's task
@@ -119,19 +122,21 @@ public class CalendarTransferHandler extends TransferHandler
 	/**
 	 * We support only move actions.
 	 */
+	@Override
 	public int getSourceActions(JComponent c)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler",
-				"getSourceActions", "getSourceActions called.");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"getSourceActions(JComponent)", "getSourceActions called.");
 		return TransferHandler.MOVE;
 	}
 
 	/**
 	 * Perform the actual import. Note that we only support drag and drop.
 	 */
+	@Override
 	public boolean importData(TransferHandler.TransferSupport info)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"importData", "importData called.");
 
 		if (!info.isDrop())
@@ -158,7 +163,7 @@ public class CalendarTransferHandler extends TransferHandler
 		if (taskRef == null)
 		{
 			GlobalLogger.getLogger().logp(Level.INFO,
-					"CalendarTransferHandler", "importData",
+					this.getClass().getName(), "importData(TransferSupport)",
 					"Failed to get task from import data");
 			return false;
 		}
@@ -231,7 +236,8 @@ public class CalendarTransferHandler extends TransferHandler
 	 */
 	protected void exportDone(JComponent c, Transferable data, int action)
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "CalendarTransferHandler",
-				"exportDone", "Export done called. Doing nothing");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"exportDone(JComponent, Transferable, action)",
+				"Export done called. Doing nothing");
 	}
 }
