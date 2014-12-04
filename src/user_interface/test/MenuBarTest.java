@@ -1,7 +1,6 @@
 package user_interface.test;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import org.junit.Test;
 

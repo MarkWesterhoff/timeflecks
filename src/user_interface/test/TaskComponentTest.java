@@ -1,7 +1,6 @@
 package user_interface.test;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
+import java.awt.*;
 
 import javax.swing.*;
 

@@ -5,17 +5,13 @@ import static org.junit.Assert.fail;
 import java.awt.FlowLayout;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import javax.swing.*;
 
 import org.junit.Test;
 
-import core.Event;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 import user_interface.CalendarPanel;
 
 public class CalendarPanelTest
@@ -82,7 +78,7 @@ public class CalendarPanelTest
 		}
 
 	}
-	
+
 	@Test
 	public void testCalendarPanelWithEvents()
 	{
@@ -106,7 +102,8 @@ public class CalendarPanelTest
 
 		try
 		{
-			Timeflecks.getSharedApplication().getTaskList().saveAllTasksAndEvents();
+			Timeflecks.getSharedApplication().getTaskList()
+					.saveAllTasksAndEvents();
 		}
 		catch (SQLException e)
 		{

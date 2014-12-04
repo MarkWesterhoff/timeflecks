@@ -47,7 +47,7 @@ public class NewTaskPanelTest
 			}
 		});
 	}
-	
+
 	@Test
 	public void newPanelTest2()
 	{
