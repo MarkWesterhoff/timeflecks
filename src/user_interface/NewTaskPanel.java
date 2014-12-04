@@ -17,6 +17,10 @@ import com.toedter.calendar.JDateChooser;
 
 import core.*;
 
+/**
+ * A panel to create and edit events.
+ * 
+ */
 public class NewTaskPanel extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
@@ -70,7 +74,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				this.getContentPane().setPreferredSize(new Dimension(350, 405));
 				this.setMinimumSize(new Dimension(380, 450));
 			}
-			
+
 		}
 		else
 		{
@@ -80,14 +84,15 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			{
 				this.getContentPane().setPreferredSize(new Dimension(380, 500));
 				this.setMinimumSize(new Dimension(406, 532));
-			} else
+			}
+			else
 			{
 				this.getContentPane().setPreferredSize(new Dimension(350, 450));
 				this.setMinimumSize(new Dimension(380, 495));
 			}
 		}
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"NewTaskPanel", "Beginning interface setup");
 
 		// Title Label
@@ -135,7 +140,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		centerPanel.add(taskNameField, gc);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"NewTaskPanel", "Added name field");
 
 		// Using JCalendar from here:
@@ -155,7 +160,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			startDateChooser = new JDateChooser(taskToEdit.getStartTime(),
 					"MM/dd/yyyy hh:mm a");
-		} else
+		}
+		else
 		{
 			startDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -184,7 +190,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			dueDateChooser = new JDateChooser(taskToEdit.getDueDate(),
 					"MM/dd/yyyy hh:mm a");
-		} else
+		}
+		else
 		{
 			dueDateChooser = new JDateChooser(null, "MM/dd/yyyy hh:mm a");
 		}
@@ -230,7 +237,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			hourModel = new SpinnerNumberModel(durationHours, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(durationMins, 0, 59, 1);
-		} else
+		}
+		else
 		{
 			hourModel = new SpinnerNumberModel(0, 0, 23, 1);
 			minuteModel = new SpinnerNumberModel(0, 0, 59, 1);
@@ -267,7 +275,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		centerPanel.add(durationPanel, gc);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"NewTaskPanel", "Added duration pickers");
 
 		// Priority Support
@@ -290,13 +298,16 @@ public class NewTaskPanel extends JFrame implements ActionListener
 			if (taskToEdit.getPriority() == Priority.HIGH_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("High");
-			} else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
+			}
+			else if (taskToEdit.getPriority() == Priority.MEDIUM_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("Medium");
-			} else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
+			}
+			else if (taskToEdit.getPriority() == Priority.LOW_PRIORITY)
 			{
 				taskPriorityComboBox.setSelectedItem("Low");
-			} else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
+			}
+			else if (taskToEdit.getPriority() == Priority.NO_PRIORITY_SELECTED)
 			{
 				taskPriorityComboBox.setSelectedItem("Not Set");
 			}
@@ -309,7 +320,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		centerPanel.add(taskPriorityComboBox, gc);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"NewTaskPanel", "Added priority drop down");
 
 		// TAGS -- start with semicolon separation
@@ -360,8 +371,9 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 			recurrenceLabel.setLabelFor(repeatComboBox); // Accessibility
 
-			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-					"NewTaskPanel", "Added recurrence drop down");
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "NewTaskPanel",
+					"Added recurrence drop down");
 
 			JPanel recurrencePanel = new JPanel();
 			recurrencePanel.setLayout(panelLayout);
@@ -414,7 +426,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		centerPanel.add(scrollPane, gc);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"NewTaskPanel", "Added text area for description");
 
 		// Tags support goes here
@@ -450,7 +462,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit == null)
 		{
 			titleLabel = new JLabel("New Task");
-		} else
+		}
+		else
 		{
 			titleLabel = new JLabel("Edit Task");
 		}
@@ -471,24 +484,27 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		{
 			if (taskNameField.getText().length() == 0)
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-						"actionPerformed",
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "actionPerformed",
 						"Save button pressed. Missing required name.");
 
 				JOptionPane.showMessageDialog(this,
 						"You must specify a name for this task.",
 						"Name Required", JOptionPane.WARNING_MESSAGE);
-			} else
+			}
+			else
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-						"actionPerformed", "Save button pressed. Saving task.");
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "actionPerformed",
+						"Save button pressed. Saving task.");
 
 				Task task;
 				if (taskToEdit != null)
 				{
 					task = taskToEdit;
 					task.setName(taskNameField.getText());
-				} else
+				}
+				else
 				{
 					task = new Task(taskNameField.getText());
 				}
@@ -522,14 +538,17 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					if (taskPriorityComboBox.getSelectedIndex() == 1)
 					{
 						task.setPriority(Priority.HIGH_PRIORITY);
-					} else if (taskPriorityComboBox.getSelectedIndex() == 2)
+					}
+					else if (taskPriorityComboBox.getSelectedIndex() == 2)
 					{
 						task.setPriority(Priority.MEDIUM_PRIORITY);
-					} else if (taskPriorityComboBox.getSelectedIndex() == 3)
+					}
+					else if (taskPriorityComboBox.getSelectedIndex() == 3)
 					{
 						task.setPriority(Priority.LOW_PRIORITY);
 					}
-				} else
+				}
+				else
 				{
 					task.setPriority(Priority.NO_PRIORITY_SELECTED);
 				}
@@ -551,7 +570,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					if (tag.equals(""))
 					{
 						tags.remove(i);
-					} else
+					}
+					else
 					{
 						tags.set(i, tag);
 						i++;
@@ -593,15 +613,18 @@ public class NewTaskPanel extends JFrame implements ActionListener
 							{
 								r = new DailyRecurrence(task, endDate);
 								tasks = r.getTasks();
-							} else if (repeatComboBox.getSelectedIndex() == 2)
+							}
+							else if (repeatComboBox.getSelectedIndex() == 2)
 							{
 								r = new WeeklyRecurrence(task, endDate);
 								tasks = r.getTasks();
-							} else if (repeatComboBox.getSelectedIndex() == 3)
+							}
+							else if (repeatComboBox.getSelectedIndex() == 3)
 							{
 								r = new WeekDayRecurrence(task, endDate);
 								tasks = r.getTasks();
-							} else if (repeatComboBox.getSelectedIndex() == 4)
+							}
+							else if (repeatComboBox.getSelectedIndex() == 4)
 							{
 								r = new MonthlyRecurrence(task, endDate);
 								tasks = r.getTasks();
@@ -618,14 +641,15 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						// Tasks are all created. Now we just need to add them
 						// to the list
 
-					} else
+					}
+					else
 					{
 						// We require an end date for the recurrence, so we
 						// will have an error here and alert the user
 
 						GlobalLogger
 								.getLogger()
-								.logp(Level.WARNING, "NewTaskPanel",
+								.logp(Level.WARNING, this.getClass().getName(),
 										"actionPerformed",
 										"No end date specified for recurrence. Prompting user.");
 
@@ -639,7 +663,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						// Now we just return the user to editing
 						return;
 					}
-				} else
+				}
+				else
 				{
 					// We add the task to the list of tasks, since we are just
 					// going to save that later.
@@ -659,7 +684,7 @@ public class NewTaskPanel extends JFrame implements ActionListener
 								.addTask(t);
 
 						GlobalLogger.getLogger().logp(Level.INFO,
-								"NewTaskPanel", "actionPerformed",
+								this.getClass().getName(), "actionPerformed",
 								"Added task to TaskList.\n" + t);
 					}
 				}
@@ -672,10 +697,11 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						t.saveToDatabase();
 
 						GlobalLogger.getLogger().logp(Level.INFO,
-								"NewTaskPanel", "actionPerformed",
+								this.getClass().getName(), "actionPerformed",
 								"Saved task to database.\n" + t);
 					}
-				} catch (Exception ex)
+				}
+				catch (Exception ex)
 				{
 					ExceptionHandler.handleDatabaseSaveException(ex, this
 							.getClass().getName(), "ActionPerformed", "1302");
@@ -687,7 +713,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 				// We're done with this pane, let's get rid of it now
 				dismissPane();
 			}
-		} else if (e.getActionCommand().equals("Cancel"))
+		}
+		else if (e.getActionCommand().equals("Cancel"))
 		{
 			tryToClose();
 		}
@@ -695,13 +722,14 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 	public void tryToClose()
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel", "tryToClose",
-				"Cancel button pressed. Dismissing Panel.");
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"tryToClose", "Cancel button pressed. Dismissing Panel.");
 
 		if (hasEnteredText())
 		{
-			GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-					"tryToClose", "Task modified. Prompting user.");
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "tryToClose",
+					"Task modified. Prompting user.");
 
 			Object[] options = { "Discard Task", "Cancel" };
 			int reply = JOptionPane
@@ -720,14 +748,16 @@ public class NewTaskPanel extends JFrame implements ActionListener
 						"User elected to discard the task. Dismissing Panel.");
 
 				dismissPane();
-			} else
+			}
+			else
 			{
 				// We simply return the user to editing
-				GlobalLogger.getLogger().logp(Level.INFO, "NewTaskPanel",
-						"tryToClose",
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "tryToClose",
 						"User selected to continue editing the task.");
 			}
-		} else
+		}
+		else
 		{
 			dismissPane();
 		}
@@ -815,7 +845,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit == null)
 		{
 			this.setTitle("Timeflecks - New Task");
-		} else
+		}
+		else
 		{
 			this.setTitle("Timeflecks - Edit Task");
 
@@ -842,5 +873,4 @@ public class NewTaskPanel extends JFrame implements ActionListener
 
 		this.setVisible(true);
 	}
-
 }

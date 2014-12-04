@@ -5,10 +5,12 @@ import java.util.logging.Level;
 import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
+/**
+ * Table model for displaying Tasks in a TaskList.
+ * 
+ */
 public class TaskListTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 1L;
@@ -22,7 +24,7 @@ public class TaskListTableModel extends AbstractTableModel
 	 */
 	public TaskListTableModel()
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"TaskListTableModel", "Constructing TaskListTableModel.");
 	}
 
@@ -95,7 +97,7 @@ public class TaskListTableModel extends AbstractTableModel
 	{
 		GlobalLogger.getLogger().logp(
 				Level.INFO,
-				"TaskListTableView",
+				this.getClass().getName(),
 				"setValueAt",
 				String.format("Setting value at (%d, %d) to %s", row, col,
 						value));
@@ -118,8 +120,9 @@ public class TaskListTableModel extends AbstractTableModel
 		try
 		{
 			task.saveToDatabase();
-			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTableModel",
-					"setValueAt", "Saved modified task to database.");
+			GlobalLogger.getLogger().logp(Level.INFO,
+					this.getClass().getName(), "setValueAt",
+					"Saved modified task to database.");
 		}
 		catch (Exception ex)
 		{

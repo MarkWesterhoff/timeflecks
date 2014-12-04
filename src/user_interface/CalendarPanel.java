@@ -1,14 +1,10 @@
 package user_interface;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 
 import javax.swing.*;
@@ -18,6 +14,10 @@ import core.Event;
 import dnd.CalendarTransferHandler;
 import logging.GlobalLogger;
 
+/**
+ * Class for displaying Tasks on a calendar.
+ * 
+ */
 public class CalendarPanel extends JPanel implements MouseMotionListener,
 		MouseListener
 {
@@ -65,7 +65,6 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		refresh();
 
 		setBorder(BorderFactory.createEmptyBorder());
-		// setBorder(BorderFactory.createLineBorder(Color.red));
 
 		this.setPreferredSize(new Dimension(width, height));
 
@@ -376,11 +375,6 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 
 		returnDate = c.getTime();
 
-		// System.out.println("topInset: " + topInset + "\nhourIncrement: " +
-		// hourIncrement + "\nhourValue: " + hourValue + "\nreturnDate: " +
-		// returnDate + "\npreciseMinutes: " + preciseMinutes + "\nminutes: " +
-		// minutes + "\n");
-
 		return returnDate;
 	}
 
@@ -431,7 +425,7 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 	{
 		return currentPoint;
 	}
-	
+
 	/**
 	 * Gets the Task under the point, if it exists.
 	 * 
@@ -546,7 +540,7 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		}
 		e.consume();
 	}
-	
+
 	public boolean conflictingScheduleableExists(Scheduleable s)
 	{
 		Rectangle inputFrame = getDrawRectangle(s);
@@ -556,11 +550,11 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		for (Scheduleable existingItem : itemsToPaint)
 		{
 			// Don't return true if we intersect with ourself.
-			if (s.getName().equals( existingItem.getName()))
+			if (s.getName().equals(existingItem.getName()))
 			{
 				continue;
 			}
-			
+
 			Rectangle existingFrame = getDrawRectangle(existingItem);
 			if (inputFrame.intersects(existingFrame))
 			{
@@ -570,14 +564,16 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 
 		return false;
 	}
-	
+
 	/**
 	 * Gets the Rectangle where Scheduleable would be drawn.
 	 * 
-	 * @param s the Scheduleable
+	 * @param s
+	 *            the Scheduleable
 	 * @return a Rectangle of where to draw the Scheduleable
 	 */
-	private Rectangle getDrawRectangle(Scheduleable s) {
+	private Rectangle getDrawRectangle(Scheduleable s)
+	{
 		int insetFromLeft = 0; // See manual 10 later
 		int insetFromRight = 8;
 
@@ -593,13 +589,12 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		double durationInHours = (s.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
 
 		Rectangle frame = new Rectangle(insetFromLeft, this.topInset
-				+ (int) (taskHours * hourIncrement), d.width
-				- insetFromRight - insetFromLeft,
-				(int) (durationInHours * hourIncrement));
-		
+				+ (int) (taskHours * hourIncrement), d.width - insetFromRight
+				- insetFromLeft, (int) (durationInHours * hourIncrement));
+
 		return frame;
 	}
-	
+
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{

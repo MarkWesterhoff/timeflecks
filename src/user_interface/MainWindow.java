@@ -7,10 +7,12 @@ import java.util.logging.Level;
 import javax.swing.*;
 
 import logging.GlobalLogger;
-import core.Timeflecks;
-import core.TimeflecksEvent;
-import core.TimeflecksEventResponder;
+import core.*;
 
+/**
+ * Main window containing all the components of the Timeflecks application.
+ * 
+ */
 public class MainWindow extends JFrame implements TimeflecksEventResponder
 {
 	private static final long serialVersionUID = 1L;
@@ -97,8 +99,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		calendarContainer = new JPanel();
 		calendarContainer.setLayout(new BorderLayout());
 
-		CalendarControlPanel controlPanel =
-				new CalendarControlPanel(showWeekView);
+		CalendarControlPanel controlPanel = new CalendarControlPanel(
+				showWeekView);
 		calendarContainer.add(controlPanel, BorderLayout.NORTH);
 
 		// Add the calendar & controlPanel
@@ -168,8 +170,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			int width = 700;
 			int height = 1000;
 
-			CalendarPanel p =
-					new CalendarPanel(date, true, false, width, height);
+			CalendarPanel p = new CalendarPanel(date, true, false, width,
+					height);
 
 			cpanels.add(p);
 			container.add(p);
@@ -205,8 +207,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		// Add the icon to the application
 		try
 		{
-			ImageIcon icon =
-					new ImageIcon(getClass().getResource("/resources/icon.png"));
+			ImageIcon icon = new ImageIcon(getClass().getResource(
+					"/resources/icon.png"));
 			if (icon != null)
 			{
 				// Mac OS X has different icon system for applications

@@ -13,6 +13,10 @@ import com.toedter.calendar.JDateChooser;
 
 import core.*;
 
+/**
+ * A panel to create and edit events.
+ *
+ */
 public class NewEventPanel extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = 1L;
@@ -521,5 +525,4 @@ public class NewEventPanel extends JFrame implements ActionListener
 
 		this.setVisible(true);
 	}
-
 }

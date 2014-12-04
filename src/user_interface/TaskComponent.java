@@ -9,6 +9,10 @@ import utility.GUIUtility;
 import core.*;
 import core.Event;
 
+/**
+ * JComponent wrapper for Tasks, used to display on calendar.
+ * 
+ */
 public class TaskComponent extends JComponent
 {
 
@@ -53,7 +57,7 @@ public class TaskComponent extends JComponent
 		super.paintComponent(g);
 
 		// Draw the rectangle first, so the string shows up on top of it
-		
+
 		if (item instanceof Event)
 		{
 			g.setColor(Color.getHSBColor(36f / 360f, .42f, 1f));

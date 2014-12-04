@@ -1,28 +1,24 @@
 package user_interface;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.net.URL;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import javax.swing.table.AbstractTableModel;
 
 import logging.GlobalLogger;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
-import core.TimeflecksEventResponder;
+import core.*;
 import dnd.TaskListTableTransferHandler;
 
+/**
+ * Panel for displaying Tasks in a task list.
+ * 
+ */
 public class TaskListTablePanel extends JPanel implements
 		TimeflecksEventResponder
 {
@@ -69,9 +65,8 @@ public class TaskListTablePanel extends JPanel implements
 		comboMap.put("Name", Task.nameComparator);
 		comboMap.put("Due Date", Task.dueDateComparator);
 		comboMap.put("Priority", Task.priorityComparator);
-		JComboBox<String> sortList =
-				new JComboBox<String>(comboMap.keySet().toArray(
-						new String[comboMap.size()]));
+		JComboBox<String> sortList = new JComboBox<String>(comboMap.keySet()
+				.toArray(new String[comboMap.size()]));
 		sortList.setActionCommand("dropdownsort");
 		sortList.addActionListener(al);
 
@@ -88,8 +83,10 @@ public class TaskListTablePanel extends JPanel implements
 
 		// Up and down bump buttons
 
-		upButton = createIconedButton(getClass().getResource("/resources/up.png"), "Move Up", al);
-		downButton = createIconedButton(getClass().getResource("/resources/down.png"), "Move Down", al);
+		upButton = createIconedButton(
+				getClass().getResource("/resources/up.png"), "Move Up", al);
+		downButton = createIconedButton(
+				getClass().getResource("/resources/down.png"), "Move Down", al);
 
 		// Goes with buttons
 		sortSet.add(upButton);
@@ -225,9 +222,8 @@ public class TaskListTablePanel extends JPanel implements
 
 				// Either clearing the search or searching by the string,
 				// depending on if empty or not
-				String logMessage =
-						(searchText.equals("")) ? "Clearing search."
-								: "Searching by text \"" + searchText + "\"";
+				String logMessage = (searchText.equals("")) ? "Clearing search."
+						: "Searching by text \"" + searchText + "\"";
 				GlobalLogger.getLogger().logp(Level.INFO, "TaskListTablePanel",
 						"actionPerformed(ActionEvent)", logMessage);
 
@@ -294,16 +290,18 @@ public class TaskListTablePanel extends JPanel implements
 	{
 		return searchField;
 	}
-	
+
 	private JButton createIconedButton(URL iconURL, String buttonName,
 			ActionListener al)
 	{
-        JButton button = null;
-        ImageIcon buttonIcon = null;
-        if(iconURL != null) {
-		    buttonIcon = new ImageIcon(iconURL);
-        }
-		if (buttonIcon != null && buttonIcon.getImageLoadStatus() == java.awt.MediaTracker.COMPLETE)
+		JButton button = null;
+		ImageIcon buttonIcon = null;
+		if (iconURL != null)
+		{
+			buttonIcon = new ImageIcon(iconURL);
+		}
+		if (buttonIcon != null
+				&& buttonIcon.getImageLoadStatus() == java.awt.MediaTracker.COMPLETE)
 		{
 			button = new JButton(buttonIcon);
 			GlobalLogger.getLogger().logp(Level.INFO, "TaskListTabelPanel",
@@ -358,8 +356,8 @@ public class TaskListTablePanel extends JPanel implements
 
 		// Refresh the tags in the selection list
 		// Get tags and sort alphabetically
-		Collection<String> tags =
-				Timeflecks.getSharedApplication().getTaskList().getAllTags();
+		Collection<String> tags = Timeflecks.getSharedApplication()
+				.getTaskList().getAllTags();
 		tagSelectionChoices = new Vector<String>(tags);
 		Collections.sort(tagSelectionChoices);
 		tagSelector.setListData(tagSelectionChoices);

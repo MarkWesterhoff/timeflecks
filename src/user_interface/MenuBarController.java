@@ -1,24 +1,22 @@
 package user_interface;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.awt.event.*;
+import java.io.*;
 import java.util.logging.Level;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import logging.GlobalLogger;
 import utility.FileUtility;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
+/**
+ * Controller to handle events from the menu bar.
+ * 
+ */
 public class MenuBarController implements ActionListener
 {
-
 	private MenuBar menu;
 
 	public MenuBarController(MenuBar menu)
@@ -48,7 +46,8 @@ public class MenuBarController implements ActionListener
 		else if (cmd.equalsIgnoreCase("Change Save Location..."))
 		{
 			GlobalLogger.getLogger().logp(Level.INFO, "MenuBar",
-					"actionPerformed", "Change Save Location... menu item selected");
+					"actionPerformed",
+					"Change Save Location... menu item selected");
 			performSaveAsCommand();
 		}
 		else if (cmd.equalsIgnoreCase("New Task..."))
@@ -142,7 +141,8 @@ public class MenuBarController implements ActionListener
 						"MenuBarController", "performOpenCommand", "1310");
 			}
 
-			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
+			Timeflecks.getSharedApplication().postNotification(
+					TimeflecksEvent.GENERAL_REFRESH);
 		}
 	}
 

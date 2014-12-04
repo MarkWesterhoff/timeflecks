@@ -1,22 +1,18 @@
 package user_interface;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.logging.Level;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import logging.GlobalLogger;
-import core.Timeflecks;
-import core.TimeflecksEvent;
-import core.TimeflecksEventResponder;
+import core.*;
 
+/**
+ * Buttons for manipulating the Calendar.
+ * 
+ */
 public class CalendarControlPanel extends JPanel implements
 		TimeflecksEventResponder
 {
@@ -54,9 +50,6 @@ public class CalendarControlPanel extends JPanel implements
 
 	public void addDayWeekToggle(boolean showWeekView)
 	{
-		// JPanel calendarControlButtons = new JPanel();
-		// calendarControlButtons.setLayout(new BorderLayout());
-
 		dayButton = new JToggleButton("Day");
 
 		// JAVA BUG: If this starts with "W" it doesn't calculate the size, so
@@ -64,10 +57,6 @@ public class CalendarControlPanel extends JPanel implements
 		// simply cause the button to be a little extra wide by starting the
 		// button title with a space.
 		weekButton = new JToggleButton(" Week");
-
-		// For some reason, this truncates if we don't fix the size
-		// weekButton.setPreferredSize(new Dimension(70,
-		// (int)weekButton.getPreferredSize().getHeight()));
 
 		if (showWeekView)
 		{
@@ -96,11 +85,6 @@ public class CalendarControlPanel extends JPanel implements
 					Timeflecks.getSharedApplication().getMainWindow()
 							.setShowWeekView(true);
 				}
-
-				// This notification is now posted when it sets show week view
-				// in MainWindow
-				// Timeflecks.getSharedApplication().postNotification(
-				// TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
 			}
 		});
 
@@ -120,9 +104,6 @@ public class CalendarControlPanel extends JPanel implements
 					Timeflecks.getSharedApplication().getMainWindow()
 							.setShowWeekView(false);
 				}
-
-				// Timeflecks.getSharedApplication().postNotification(
-				// TimeflecksEvent.DAY_WEEK_VIEW_SWITCHED);
 			}
 		});
 
@@ -144,7 +125,7 @@ public class CalendarControlPanel extends JPanel implements
 		dateLeftButton = new JButton("<");
 		dateTodayButton = new JButton("Today");
 		dateRightButton = new JButton(">");
-		
+
 		dateWeekLeftButton = new JButton("<<");
 		dateWeekRightButton = new JButton(">>");
 
@@ -180,7 +161,7 @@ public class CalendarControlPanel extends JPanel implements
 						TimeflecksEvent.DATE_RIGHT_ONE_BUTTON);
 			}
 		});
-		
+
 		dateWeekLeftButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -189,7 +170,7 @@ public class CalendarControlPanel extends JPanel implements
 						TimeflecksEvent.DATE_LEFT_SEVEN_BUTTON);
 			}
 		});
-		
+
 		dateWeekRightButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -241,10 +222,6 @@ public class CalendarControlPanel extends JPanel implements
 		{
 			// We want to silently ignore all of the events that we aren't ready
 			// for
-			// GlobalLogger
-			// .getLogger()
-			// .logp(Level.INFO, "CalendarControlPanel", "eventPosted",
-			// "CalendarControlPanel responding to unknown event. No action will be taken");
 		}
 	}
 }

@@ -1,16 +1,16 @@
 package user_interface;
 
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.logging.Level;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import logging.GlobalLogger;
 
+/**
+ * File/Edit/Help menu bar.
+ * 
+ */
 public class MenuBar extends JMenuBar
 {
 
@@ -76,7 +76,8 @@ public class MenuBar extends JMenuBar
 		menuItem = new JMenuItem("Save Database File", KeyEvent.VK_S);
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				InputEvent.CTRL_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription("Save Database File");
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Save Database File");
 		menuItem.addActionListener(mb);
 
 		filemenu.add(menuItem);
@@ -90,7 +91,8 @@ public class MenuBar extends JMenuBar
 		menuItem.setMnemonic(KeyEvent.getExtendedKeyCodeForChar(KeyEvent.VK_A));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
 				InputEvent.CTRL_DOWN_MASK + InputEvent.SHIFT_DOWN_MASK));
-		menuItem.getAccessibleContext().setAccessibleDescription("Change Save Location for File");
+		menuItem.getAccessibleContext().setAccessibleDescription(
+				"Change Save Location for File");
 		menuItem.addActionListener(mb);
 
 		filemenu.add(menuItem);

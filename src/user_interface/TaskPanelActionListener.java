@@ -1,18 +1,18 @@
 package user_interface;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import logging.GlobalLogger;
-import core.Task;
-import core.Timeflecks;
-import core.TimeflecksEvent;
+import core.*;
 
+/**
+ * Action listener for responding to TaskListTablePanel events.
+ * 
+ */
 public class TaskPanelActionListener implements ActionListener
 {
 	private TaskListTablePanel mainPanel;
@@ -75,7 +75,7 @@ public class TaskPanelActionListener implements ActionListener
 					"There are no rows selected to delete.");
 			return;
 		}
-		
+
 		boolean deleteAll = false;
 		// Option to delete all Tasks without being asked individually
 		if (selectedTasks.size() > 1)
@@ -119,7 +119,7 @@ public class TaskPanelActionListener implements ActionListener
 						"User selected to be prompted individually.");
 			}
 		}
-		
+
 		// Perform delete for each Task the user selected
 		for (Task task : selectedTasks)
 		{
@@ -161,8 +161,9 @@ public class TaskPanelActionListener implements ActionListener
 		Timeflecks.getSharedApplication().postNotification(
 				TimeflecksEvent.CHANGED_POSSIBLE_TAGS);
 	}
-	
-	public static void deleteTask(Task task) {
+
+	public static void deleteTask(Task task)
+	{
 		// The user selected to delete the Task
 		GlobalLogger.getLogger().logp(Level.INFO, "TaskPanelActionListener",
 				"deleteTask(Task)",
@@ -188,11 +189,10 @@ public class TaskPanelActionListener implements ActionListener
 		catch (Exception ex)
 		{
 			ExceptionHandler.handleDatabaseDeleteException(ex,
-					"TaskPanelActionListener",
-					"deleteTask(Task)", "1102");
+					"TaskPanelActionListener", "deleteTask(Task)", "1102");
 		}
 	}
-	
+
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals("dropdownsort"))

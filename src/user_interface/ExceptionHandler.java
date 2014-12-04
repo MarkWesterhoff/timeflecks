@@ -10,6 +10,10 @@ import javax.swing.JOptionPane;
 import core.Timeflecks;
 import logging.GlobalLogger;
 
+/**
+ * Contains exception handling logic.
+ * 
+ */
 public class ExceptionHandler
 {
 
