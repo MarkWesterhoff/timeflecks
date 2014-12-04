@@ -177,8 +177,6 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			container.add(p);
 		}
 
-		// TODO Remove this
-		// scrollPane.setPreferredSize(new Dimension(730, 420));
 		scrollPane.setPreferredSize(new Dimension(730, 490));
 		if (lastScrollPosition != null)
 		{

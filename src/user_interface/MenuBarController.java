@@ -179,8 +179,6 @@ public class MenuBarController implements ActionListener
 						"User chose file " + fileChooser.getSelectedFile());
 
 				File selectedFile = fileChooser.getSelectedFile();
-				// TODO Make sure the user is warned if the file exists and is
-				// not the same file
 				if (FileUtility.fileExistsAndIsNotSame(selectedFile))
 				{
 					// We need to prompt the user to see if they want to
@@ -229,7 +227,7 @@ public class MenuBarController implements ActionListener
 
 					success = true;
 				}
-				catch (IllegalArgumentException e) // TODO
+				catch (IllegalArgumentException e)
 				{
 					GlobalLogger
 							.getLogger()
