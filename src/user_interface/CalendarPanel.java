@@ -205,7 +205,18 @@ public class CalendarPanel extends JPanel implements MouseMotionListener,
 		// Go through and draw any tasks at the appropriate place
 		for (Scheduleable t : itemsToPaint)
 		{
-			Rectangle frame = getDrawRectangle(t);
+			int hourIncrement = d.height / 24;
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(t.getStartTime());
+			double taskHours = (double) calendar.get(Calendar.HOUR_OF_DAY)
+					+ (double) calendar.get(Calendar.MINUTE) / 60.0;
+
+			double durationInHours = (t.getDuration() / 1000.0 / 60.0 / 60.0) % 24.0;
+
+			Rectangle frame = new Rectangle(leftInset, this.topInset
+					+ (int) (taskHours * hourIncrement), d.width - rightInset
+					- leftInset, (int) (durationInHours * hourIncrement));
 
 			TaskComponent tc = new TaskComponent(t, frame);
 			tc.paint(g);
