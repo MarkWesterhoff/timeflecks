@@ -1,23 +1,18 @@
 package database;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.io.*;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 
-import core.Task;
-import core.Event;
+import core.*;
 import logging.GlobalLogger;
-import utility.ByteUtility;
-import utility.FileUtility;
+import utility.*;
 
+/**
+ * Connects to a SQLite database and stores/retrieves objects.
+ * 
+ */
 public final class SQLiteConnector
 {
 	// Load JDBC database connector class
@@ -29,7 +24,8 @@ public final class SQLiteConnector
 		}
 		catch (ClassNotFoundException e)
 		{
-			e.printStackTrace();
+			GlobalLogger.getLogger().logp(Level.SEVERE, "SQLiteConnector",
+					"static loading", "Unable to load org.sqlite.JDBC");
 			System.exit(1);
 		}
 	}
@@ -125,8 +121,8 @@ public final class SQLiteConnector
 			Statement stmt = c.createStatement();
 			if (clearDatabase)
 			{
-				GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
-						"SQLiteConnector()",
+				GlobalLogger.getLogger().logp(Level.INFO,
+						this.getClass().getName(), "SQLiteConnector()",
 						"Dropping serialized_objects table");
 				stmt.execute(SQL_DROP_SERIALIZE_TABLE);
 			}
@@ -151,7 +147,7 @@ public final class SQLiteConnector
 	 */
 	private Connection getConnection() throws SQLException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getConnection",
 				"Establishing conenction with database " + databasePath);
 		String connectionString = "jdbc:sqlite:" + databasePath;
@@ -196,7 +192,7 @@ public final class SQLiteConnector
 	{
 		Objects.requireNonNull(task);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"serializeAndSave(Task)",
 				"Serializing and saving Task \"" + task.getName() + "\"");
 
@@ -219,7 +215,7 @@ public final class SQLiteConnector
 	{
 		Objects.requireNonNull(event);
 
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"serializeAndSave(Event)",
 				"Serializing and saving Event \"" + event.getName() + "\"");
 
@@ -246,7 +242,7 @@ public final class SQLiteConnector
 
 		GlobalLogger.getLogger().logp(
 				Level.INFO,
-				"SQLiteConnector",
+				this.getClass().getName(),
 				"save",
 				"Saving object with id = " + Long.toString(id) + " and type = "
 						+ Character.toString(type));
@@ -287,7 +283,7 @@ public final class SQLiteConnector
 	public Task getSerializedTask(long id) throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getSerializedTask",
 				"Getting and deserializing Task with id " + Long.toString(id));
 
@@ -333,7 +329,7 @@ public final class SQLiteConnector
 	public Event getSerializedEvent(long id) throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getSerializedEvent",
 				"Getting and deserializing Event with id " + Long.toString(id));
 
@@ -372,8 +368,8 @@ public final class SQLiteConnector
 	 */
 	public void delete(long id) throws SQLException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector", "delete",
-				"Deleting Task/Event with id " + Long.toString(id));
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
+				"delete", "Deleting Task/Event with id " + Long.toString(id));
 
 		Connection c = this.getConnection();
 		try
@@ -409,7 +405,7 @@ public final class SQLiteConnector
 
 		GlobalLogger.getLogger().logp(
 				Level.INFO,
-				"SQLiteConnector",
+				this.getClass().getName(),
 				"serializeAndSave(ArrayList<Task>)",
 				"Saving " + dbObjects.size()
 						+ " DatabaseSerializable Objects to database.");
@@ -470,7 +466,7 @@ public final class SQLiteConnector
 	public ArrayList<Task> getAllTasks() throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getAllTasks()", "Getting all tasks");
 
 		ArrayList<Task> tasks = new ArrayList<Task>();
@@ -514,7 +510,7 @@ public final class SQLiteConnector
 	public ArrayList<Event> getAllEvents() throws SQLException,
 			ClassNotFoundException, IOException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getAllEvents()", "Getting all events");
 
 		ArrayList<Event> events = new ArrayList<Event>();
@@ -554,7 +550,7 @@ public final class SQLiteConnector
 	 */
 	public long getHighestID() throws SQLException
 	{
-		GlobalLogger.getLogger().logp(Level.INFO, "SQLiteConnector",
+		GlobalLogger.getLogger().logp(Level.INFO, this.getClass().getName(),
 				"getHighestID()", "Getting highest ID from database");
 
 		// Query database for maximum id
