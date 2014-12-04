@@ -13,7 +13,6 @@ public class TaskListTableModel extends AbstractTableModel
 {
 	private static final long serialVersionUID = 1L;
 
-
 	/**
 	 * Constructor for the TaskListTableModel. Takes a TaskList that holds the
 	 * Tasks.
@@ -124,8 +123,8 @@ public class TaskListTableModel extends AbstractTableModel
 		}
 		catch (Exception ex)
 		{
-			ExceptionHandler.handleDatabaseSaveException(ex, this,
-					"setValueAt", "1200");
+			ExceptionHandler.handleDatabaseSaveException(ex, this.getClass()
+					.getName(), "setValueAt", "1200");
 		}
 
 		fireTableCellUpdated(row, col);

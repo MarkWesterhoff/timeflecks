@@ -59,18 +59,10 @@ public class NewTaskPanel extends JFrame implements ActionListener
 		if (taskToEdit != null)
 		{
 			// Smaller pane
-			// OS specific sizing is necessary because UI elements are different
-			// sizes based upon platform.
-			if (Timeflecks.isMac())
-			{
-				this.getContentPane().setPreferredSize(new Dimension(370, 445));
-				this.setMinimumSize(new Dimension(400, 490));
-			} else
-			{
-				this.getContentPane().setPreferredSize(new Dimension(350, 405));
-				this.setMinimumSize(new Dimension(380, 450));
-			}
-		} else
+			this.getContentPane().setPreferredSize(new Dimension(350, 405));
+			this.setMinimumSize(new Dimension(380, 450));
+		}
+		else
 		{
 			// OS specific sizing is necessary because UI elements are different
 			// sizes based upon platform.
@@ -604,27 +596,12 @@ public class NewTaskPanel extends JFrame implements ActionListener
 								r = new MonthlyRecurrence(task, endDate);
 								tasks = r.getTasks();
 							}
-						} catch (IllegalArgumentException e1)
+						}
+						catch (IllegalArgumentException iea)
 						{
-							// If the task did not have a due date, then we need
-							// to put the user back to be editing.
-
-							GlobalLogger
-									.getLogger()
-									.logp(Level.WARNING,
-											"NewTaskPanel",
-											"actionPerformed",
-											"IllegalArgumentException for repeating task. Likely no due/start date set. Prompting user.\nException Message: "
-													+ e1.getMessage());
-
-							JOptionPane
-									.showMessageDialog(
-											this,
-											"You must specify either a start date or a due date for a repeating task.",
-											"Start or Due Date Required",
-											JOptionPane.WARNING_MESSAGE);
-
-							// Now we just return the user to editing
+							ExceptionHandler.handleNoDateException(iea, this
+									.getClass().getName(), "actionPerformed",
+									"");
 							return;
 						}
 
@@ -690,8 +667,8 @@ public class NewTaskPanel extends JFrame implements ActionListener
 					}
 				} catch (Exception ex)
 				{
-					ExceptionHandler.handleDatabaseSaveException(ex, this,
-							"ActionPerformed", "1302");
+					ExceptionHandler.handleDatabaseSaveException(ex, this
+							.getClass().getName(), "ActionPerformed", "1302");
 				}
 
 				Timeflecks.getSharedApplication().postNotification(

@@ -103,8 +103,8 @@ public class MenuBarController implements ActionListener
 			}
 			catch (Exception e)
 			{
-				ExceptionHandler.handleDatabaseSaveException(e, this,
-						"performOpenCommand", "1300");
+				ExceptionHandler.handleDatabaseSaveException(e, this.getClass()
+						.getName(), "performOpenCommand", "1300");
 			}
 
 			// Make sure it is a different .db file
@@ -124,17 +124,8 @@ public class MenuBarController implements ActionListener
 			}
 			catch (IOException e)
 			{
-				GlobalLogger
-						.getLogger()
-						.logp(Level.WARNING, "MenuBar", "performOpenCommand",
-								"File system error. Cannot compare new file to current file.");
-
-				// Trouble serializing objects
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"File System Error. (1500)\nUnable to compare the new file to the current file. Please select a different file and try again.",
-								"File System Error", JOptionPane.ERROR_MESSAGE);
+				ExceptionHandler.handleDatabaseCompareException(e, this
+						.getClass().getName(), "performOpenCommand", "1500");
 			}
 
 			try
@@ -145,47 +136,10 @@ public class MenuBarController implements ActionListener
 															// (return success
 															// or failure?)
 			}
-			catch (SQLException e)
+			catch (Exception e)
 			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Open command generated SQLException. Showing dialog.");
-
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Stack Trace:\n" + e.getStackTrace());
-
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"Database Error. (1310)\nCould not open database file.",
-								"Database Error", JOptionPane.ERROR_MESSAGE);
-			}
-			catch (IOException e)
-			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Open command generated IOException. Showing dialog.");
-
-				// Trouble serializing objects
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"Object Serialization Error. (1311)\nCould not read items from database file.",
-								"Database Error", JOptionPane.ERROR_MESSAGE);
-			}
-			catch (ClassNotFoundException e)
-			{
-				GlobalLogger.getLogger().logp(Level.WARNING, "MenuBar",
-						"performOpenCommand",
-						"Open command generated IOException. Showing dialog.");
-
-				// Trouble serializing objects
-				JOptionPane
-						.showMessageDialog(
-								menu,
-								"Object Serialization Error. (1312)\nClass not found when reading from database.",
-								"Database Error", JOptionPane.ERROR_MESSAGE);
+				ExceptionHandler.handleDatabaseOpenException(e,
+						"MenuBarController", "performOpenCommand", "1310");
 			}
 
 			Timeflecks.getSharedApplication().postNotification(TimeflecksEvent.GENERAL_REFRESH);
@@ -201,8 +155,8 @@ public class MenuBarController implements ActionListener
 		}
 		catch (Exception e)
 		{
-			ExceptionHandler.handleDatabaseSaveException(e, this,
-					"performSaveCommand()", "1300");
+			ExceptionHandler.handleDatabaseSaveException(e, this.getClass()
+					.getName(), "performSaveCommand()", "1300");
 		}
 	}
 
@@ -294,8 +248,9 @@ public class MenuBarController implements ActionListener
 				}
 				catch (Exception e)
 				{
-					ExceptionHandler.handleDatabaseSaveException(e, this,
-							"performSaveAsCommand()", "1300");
+					ExceptionHandler.handleDatabaseSaveException(e, this
+							.getClass().getName(), "performSaveAsCommand()",
+							"1300");
 				}
 			}
 			else

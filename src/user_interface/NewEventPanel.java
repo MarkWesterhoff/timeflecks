@@ -344,8 +344,8 @@ public class NewEventPanel extends JFrame implements ActionListener
 							"actionPerformed", "Saved event to database.");
 				} catch (Exception ex)
 				{
-					ExceptionHandler.handleDatabaseSaveException(ex, this,
-							"ActionPerformed", "1302");
+					ExceptionHandler.handleDatabaseSaveException(ex, this
+							.getClass().getName(), "ActionPerformed", "1302");
 				}
 
 				dismissPane();
