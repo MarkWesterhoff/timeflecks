@@ -73,7 +73,15 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 	public void addComponents()
 	{
 		// Only add the menu bar on non mac
-		if (!Timeflecks.isMac())
+		if (Timeflecks.isMac())
+		{
+			// For now, add it everywhere.
+
+			// Add the menu bar
+			MenuBar menu = new MenuBar();
+			setJMenuBar(menu);
+		}
+		else
 		{
 			// Add the menu bar
 			MenuBar menu = new MenuBar();
@@ -89,8 +97,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		calendarContainer = new JPanel();
 		calendarContainer.setLayout(new BorderLayout());
 
-		CalendarControlPanel controlPanel = new CalendarControlPanel(
-				showWeekView);
+		CalendarControlPanel controlPanel =
+				new CalendarControlPanel(showWeekView);
 		calendarContainer.add(controlPanel, BorderLayout.NORTH);
 
 		// Add the calendar & controlPanel
@@ -160,8 +168,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 			int width = 700;
 			int height = 1000;
 
-			CalendarPanel p = new CalendarPanel(date, true, false, width,
-					height);
+			CalendarPanel p =
+					new CalendarPanel(date, true, false, width, height);
 
 			cpanels.add(p);
 			container.add(p);
@@ -182,7 +190,7 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 	{
 		int width = 1300;
 		int height = 555;
-		
+
 		setSize(width, height);
 		setMinimumSize(new Dimension(width, height));
 
@@ -197,7 +205,8 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 		// Add the icon to the application
 		try
 		{
-			ImageIcon icon = new ImageIcon(getClass().getResource("/resources/icon.png"));
+			ImageIcon icon =
+					new ImageIcon(getClass().getResource("/resources/icon.png"));
 			if (icon != null)
 			{
 				// Mac OS X has different icon system for applications
@@ -206,11 +215,14 @@ public class MainWindow extends JFrame implements TimeflecksEventResponder
 					// We can either use an external library to fake this for
 					// compilation on Windows, or we can just leave it out.
 
-//					com.apple.eawt.Application.getApplication()
-//							.setDockIconImage(icon.getImage());
-//
-//					com.apple.eawt.Application.getApplication()
-//							.setDefaultMenuBar(new MenuBar());
+					// For now, we also add the menu bar normally so that it
+					// will show up on Mac
+
+					// com.apple.eawt.Application.getApplication()
+					// .setDockIconImage(icon.getImage());
+					//
+					// com.apple.eawt.Application.getApplication()
+					// .setDefaultMenuBar(new MenuBar());
 				}
 				else
 				{
