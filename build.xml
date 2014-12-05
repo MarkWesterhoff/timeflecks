@@ -46,6 +46,9 @@
         <copy todir="bin/resources">
             <fileset dir="src/resources" />
         </copy>
+        <copy todir="bin/licenses">
+            <fileset dir="licenses" />
+        </copy>
 		<javac srcdir="src" destdir="bin" includeantruntime="false">
             <exclude name="*/test/" />
 			<classpath refid="deps_classpath-notest" />
