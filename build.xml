@@ -44,7 +44,9 @@
     <target name="compile-notest">
 		<mkdir dir="bin"/>
         <copy todir="bin/resources">
-            <fileset dir="src/resources" />
+            <fileset dir="src/resources" >
+                <exclude name="*.svg" />
+            </fileset>
         </copy>
         <copy todir="bin/licenses">
             <fileset dir="licenses" />
